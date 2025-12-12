@@ -354,11 +354,51 @@
       "intro": "Introduction to Puberty",
       "cycle": "The Menstrual Cycle Explained",
       "products": "Period Products Guide",
-      "myths": "Busting Period Myths"
+      "myths": "Busting Period Myths",
+      "hygiene": "Menstrual Hygiene Management",
+      "support": "How to Be Supportive"
     },
-    "comingSoon": "More videos coming soon!",
+    "videoDescriptions": {
+      "intro": "Learn about the amazing changes that happen during puberty. This video explains everything in a friendly, easy-to-understand way.",
+      "cycle": "Understand what happens during the menstrual cycle with clear animations. Learn about the four phases and what to expect.",
+      "products": "A complete guide to pads, tampons, menstrual cups, and period underwear. Learn how to use each product safely.",
+      "myths": "Discover the truth behind common myths. We separate facts from fiction about periods.",
+      "hygiene": "Learn essential hygiene practices during menstruation. Stay clean, comfortable, and healthy.",
+      "support": "Boys and men can make a real difference. Learn how to be understanding and supportive."
+    },
+    "transcripts": {
+      "intro": "This video will cover the basic changes during puberty, including physical and emotional changes. You'll learn what to expect and when.",
+      "cycle": "The menstrual cycle has four phases: menstruation, follicular phase, ovulation, and luteal phase. This video explains each phase.",
+      "products": "There are many period product options. This video shows you how to choose and use pads, tampons, cups, and period underwear.",
+      "myths": "Many myths about periods have been around for years. This video sets the record straight with facts and science.",
+      "hygiene": "Good hygiene during menstruation includes changing products regularly, washing properly, and staying clean.",
+      "support": "Being supportive means being understanding, not making jokes, and treating periods as the natural process they are."
+    },
+    "categories": {
+      "all": "All Videos",
+      "basics": "Basics",
+      "education": "Educational",
+      "practical": "Practical Tips"
+    },
+    "audienceLabels": {
+      "everyone": "Everyone",
+      "girls": "Girls",
+      "boys": "Boys",
+      "parents": "Parents"
+    },
+    "comingSoon": "Videos Coming Soon!",
+    "comingSoonBadge": "Soon",
+    "comingSoonDescription": "We're creating high-quality animated videos to make learning even more fun and accessible. Check back soon!",
+    "alternativeContent": "Explore Text-Based Content",
+    "alternativeContentDescription": "While we prepare the videos, explore our comprehensive text-based learning sections.",
     "watchNow": "Watch Now",
-    "duration": "Duration"
+    "duration": "Duration",
+    "audience": "Audience",
+    "category": "Category",
+    "videoInfo": "Video Information",
+    "relatedTopics": "Related Topics",
+    "transcript": "Video Transcript",
+    "downloadPDF": "Download PDF Guide"
   },
   "faq": {
     "title": "Frequently Asked Questions",
