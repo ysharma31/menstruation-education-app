@@ -8,6 +8,7 @@ import {
   HelpCircle,
   BookOpen,
   MessageCircle,
+  Bot,
   Heart
 } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
@@ -23,6 +24,7 @@ const DesktopNavigation = () => {
     { path: '/faq', icon: HelpCircle, label: t('navigation.faq') },
     { path: '/parents', icon: BookOpen, label: t('navigation.parents') },
     { path: '/ask', icon: MessageCircle, label: t('navigation.ask') },
+    { path: '/chat', icon: Bot, label: t('navigation.chat'), color: 'text-primary-600' },
   ];
 
   return (

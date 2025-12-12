@@ -7,7 +7,8 @@ import {
   AnimatedExplainer,
   FAQ,
   ParentsGuide,
-  AskQuestion
+  AskQuestion,
+  Chat
 } from './pages';
 
 // Initialize i18n
@@ -25,6 +26,7 @@ function App() {
           <Route path="faq" element={<FAQ />} />
           <Route path="parents" element={<ParentsGuide />} />
           <Route path="ask" element={<AskQuestion />} />
+          <Route path="chat" element={<Chat />} />
         </Route>
       </Routes>
     </Router>

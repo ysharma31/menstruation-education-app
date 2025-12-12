@@ -4,7 +4,7 @@ import {
   Home,
   User,
   Users,
-  PlayCircle,
+  Bot,
   HelpCircle,
   MessageCircle
 } from 'lucide-react';
@@ -16,7 +16,7 @@ const MobileNavigation = () => {
     { path: '/', icon: Home, label: t('navigation.home') },
     { path: '/girls', icon: User, label: t('navigation.girls') },
     { path: '/boys', icon: Users, label: t('navigation.boys') },
-    { path: '/animated', icon: PlayCircle, label: t('navigation.animated') },
+    { path: '/chat', icon: Bot, label: t('navigation.chat') },
     { path: '/faq', icon: HelpCircle, label: t('navigation.faq') },
   ];
 

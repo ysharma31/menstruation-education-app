@@ -23,7 +23,8 @@
     "animated": "Watch & Learn",
     "faq": "FAQ",
     "parents": "For Parents",
-    "ask": "Ask Questions"
+    "ask": "Ask Questions",
+    "chat": "AI Chat"
   },
   "home": {
     "title": "Learn About Your Body",
@@ -503,6 +504,56 @@
     "showingResults_plural": "Showing {{count}} questions",
     "readMore": "Read more",
     "readLess": "Read less"
+  },
+  "chat": {
+    "title": "Ask AI Assistant",
+    "subtitle": "Get instant answers to your questions",
+    "placeholder": "Type your question here...",
+    "send": "Send",
+    "listening": "Listening...",
+    "thinking": "Thinking...",
+    "newChat": "New Chat",
+    "clearChat": "Clear Chat",
+    "downloadChat": "Download Chat",
+    "shareChat": "Share Chat",
+    "disclaimer": "This is an educational AI assistant. For medical concerns, please consult a healthcare provider.",
+    "privacyNotice": "Your conversations are private and not stored permanently.",
+    "reportIssue": "Report Issue",
+    "starterQuestions": {
+      "title": "Ask me about:",
+      "q1": "What is a period?",
+      "q2": "How do I use a pad?",
+      "q3": "Is it normal to have cramps?",
+      "q4": "Can I swim during my period?",
+      "q5": "When should I see a doctor?",
+      "q6": "How do I track my cycle?"
+    },
+    "errors": {
+      "failed": "Failed to send message. Please try again.",
+      "network": "Network error. Please check your connection.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "empty": {
+      "title": "Welcome! How can I help you today?",
+      "subtitle": "I'm here to answer your questions about periods, puberty, and reproductive health."
+    },
+    "confirmClear": "Are you sure you want to clear this conversation?",
+    "yes": "Yes",
+    "no": "No",
+    "copyMessage": "Copy",
+    "messageCopied": "Message copied!",
+    "you": "You",
+    "assistant": "Assistant",
+    "voiceInput": "Voice input",
+    "stopListening": "Stop listening",
+    "characterLimit": "Character limit: {{count}}/{{max}}",
+    "rateLimitWarning": "Please wait a moment before sending another message.",
+    "conversationHistory": "Conversation History",
+    "loadOlder": "Load older messages",
+    "noHistory": "No conversation history yet.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "older": "Older"
   },
   "parents": {
     "title": "Guide for Parents",
