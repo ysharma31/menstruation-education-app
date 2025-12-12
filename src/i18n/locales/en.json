@@ -1,0 +1,175 @@
+{
+  "common": {
+    "appName": "Period Education",
+    "tagline": "Understanding Your Body",
+    "language": "Language",
+    "english": "English",
+    "hindi": "Hindi",
+    "learnMore": "Learn More",
+    "readMore": "Read More",
+    "backToHome": "Back to Home",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Success!",
+    "welcome": "Welcome",
+    "getStarted": "Get Started"
+  },
+  "navigation": {
+    "home": "Home",
+    "boys": "For Boys",
+    "girls": "For Girls",
+    "animated": "Watch & Learn",
+    "faq": "FAQ",
+    "parents": "For Parents",
+    "ask": "Ask Questions"
+  },
+  "home": {
+    "title": "Learn About Your Body",
+    "subtitle": "A safe space to learn about menstruation and puberty",
+    "description": "Everyone goes through changes as they grow up. This app helps you understand these changes in a friendly, easy-to-understand way.",
+    "chooseSection": "Choose a section to explore:",
+    "forEveryone": "This information is for everyone!",
+    "safeSpace": "Safe & Supportive Learning"
+  },
+  "boys": {
+    "title": "For Boys",
+    "subtitle": "Understanding Menstruation",
+    "intro": "Learning about menstruation helps you understand and support the people in your life.",
+    "whyLearn": "Why Should Boys Learn This?",
+    "whyLearnContent": "Understanding menstruation helps you be a better friend, brother, and family member. It breaks down barriers and helps everyone feel more comfortable.",
+    "whatIs": "What is Menstruation?",
+    "whatIsContent": "Menstruation, or having a period, is a natural monthly process that happens in the female body. It's a sign that the body is healthy and working normally.",
+    "howToHelp": "How Can You Help?",
+    "howToHelpContent": "Be understanding, don't make jokes about periods, and be supportive if someone needs help or feels unwell.",
+    "mythBusters": "Myth Busters",
+    "factCheck": "Fact Check",
+    "topics": {
+      "basics": "The Basics",
+      "support": "Being Supportive",
+      "myths": "Myths vs Facts",
+      "questions": "Common Questions"
+    }
+  },
+  "girls": {
+    "title": "For Girls",
+    "subtitle": "Your Body, Your Journey",
+    "intro": "Your body is amazing! Let's learn about the changes happening and how to take care of yourself.",
+    "whatToExpect": "What to Expect",
+    "whatToExpectContent": "Periods usually start between ages 9-16. Everyone's body is different, and that's perfectly normal!",
+    "yourCycle": "Understanding Your Cycle",
+    "yourCycleContent": "A menstrual cycle is typically 21-35 days. The period itself usually lasts 3-7 days.",
+    "takingCare": "Taking Care of Yourself",
+    "takingCareContent": "Learn about different period products, managing cramps, and when to talk to a doctor.",
+    "feelingGood": "Feeling Your Best",
+    "feelingGoodContent": "Tips for staying comfortable, eating well, and managing your emotions during your period.",
+    "topics": {
+      "puberty": "Puberty Changes",
+      "cycle": "Your Cycle",
+      "products": "Period Products",
+      "selfCare": "Self Care",
+      "emotions": "Managing Emotions"
+    }
+  },
+  "animated": {
+    "title": "Watch & Learn",
+    "subtitle": "Fun animated videos to help you understand",
+    "description": "Sometimes watching is easier than reading! Check out these friendly animated explainers.",
+    "videos": {
+      "intro": "Introduction to Puberty",
+      "cycle": "The Menstrual Cycle Explained",
+      "products": "Period Products Guide",
+      "myths": "Busting Period Myths"
+    },
+    "comingSoon": "More videos coming soon!",
+    "watchNow": "Watch Now",
+    "duration": "Duration"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Got questions? We've got answers!",
+    "searchPlaceholder": "Search for a question...",
+    "categories": {
+      "all": "All Questions",
+      "basics": "Basics",
+      "health": "Health",
+      "products": "Products",
+      "emotions": "Emotions"
+    },
+    "questions": {
+      "q1": "What is a period?",
+      "a1": "A period is the monthly shedding of the uterine lining. It's a normal part of the menstrual cycle and usually lasts 3-7 days.",
+      "q2": "At what age do periods start?",
+      "a2": "Periods typically start between ages 9-16, with most girls getting their first period around 12-13 years old. Everyone's body is different!",
+      "q3": "Is it normal to have irregular periods?",
+      "a3": "Yes! Especially in the first few years. It can take 2-3 years for your cycle to become regular.",
+      "q4": "What period products are available?",
+      "a4": "There are many options including pads, tampons, menstrual cups, and period underwear. You can choose what feels most comfortable for you.",
+      "q5": "Why do I feel emotional during my period?",
+      "a5": "Hormonal changes during your cycle can affect your mood. It's completely normal to feel more emotional. Self-care and rest can help!",
+      "q6": "Can I exercise during my period?",
+      "a6": "Absolutely! Exercise can actually help reduce cramps and improve your mood. Listen to your body and do what feels comfortable.",
+      "q7": "Is period pain normal?",
+      "a7": "Mild to moderate cramping is normal. If pain is severe or interferes with daily activities, talk to a doctor or trusted adult.",
+      "q8": "Can boys get periods?",
+      "a8": "Typically, people with female reproductive systems get periods. However, some transgender men may also experience periods."
+    },
+    "noResults": "No questions found. Try a different search term.",
+    "stillHaveQuestions": "Still have questions?",
+    "askUs": "Ask us directly in the Questions section!"
+  },
+  "parents": {
+    "title": "Guide for Parents",
+    "subtitle": "Supporting Your Child Through Puberty",
+    "intro": "As a parent, you play a crucial role in helping your child understand and navigate puberty.",
+    "startConversation": "Starting the Conversation",
+    "startConversationContent": "Begin conversations early, before puberty starts. Use correct terminology and answer questions honestly.",
+    "createSafe": "Creating a Safe Space",
+    "createSafeContent": "Let your child know they can come to you with questions. Avoid showing embarrassment and normalize these discussions.",
+    "resources": "Helpful Resources",
+    "resourcesContent": "Books, websites, and healthcare providers can support your conversations.",
+    "prepareKit": "Preparing a Period Kit",
+    "prepareKitContent": "Help your daughter prepare a small kit with pads, clean underwear, and pain relief for school or activities.",
+    "topics": {
+      "talking": "How to Talk About It",
+      "signs": "Signs of Puberty",
+      "support": "Emotional Support",
+      "medical": "When to See a Doctor",
+      "resources": "Resources"
+    }
+  },
+  "ask": {
+    "title": "Ask a Question",
+    "subtitle": "Have a question? We're here to help!",
+    "description": "Submit your question below. All questions are anonymous.",
+    "placeholder": "Type your question here...",
+    "categoryLabel": "Category",
+    "categories": {
+      "general": "General",
+      "health": "Health",
+      "products": "Products",
+      "emotions": "Emotions & Feelings",
+      "other": "Other"
+    },
+    "ageLabel": "Your Age Group",
+    "ageGroups": {
+      "under10": "Under 10",
+      "10to12": "10-12",
+      "13to15": "13-15",
+      "16plus": "16+",
+      "parent": "I'm a Parent"
+    },
+    "submitButton": "Submit Question",
+    "thankYou": "Thank you for your question!",
+    "responseNote": "We'll review your question and may add it to our FAQ section.",
+    "guidelines": "Guidelines",
+    "guidelinesText": "Please be respectful and specific. All questions are welcome!"
+  },
+  "footer": {
+    "privacy": "Privacy",
+    "about": "About",
+    "contact": "Contact",
+    "disclaimer": "This app provides educational information and is not medical advice. Always consult a healthcare provider for medical concerns."
+  }
+}

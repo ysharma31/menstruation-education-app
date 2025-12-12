@@ -1,0 +1,7 @@
+export { default as Home } from './Home';
+export { default as Girls } from './Girls';
+export { default as Boys } from './Boys';
+export { default as AnimatedExplainer } from './AnimatedExplainer';
+export { default as FAQ } from './FAQ';
+export { default as ParentsGuide } from './ParentsGuide';
+export { default as AskQuestion } from './AskQuestion';
