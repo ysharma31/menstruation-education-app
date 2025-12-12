@@ -133,7 +133,7 @@ const ParentsGuide = () => {
               className={`flex items-center gap-2 px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target ${
                 activeTab === topic.id
                   ? 'bg-gradient-to-r from-sage-500 to-sage-600 text-white shadow-lg'
-                  : 'bg-white/80 backdrop-blur-sm text-text-secondary hover:bg-sage-50 border border-warm-200'
+                  : 'bg-white text-text-secondary hover:bg-sage-50 border border-warm-200'
               }`}
             >
               <topic.icon size={18} />
@@ -144,7 +144,7 @@ const ParentsGuide = () => {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 card-glass">
+        <div className="lg:col-span-2 card">
           <h2 className="text-xl md:text-2xl font-display font-bold text-text-primary mb-4">
             {currentContent.title}
           </h2>
@@ -177,7 +177,7 @@ const ParentsGuide = () => {
               {currentContent.tips.map((tip, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-warm-100 hover:shadow-soft transition-all duration-300"
+                  className="flex items-start gap-4 p-4 bg-white rounded-xl border border-warm-100 hover:shadow-md transition-all duration-300"
                 >
                   <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
                   <span className="text-sm text-text-secondary leading-relaxed">{tip}</span>
@@ -188,7 +188,7 @@ const ParentsGuide = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="card-glass gradient-sage border border-sage-200">
+          <div className="card bg-green-50 border border-sage-200">
             <Lightbulb className="w-9 h-9 text-sage-600 mb-4" />
             <h3 className="font-display font-bold text-text-primary mb-3">
               {t('parents.prepareKit')}
@@ -216,7 +216,7 @@ const ParentsGuide = () => {
             </div>
           </div>
 
-          <div className="card-glass">
+          <div className="card">
             <h3 className="font-display font-semibold text-text-primary mb-4">
               Related Resources
             </h3>

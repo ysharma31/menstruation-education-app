@@ -139,7 +139,7 @@ const AnimatedExplainer = () => {
               className={`px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target font-medium text-sm ${
                 activeCategory === cat.id
                   ? 'bg-gradient-to-r from-accent-400 to-primary-500 text-white shadow-warm'
-                  : 'bg-white/80 backdrop-blur-sm text-text-secondary hover:bg-accent-50 border border-warm-200'
+                  : 'bg-white text-text-secondary hover:bg-accent-50 border border-warm-200'
               }`}
             >
               {cat.label}
@@ -152,7 +152,7 @@ const AnimatedExplainer = () => {
         {filteredVideos.map((video) => (
           <div
             key={video.id}
-            className="card-glass group cursor-pointer hover:shadow-soft transition-all duration-300"
+            className="card group cursor-pointer hover:shadow-md transition-all duration-300"
             onClick={() => setSelectedVideo(video)}
           >
             <div className="relative aspect-video bg-gradient-to-br from-accent-100 to-primary-100 rounded-2xl mb-5 flex items-center justify-center overflow-hidden">
@@ -199,7 +199,7 @@ const AnimatedExplainer = () => {
       </div>
 
       <div className="mt-10 grid md:grid-cols-2 gap-8">
-        <div className="card-glass gradient-warm border border-accent-200">
+        <div className="card bg-pink-50 border border-accent-200">
           <div className="flex items-start gap-4">
             <Star className="w-7 h-7 text-accent-500 flex-shrink-0" />
             <div>
@@ -213,7 +213,7 @@ const AnimatedExplainer = () => {
           </div>
         </div>
 
-        <div className="card-glass">
+        <div className="card">
           <div className="flex items-start gap-4">
             <BookOpen className="w-7 h-7 text-primary-500 flex-shrink-0" />
             <div>

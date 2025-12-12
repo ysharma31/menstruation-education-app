@@ -34,7 +34,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <header className="lg:hidden fixed top-0 left-0 right-0 bg-white/95 border-b border-warm-200 z-50 safe-area-inset-top">
+      <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-warm-200 z-50 safe-area-inset-top">
         <div className="flex items-center justify-between px-4 py-3">
           <NavLink to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl gradient-primary flex items-center justify-center">

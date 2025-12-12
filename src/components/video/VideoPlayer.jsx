@@ -240,7 +240,7 @@ const VideoPlayer = ({
                 <div className="absolute inset-0 flex items-center justify-center">
                   <button
                     onClick={togglePlay}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-all shadow-lg touch-target"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center hover:bg-gray-50 transition-all shadow-lg touch-target"
                   >
                     <Play className="w-8 h-8 md:w-10 md:h-10 text-primary-500 ml-1" />
                   </button>

@@ -327,7 +327,7 @@ const Chat = () => {
           </div>
         </header>
 
-        <div className="bg-warm-50/80 backdrop-blur-sm border border-warm-200 rounded-2xl p-4 mb-6 text-sm text-text-muted">
+        <div className="bg-warm-50 border border-warm-200 rounded-2xl p-4 mb-6 text-sm text-text-muted">
           <div className="flex items-start gap-3">
             <AlertCircle size={16} className="flex-shrink-0 mt-0.5 text-primary-400" />
             <div>
@@ -337,7 +337,7 @@ const Chat = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col bg-white/80 backdrop-blur-sm rounded-3xl border border-warm-100 shadow-soft overflow-hidden">
+        <div className="flex-1 flex flex-col bg-white rounded-3xl border border-warm-100 shadow-sm overflow-hidden">
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
             {messages.length === 0 ? (
               <div className="text-center py-12">

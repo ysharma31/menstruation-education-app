@@ -147,7 +147,7 @@ const AskQuestion = () => {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="card-glass">
+          <form onSubmit={handleSubmit} className="card">
             {/* Question Input */}
             <div className="mb-6">
               <label htmlFor="question" className="block text-sm font-medium text-text-primary mb-2">
@@ -267,7 +267,7 @@ const AskQuestion = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="card-glass gradient-warm border border-warm-200">
+          <div className="card bg-pink-50 border border-warm-200">
             <div className="flex items-center gap-3 mb-4">
               <Info className="w-6 h-6 text-primary-500" />
               <h3 className="font-display font-semibold text-text-primary">
@@ -293,7 +293,7 @@ const AskQuestion = () => {
             </ul>
           </div>
 
-          <div className="card-glass bg-accent-50/50 border border-accent-200">
+          <div className="card bg-accent-50 border border-accent-200">
             <div className="flex items-center gap-3 mb-3">
               <Shield className="w-6 h-6 text-accent-500" />
               <h3 className="font-display font-semibold text-text-primary">
@@ -306,7 +306,7 @@ const AskQuestion = () => {
             </p>
           </div>
 
-          <div className="card-glass">
+          <div className="card">
             <h3 className="font-display font-semibold text-text-primary mb-3">
               Check the FAQ First
             </h3>

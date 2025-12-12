@@ -253,7 +253,7 @@ const FAQ = () => {
               className={`px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target font-medium text-sm ${
                 activeCategory === cat.id
                   ? 'gradient-secondary text-white shadow-blue'
-                  : 'bg-white/80 backdrop-blur-sm text-text-secondary hover:bg-secondary-50 border border-warm-200'
+                  : 'bg-white text-text-secondary hover:bg-secondary-50 border border-warm-200'
               }`}
             >
               {cat.label}
@@ -284,7 +284,7 @@ const FAQ = () => {
                 <div
                   key={q.id}
                   id={q.id}
-                  className="card-glass hover:shadow-soft transition-all duration-300"
+                  className="card hover:shadow-md transition-all duration-300"
                 >
                   <div
                     className="flex items-start gap-3 cursor-pointer"
@@ -400,7 +400,7 @@ const FAQ = () => {
               );
             })
           ) : (
-            <div className="card-glass text-center py-12">
+            <div className="card text-center py-12">
               <HelpCircle className="w-12 h-12 text-text-muted mx-auto mb-4" />
               <p className="text-text-secondary">{t('faq.noResults')}</p>
             </div>
@@ -408,7 +408,7 @@ const FAQ = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="card-glass gradient-peach border border-primary-100 sticky top-4">
+          <div className="card bg-pink-50 border border-primary-100 sticky top-4">
             <MessageCircle className="w-9 h-9 text-primary-500 mb-4" />
             <h3 className="font-display font-bold text-text-primary mb-3">
               {t('faq.stillHaveQuestions')}
@@ -421,7 +421,7 @@ const FAQ = () => {
             </Link>
           </div>
 
-          <div className="card-glass hidden lg:block">
+          <div className="card hidden lg:block">
             <h3 className="font-display font-semibold text-text-primary mb-4">
               Quick Facts
             </h3>
