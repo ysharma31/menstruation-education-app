@@ -85,8 +85,21 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    console.log("Chat function called");
+    console.log("ANTHROPIC_API_KEY exists:", !!ANTHROPIC_API_KEY);
+    console.log("ANTHROPIC_API_KEY length:", ANTHROPIC_API_KEY?.length || 0);
+    
     if (!ANTHROPIC_API_KEY) {
-      throw new Error("ANTHROPIC_API_KEY is not configured");
+      console.error("ANTHROPIC_API_KEY is not set in environment variables");
+      return new Response(
+        JSON.stringify({ 
+          error: "API key not configured. Please ensure ANTHROPIC_API_KEY is set in Supabase Edge Function secrets."
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     const { messages, language = "en" }: ChatRequest = await req.json();
@@ -103,6 +116,7 @@ Deno.serve(async (req: Request) => {
 
     const systemPrompt = language === "hi" ? SYSTEM_PROMPT_HI : SYSTEM_PROMPT_EN;
 
+    console.log("Calling Anthropic API...");
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -111,7 +125,7 @@ Deno.serve(async (req: Request) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620",
+        model: "claude-3-5-sonnet-20241022",
         max_tokens: 1024,
         system: systemPrompt,
         messages: messages,
@@ -121,10 +135,20 @@ Deno.serve(async (req: Request) => {
     if (!response.ok) {
       const error = await response.text();
       console.error("Anthropic API error:", error);
-      throw new Error(`Anthropic API error: ${response.status}`);
+      console.error("Status:", response.status);
+      return new Response(
+        JSON.stringify({ 
+          error: `API error (${response.status}): ${error.substring(0, 200)}`
+        }),
+        {
+          status: response.status,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     const data = await response.json();
+    console.log("Anthropic API success");
 
     return new Response(
       JSON.stringify({
