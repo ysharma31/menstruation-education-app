@@ -116,38 +116,38 @@ const Girls = () => {
     <div className="page-container animate-fade-in">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-text-muted hover:text-text-primary mb-4 transition-colors"
+        className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-4 transition-colors"
       >
         <ArrowLeft size={18} />
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="gradient-warm rounded-3xl p-6 md:p-10 mb-8 border border-primary-100">
+      <header className="bg-pink-50 rounded-3xl p-6 md:p-10 mb-8 border border-primary-100">
         <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-primary flex items-center justify-center shadow-warm">
+            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-pink-500 flex items-center justify-center shadow-sm">
               <Heart className="w-8 h-8 md:w-9 md:h-9 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-gray-900">
                 {t('girls.title')}
               </h1>
               <p className="text-primary-600 font-medium">{t('girls.subtitle')}</p>
             </div>
           </div>
-          <div className="hidden md:block w-48 h-40 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center ml-auto">
+          <div className="hidden md:block w-48 h-40 rounded-2xl bg-white flex items-center justify-center ml-auto">
             <p className="text-xs text-primary-600/70 text-center p-4">Illustration: Confident girl feeling empowered</p>
           </div>
         </div>
-        <p className="text-text-secondary mt-5 leading-relaxed max-w-3xl">
+        <p className="text-gray-600 mt-5 leading-relaxed max-w-3xl">
           {t('girls.intro')}
         </p>
       </header>
 
       <div className="grid lg:grid-cols-4 gap-8">
         <aside className="lg:col-span-1 space-y-5">
-          <div className="card-glass sticky top-4">
-            <h3 className="font-display font-semibold text-text-primary mb-5">
+          <div className="card sticky top-4">
+            <h3 className="font-display font-semibold text-gray-900 mb-5">
               Sections
             </h3>
             <nav className="space-y-2">
@@ -161,8 +161,8 @@ const Girls = () => {
                     onClick={() => setCurrentSection(index)}
                     className={`w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-all duration-300 touch-target ${
                       isCurrent
-                        ? 'gradient-primary text-white shadow-warm'
-                        : 'bg-warm-50 text-text-secondary hover:bg-primary-50 hover:text-primary-700'
+                        ? 'bg-pink-500 text-white shadow-sm'
+                        : 'bg-gray-50 text-gray-600 hover:bg-pink-50 hover:text-primary-700'
                     }`}
                   >
                     <SectionIcon size={20} className="flex-shrink-0" />
@@ -172,7 +172,7 @@ const Girls = () => {
               })}
             </nav>
 
-            <div className="mt-6 p-5 gradient-warm rounded-xl border border-primary-100">
+            <div className="mt-6 p-5 bg-pink-50 rounded-xl border border-primary-100">
               <div className="flex items-start gap-3">
                 <Heart className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
                 <div>
@@ -189,17 +189,17 @@ const Girls = () => {
         </aside>
 
         <main className="lg:col-span-3">
-          <div className="card-glass mb-8">
+          <div className="card mb-8">
             {currentSection === 0 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.understanding.title')}
                   </h2>
                 </div>
 
                 <div className="space-y-5">
-                  <div className="bg-primary-50 border-l-4 border-primary-500 p-6 rounded-r-2xl">
+                  <div className="bg-pink-50 border-l-4 border-primary-500 p-6 rounded-r-2xl">
                     <h3 className="font-semibold text-primary-800 mb-2 flex items-center gap-2">
                       <Info size={20} className="text-primary-500" />
                       {t('girls.understanding.whatIs')}
@@ -209,7 +209,7 @@ const Girls = () => {
                     </p>
                   </div>
 
-                  <div className="bg-primary-50/70 border-l-4 border-primary-400 p-6 rounded-r-2xl">
+                  <div className="bg-pink-50 border-l-4 border-primary-400 p-6 rounded-r-2xl">
                     <h3 className="font-semibold text-primary-800 mb-2 flex items-center gap-2">
                       <Sparkles size={20} className="text-primary-500" />
                       {t('girls.understanding.whyHappens')}
@@ -220,22 +220,22 @@ const Girls = () => {
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-5">
-                    <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 shadow-soft">
-                      <h3 className="font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                         <Calendar size={20} className="text-primary-500" />
                         {t('girls.understanding.howLong')}
                       </h3>
-                      <p className="text-sm text-text-secondary leading-relaxed">
+                      <p className="text-sm text-gray-600 leading-relaxed">
                         {t('girls.understanding.howLongText')}
                       </p>
                     </div>
 
-                    <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 shadow-soft">
-                      <h3 className="font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                      <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
                         <Heart size={20} className="text-primary-500" />
                         {t('girls.understanding.firstPeriod')}
                       </h3>
-                      <p className="text-sm text-text-secondary leading-relaxed">
+                      <p className="text-sm text-gray-600 leading-relaxed">
                         {t('girls.understanding.firstPeriodText')}
                       </p>
                     </div>
@@ -247,10 +247,10 @@ const Girls = () => {
             {currentSection === 1 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-2">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-2">
                     {t('girls.bodyChanges.title')}
                   </h2>
-                  <p className="text-text-secondary">{t('girls.bodyChanges.subtitle')}</p>
+                  <p className="text-gray-600">{t('girls.bodyChanges.subtitle')}</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-5">
@@ -261,25 +261,25 @@ const Girls = () => {
                         key={key}
                         className={`p-5 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
                           isSelected
-                            ? 'bg-primary-50 border-primary-400 shadow-warm'
-                            : 'bg-white/60 border-warm-200 hover:border-primary-300 hover:shadow-soft'
+                            ? 'bg-pink-50 border-primary-400 shadow-sm'
+                            : 'bg-white border-gray-200 hover:border-primary-300 hover:shadow-sm'
                         }`}
                         onClick={() => setSelectedBodyPart(isSelected ? null : key)}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-3">
                             <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
-                              isSelected ? 'bg-primary-100' : 'bg-warm-50'
+                              isSelected ? 'bg-primary-100' : 'bg-gray-50'
                             }`}>
-                              <Icon size={20} className={isSelected ? 'text-primary-600' : 'text-text-muted'} />
+                              <Icon size={20} className={isSelected ? 'text-primary-600' : 'text-gray-500'} />
                             </div>
-                            <h3 className="font-semibold text-text-primary">
+                            <h3 className="font-semibold text-gray-900">
                               {t(`girls.bodyChanges.${key}`)}
                             </h3>
                           </div>
                           <ChevronDown
                             size={20}
-                            className={`text-text-muted transition-transform duration-300 ${
+                            className={`text-gray-500 transition-transform duration-300 ${
                               isSelected ? 'rotate-180' : ''
                             }`}
                           />
@@ -289,7 +289,7 @@ const Girls = () => {
                             isSelected ? 'max-h-40 mt-3' : 'max-h-0'
                           }`}
                         >
-                          <p className="text-sm text-text-secondary leading-relaxed">
+                          <p className="text-sm text-gray-600 leading-relaxed">
                             {t(`girls.bodyChanges.${key}Desc`)}
                           </p>
                         </div>
@@ -303,10 +303,10 @@ const Girls = () => {
             {currentSection === 2 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.products.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('girls.products.intro')}
                   </p>
                 </div>
@@ -317,34 +317,34 @@ const Girls = () => {
                     return (
                       <div
                         key={key}
-                        className="border border-warm-200 rounded-2xl overflow-hidden hover:shadow-soft transition-all duration-300"
+                        className="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-sm transition-all duration-300"
                       >
                         <button
                           onClick={() => setSelectedProduct(isSelected ? null : key)}
-                          className="w-full p-5 gradient-warm flex items-center justify-between touch-target"
+                          className="w-full p-5 bg-pink-50 flex items-center justify-between touch-target"
                         >
                           <div className="flex items-center gap-4">
                             <div className="w-11 h-11 rounded-xl bg-primary-100 flex items-center justify-center">
                               <Icon size={20} className="text-primary-600" />
                             </div>
-                            <h3 className="font-semibold text-text-primary text-left">
+                            <h3 className="font-semibold text-gray-900 text-left">
                               {t(`girls.products.${key}`)}
                             </h3>
                           </div>
                           <ChevronDown
                             size={20}
-                            className={`text-text-muted transition-transform duration-300 ${
+                            className={`text-gray-500 transition-transform duration-300 ${
                               isSelected ? 'rotate-180' : ''
                             }`}
                           />
                         </button>
                         {isSelected && (
-                          <div className="p-5 bg-white/80">
-                            <p className="text-sm text-text-secondary mb-4 leading-relaxed">
+                          <div className="p-5 bg-white">
+                            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
                               {t(`girls.products.${key}Desc`)}
                             </p>
-                            <div className="p-4 bg-warm-50 rounded-xl">
-                              <p className="text-sm text-text-secondary leading-relaxed">
+                            <div className="p-4 bg-gray-50 rounded-xl">
+                              <p className="text-sm text-gray-600 leading-relaxed">
                                 {t(`girls.products.${key}How`)}
                               </p>
                             </div>
@@ -355,7 +355,7 @@ const Girls = () => {
                   })}
                 </div>
 
-                <div className="gradient-warm p-6 rounded-2xl border border-primary-100">
+                <div className="bg-pink-50 p-6 rounded-2xl border border-primary-100">
                   <h3 className="font-semibold text-primary-700 mb-2">
                     {t('girls.products.choosing')}
                   </h3>
@@ -369,10 +369,10 @@ const Girls = () => {
             {currentSection === 3 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.painManagement.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('girls.painManagement.intro')}
                   </p>
                 </div>
@@ -381,17 +381,17 @@ const Girls = () => {
                   {painManagementTips.map(({ key, icon: Icon }) => (
                     <div
                       key={key}
-                      className="p-5 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 hover:shadow-soft transition-all duration-300"
+                      className="p-5 bg-white rounded-2xl border border-gray-100 hover:shadow-sm transition-all duration-300"
                     >
                       <div className="flex items-start gap-4">
                         <div className="w-11 h-11 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0">
                           <Icon size={20} className="text-primary-600" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-text-primary mb-1">
+                          <h3 className="font-semibold text-gray-900 mb-1">
                             {t(`girls.painManagement.${key}`)}
                           </h3>
-                          <p className="text-sm text-text-secondary leading-relaxed">
+                          <p className="text-sm text-gray-600 leading-relaxed">
                             {t(`girls.painManagement.${key}Desc`)}
                           </p>
                         </div>
@@ -422,17 +422,17 @@ const Girls = () => {
             {currentSection === 4 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.tracking.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('girls.tracking.intro')}
                   </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       <Info size={20} className="text-primary-500" />
                       {t('girls.tracking.whyTrack')}
                     </h3>
@@ -440,7 +440,7 @@ const Girls = () => {
                       {['reason1', 'reason2', 'reason3', 'reason4'].map((reason) => (
                         <li key={reason} className="flex items-start gap-3">
                           <CheckCircle size={16} className="text-primary-500 flex-shrink-0 mt-1" />
-                          <span className="text-sm text-text-secondary leading-relaxed">
+                          <span className="text-sm text-gray-600 leading-relaxed">
                             {t(`girls.tracking.${reason}`)}
                           </span>
                         </li>
@@ -449,7 +449,7 @@ const Girls = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       <Calendar size={20} className="text-primary-500" />
                       {t('girls.tracking.howToTrack')}
                     </h3>
@@ -457,7 +457,7 @@ const Girls = () => {
                       {['method1', 'method2', 'method3', 'method4'].map((method) => (
                         <li key={method} className="flex items-start gap-3">
                           <ChevronRight size={16} className="text-primary-500 flex-shrink-0 mt-1" />
-                          <span className="text-sm text-text-secondary leading-relaxed">
+                          <span className="text-sm text-gray-600 leading-relaxed">
                             {t(`girls.tracking.${method}`)}
                           </span>
                         </li>
@@ -466,7 +466,7 @@ const Girls = () => {
                   </div>
                 </div>
 
-                <div className="p-6 gradient-warm rounded-2xl border border-primary-100">
+                <div className="p-6 bg-pink-50 rounded-2xl border border-primary-100">
                   <div className="flex items-center justify-between mb-5">
                     <h3 className="font-semibold text-primary-700">
                       {t('girls.tracking.calendarTitle')}
@@ -517,10 +517,10 @@ const Girls = () => {
                           onClick={() => togglePeriodDate(date)}
                           className={`aspect-square rounded-xl text-sm font-medium transition-all duration-300 touch-target ${
                             isPeriodDay
-                              ? 'gradient-primary text-white shadow-warm'
+                              ? 'bg-pink-500 text-white shadow-sm'
                               : isToday
                               ? 'bg-primary-100 text-primary-700 border-2 border-primary-400'
-                              : 'bg-white text-text-secondary hover:bg-primary-50'
+                              : 'bg-white text-gray-600 hover:bg-pink-50'
                           }`}
                         >
                           {date.getDate()}
@@ -535,10 +535,10 @@ const Girls = () => {
             {currentSection === 5 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.myths.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('girls.myths.intro')}
                   </p>
                 </div>
@@ -546,7 +546,7 @@ const Girls = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   {['myth1', 'myth2', 'myth3', 'myth4', 'myth5', 'myth6', 'myth7', 'myth8'].map(
                     (myth, index) => (
-                      <div key={myth} className="border border-warm-200 rounded-xl overflow-hidden">
+                      <div key={myth} className="border border-gray-200 rounded-xl overflow-hidden">
                         <div className="flex items-start gap-3 p-4 bg-red-50">
                           <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                           <div>
@@ -604,7 +604,7 @@ const Girls = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div className="card-glass gradient-warm border border-primary-100">
+            <div className="card bg-pink-50 border border-primary-100">
               <h3 className="font-display font-semibold text-primary-700 mb-4 flex items-center gap-2">
                 <Sparkles size={20} className="text-primary-500" />
                 {t('girls.empowermentSection.title')}
@@ -618,8 +618,8 @@ const Girls = () => {
               </div>
             </div>
 
-            <div className="card-glass">
-              <h3 className="font-display font-semibold text-text-primary mb-4 flex items-center gap-2">
+            <div className="card">
+              <h3 className="font-display font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <CheckCircle size={20} className="text-primary-500" />
                 {t('girls.quickTips.title')}
               </h3>
@@ -627,7 +627,7 @@ const Girls = () => {
                 {['tip1', 'tip2', 'tip3', 'tip4', 'tip5'].map((tip) => (
                   <li key={tip} className="flex items-start gap-3">
                     <Heart size={16} className="text-primary-500 flex-shrink-0 mt-1" />
-                    <span className="text-sm text-text-secondary leading-relaxed">
+                    <span className="text-sm text-gray-600 leading-relaxed">
                       {t(`girls.quickTips.${tip}`)}
                     </span>
                   </li>

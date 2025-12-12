@@ -96,46 +96,46 @@ const Boys = () => {
     <div className="page-container animate-fade-in">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-text-muted hover:text-text-primary mb-4 transition-colors"
+        className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-4 transition-colors"
       >
         <ArrowLeft size={18} />
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="bg-gradient-to-r from-secondary-50 to-secondary-100/50 rounded-3xl p-6 md:p-10 mb-8 border border-secondary-200">
+      <header className="bg-blue-50 rounded-3xl p-6 md:p-10 mb-8 border border-secondary-200">
         <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-secondary flex items-center justify-center shadow-blue">
+            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-blue-500 flex items-center justify-center shadow-sm">
               <Users className="w-8 h-8 md:w-9 md:h-9 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-gray-900">
                 {t('boys.title')}
               </h1>
               <p className="text-secondary-600 font-medium">{t('boys.subtitle')}</p>
             </div>
           </div>
-          <div className="hidden md:block w-48 h-40 rounded-2xl bg-gradient-to-br from-secondary-100 to-secondary-50 flex items-center justify-center ml-auto">
+          <div className="hidden md:block w-48 h-40 rounded-2xl bg-white flex items-center justify-center ml-auto">
             <p className="text-xs text-secondary-600/70 text-center p-4">Illustration: Supportive boy helping classmate</p>
           </div>
         </div>
-        <p className="text-text-secondary mt-5 leading-relaxed max-w-3xl">
+        <p className="text-gray-600 mt-5 leading-relaxed max-w-3xl">
           {t('boys.intro')}
         </p>
       </header>
 
       <div className="grid lg:grid-cols-4 gap-8">
         <aside className="lg:col-span-1 space-y-5">
-          <div className="card-glass sticky top-4">
+          <div className="card sticky top-4">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-display font-semibold text-text-primary">
+              <h3 className="font-display font-semibold text-gray-900">
                 {t('boys.progress')}
               </h3>
               <span className="text-2xl font-bold text-secondary-600">{progress}%</span>
             </div>
-            <div className="w-full bg-warm-200 rounded-full h-2.5 mb-6">
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
               <div
-                className="gradient-secondary h-2.5 rounded-full transition-all duration-500"
+                className="bg-blue-500 h-2.5 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -152,10 +152,10 @@ const Boys = () => {
                     onClick={() => setCurrentSection(index)}
                     className={`w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-all duration-300 touch-target ${
                       isCurrent
-                        ? 'gradient-secondary text-white shadow-blue'
+                        ? 'bg-blue-500 text-white shadow-sm'
                         : isCompleted
                         ? 'bg-sage-50 text-sage-700 hover:bg-sage-100'
-                        : 'bg-warm-50 text-text-secondary hover:bg-secondary-50 hover:text-secondary-700'
+                        : 'bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-secondary-700'
                     }`}
                   >
                     {isCompleted ? (
@@ -169,7 +169,7 @@ const Boys = () => {
               })}
             </nav>
 
-            <div className="mt-6 p-5 bg-secondary-50 rounded-xl border border-secondary-200">
+            <div className="mt-6 p-5 bg-blue-50 rounded-xl border border-secondary-200">
               <div className="flex items-start gap-3">
                 <Lightbulb className="w-5 h-5 text-secondary-600 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-secondary-700 leading-relaxed">
@@ -181,19 +181,19 @@ const Boys = () => {
         </aside>
 
         <main className="lg:col-span-3">
-          <div className="card-glass mb-8">
+          <div className="card mb-8">
             {currentSection === 0 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('boys.basics.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('boys.basics.intro')}
                   </p>
                 </div>
 
-                <div className="bg-secondary-50 border-l-4 border-secondary-500 p-6 rounded-r-2xl">
+                <div className="bg-blue-50 border-l-4 border-secondary-500 p-6 rounded-r-2xl">
                   <h3 className="font-semibold text-secondary-800 mb-2 flex items-center gap-2">
                     <BookOpen size={20} className="text-secondary-500" />
                     {t('boys.basics.whatIsTitle')}
@@ -203,7 +203,7 @@ const Boys = () => {
                   </p>
                 </div>
 
-                <div className="bg-secondary-50/70 border-l-4 border-secondary-400 p-6 rounded-r-2xl">
+                <div className="bg-blue-50 border-l-4 border-secondary-400 p-6 rounded-r-2xl">
                   <h3 className="font-semibold text-secondary-800 mb-2 flex items-center gap-2">
                     <Lightbulb size={20} className="text-secondary-500" />
                     {t('boys.basics.whyHappensTitle')}
@@ -214,7 +214,7 @@ const Boys = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <CheckCircle size={20} className="text-secondary-500" />
                     {t('boys.basics.keyFacts')}
                   </h3>
@@ -222,12 +222,12 @@ const Boys = () => {
                     {['fact1', 'fact2', 'fact3', 'fact4', 'fact5'].map((fact, index) => (
                       <div
                         key={fact}
-                        className="flex items-start gap-4 p-5 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 hover:shadow-soft transition-all duration-300"
+                        className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-gray-100 hover:shadow-sm transition-all duration-300"
                       >
-                        <div className="w-7 h-7 rounded-full gradient-secondary text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
                           {index + 1}
                         </div>
-                        <span className="text-sm text-text-secondary leading-relaxed">
+                        <span className="text-sm text-gray-600 leading-relaxed">
                           {t(`boys.basics.${fact}`)}
                         </span>
                       </div>
@@ -235,11 +235,11 @@ const Boys = () => {
                   </div>
                 </div>
 
-                <div className="bg-secondary-50/50 p-6 rounded-2xl border border-secondary-100">
-                  <h3 className="font-semibold text-text-primary mb-2">
+                <div className="bg-blue-50 p-6 rounded-2xl border border-secondary-100">
+                  <h3 className="font-semibold text-gray-900 mb-2">
                     {t('boys.basics.biologySectionTitle')}
                   </h3>
-                  <p className="text-sm text-text-secondary leading-relaxed">
+                  <p className="text-sm text-gray-600 leading-relaxed">
                     {t('boys.basics.biologyText')}
                   </p>
                 </div>
@@ -249,16 +249,16 @@ const Boys = () => {
             {currentSection === 1 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('boys.whyMiss.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('boys.whyMiss.intro')}
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <Activity size={20} className="text-blue-600" />
                     {t('boys.whyMiss.symptomsTitle')}
                   </h3>
@@ -266,7 +266,7 @@ const Boys = () => {
                     {symptoms.map(({ key, icon: Icon }) => (
                       <div
                         key={key}
-                        className="p-4 bg-gradient-to-br from-warm-50 to-secondary-50 rounded-xl border border-warm-200 hover:shadow-md transition-all cursor-pointer"
+                        className="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all cursor-pointer"
                         onClick={() => setExpandedCard(expandedCard === key ? null : key)}
                       >
                         <div className="flex items-center justify-between mb-2">
@@ -274,13 +274,13 @@ const Boys = () => {
                             <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                               <Icon size={20} className="text-blue-600" />
                             </div>
-                            <h4 className="font-semibold text-text-primary">
+                            <h4 className="font-semibold text-gray-900">
                               {t(`boys.whyMiss.${key}`)}
                             </h4>
                           </div>
                           <ChevronDown
                             size={20}
-                            className={`text-text-muted transition-transform ${
+                            className={`text-gray-500 transition-transform ${
                               expandedCard === key ? 'rotate-180' : ''
                             }`}
                           />
@@ -290,7 +290,7 @@ const Boys = () => {
                             expandedCard === key ? 'max-h-40 mt-3' : 'max-h-0'
                           }`}
                         >
-                          <p className="text-sm text-text-secondary leading-relaxed">
+                          <p className="text-sm text-gray-600 leading-relaxed">
                             {t(`boys.whyMiss.${key}Desc`)}
                           </p>
                         </div>
@@ -314,10 +314,10 @@ const Boys = () => {
             {currentSection === 2 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('boys.support.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('boys.support.intro')}
                   </p>
                 </div>
@@ -395,10 +395,10 @@ const Boys = () => {
             {currentSection === 3 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('boys.myths.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('boys.myths.intro')}
                   </p>
                 </div>
@@ -406,7 +406,7 @@ const Boys = () => {
                 <div className="space-y-4">
                   {['myth1', 'myth2', 'myth3', 'myth4', 'myth5', 'myth6', 'myth7', 'myth8'].map(
                     (myth, index) => (
-                      <div key={myth} className="border border-warm-200 rounded-xl overflow-hidden">
+                      <div key={myth} className="border border-gray-200 rounded-xl overflow-hidden">
                         <div className="flex items-start gap-3 p-4 bg-red-50">
                           <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                           <div>
@@ -439,11 +439,11 @@ const Boys = () => {
             {currentSection === 4 && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-text-primary mb-3 flex items-center gap-3">
+                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3 flex items-center gap-3">
                     <Award className="text-blue-600" size={32} />
                     {t('boys.quiz.title')}
                   </h2>
-                  <p className="text-text-secondary leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {t('boys.quiz.intro')}
                   </p>
                 </div>
@@ -453,9 +453,9 @@ const Boys = () => {
                     {quizQuestions.map((question, qIndex) => (
                       <div
                         key={question.id}
-                        className="p-5 bg-gradient-to-br from-warm-50 to-secondary-50 rounded-xl border border-warm-200"
+                        className="p-5 bg-white rounded-xl border border-gray-200"
                       >
-                        <h3 className="font-semibold text-text-primary mb-4">
+                        <h3 className="font-semibold text-gray-900 mb-4">
                           {qIndex + 1}. {t(`boys.quiz.${question.id}`)}
                         </h3>
                         <div className="space-y-2">
@@ -470,7 +470,7 @@ const Boys = () => {
                                 className={`w-full text-left p-4 rounded-xl border-2 transition-all touch-target ${
                                   quizAnswers[question.id] === optionLetter
                                     ? 'border-blue-500 bg-blue-50'
-                                    : 'border-warm-200 bg-white hover:border-blue-300'
+                                    : 'border-gray-200 bg-white hover:border-blue-300'
                                 }`}
                               >
                                 <div className="flex items-start gap-3">
@@ -478,14 +478,14 @@ const Boys = () => {
                                     className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                                       quizAnswers[question.id] === optionLetter
                                         ? 'border-blue-500 bg-blue-500'
-                                        : 'border-warm-300'
+                                        : 'border-gray-200'
                                     }`}
                                   >
                                     {quizAnswers[question.id] === optionLetter && (
                                       <CheckCircle size={16} className="text-white" />
                                     )}
                                   </div>
-                                  <span className="text-sm text-text-secondary">
+                                  <span className="text-sm text-gray-600">
                                     {t(`boys.quiz.${option}`)}
                                   </span>
                                 </div>
@@ -545,7 +545,7 @@ const Boys = () => {
                                 <XCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
                               )}
                               <div>
-                                <h4 className="font-semibold text-text-primary">
+                                <h4 className="font-semibold text-gray-900">
                                   {qIndex + 1}. {t(`boys.quiz.${question.id}`)}
                                 </h4>
                                 <p
@@ -608,7 +608,7 @@ const Boys = () => {
             )}
           </div>
 
-          <div className="mt-8 p-6 bg-secondary-50 rounded-2xl border border-secondary-200">
+          <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-secondary-200">
             <h3 className="font-display font-semibold text-secondary-700 mb-4 flex items-center gap-2">
               <Heart size={20} className="text-secondary-500" />
               {t('boys.summary.title')}
