@@ -57,8 +57,8 @@ const Chat = () => {
   const initConversation = async () => {
     try {
       const { data, error } = await supabase
-        .from('conversations')
-        .insert([{ language: i18n.language }])
+        .from('chat_sessions')
+        .insert([{}])
         .select()
         .maybeSingle();
 
@@ -98,8 +98,8 @@ const Chat = () => {
 
     try {
       if (conversationId) {
-        await supabase.from('messages').insert([{
-          conversation_id: conversationId,
+        await supabase.from('chat_messages').insert([{
+          session_id: conversationId,
           role: 'user',
           content: userMessage.content
         }]);
@@ -143,11 +143,10 @@ const Chat = () => {
       setMessages(prev => [...prev, assistantMessage]);
 
       if (conversationId) {
-        await supabase.from('messages').insert([{
-          conversation_id: conversationId,
+        await supabase.from('chat_messages').insert([{
+          session_id: conversationId,
           role: 'assistant',
-          content: assistantMessage.content,
-          metadata: { usage: data.usage }
+          content: assistantMessage.content
         }]);
       }
     } catch (err) {
@@ -258,8 +257,8 @@ const Chat = () => {
     setShowConfirmClear(false);
 
     if (conversationId) {
-      await supabase.from('messages').delete().eq('conversation_id', conversationId);
-      await supabase.from('conversations').delete().eq('id', conversationId);
+      await supabase.from('chat_messages').delete().eq('session_id', conversationId);
+      await supabase.from('chat_sessions').delete().eq('id', conversationId);
     }
 
     initConversation();
