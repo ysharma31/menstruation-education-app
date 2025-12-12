@@ -9,6 +9,12 @@ import {
   Shield
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const AskQuestion = () => {
   const { t } = useTranslation();
@@ -46,10 +52,20 @@ const AskQuestion = () => {
     if (!formData.question.trim() || !formData.ageGroup) return;
 
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      const { error } = await supabase.from('questions').insert({
+        question: formData.question.trim(),
+        category: formData.category,
+        age_group: formData.ageGroup
+      });
+
+      if (error) throw error;
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error('Error submitting question:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
