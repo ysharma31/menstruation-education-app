@@ -102,35 +102,38 @@ const ParentsGuide = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      {/* Header */}
-      <header className="bg-gradient-to-r from-warm-50 to-orange-50 rounded-2xl p-6 md:p-8 mb-6 border border-warm-300">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-warm-400 to-warm-600 flex items-center justify-center shadow-lg">
-            <BookOpen className="w-7 h-7 md:w-8 md:h-8 text-white" />
+      <header className="gradient-sage rounded-3xl p-6 md:p-10 mb-8 border border-sage-200">
+        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center shadow-lg">
+              <BookOpen className="w-8 h-8 md:w-9 md:h-9 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+                {t('parents.title')}
+              </h1>
+              <p className="text-sage-700 font-medium">{t('parents.subtitle')}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-warm-800">
-              {t('parents.title')}
-            </h1>
-            <p className="text-warm-700/70">{t('parents.subtitle')}</p>
+          <div className="hidden md:flex w-56 h-44 rounded-2xl bg-gradient-to-br from-sage-100 to-sage-50 items-center justify-center ml-auto">
+            <p className="text-xs text-sage-600/70 text-center p-4">Illustration: Girl walking with mom and dad in park</p>
           </div>
         </div>
-        <p className="text-text-secondary text-sm md:text-base">
+        <p className="text-text-secondary mt-5 leading-relaxed max-w-3xl">
           {t('parents.intro')}
         </p>
       </header>
 
-      {/* Topic Tabs */}
-      <div className="mb-6 -mx-4 px-4 md:mx-0 md:px-0">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="mb-8 -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {topics.map((topic) => (
             <button
               key={topic.id}
               onClick={() => setActiveTab(topic.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all duration-200 touch-target ${
+              className={`flex items-center gap-2 px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target ${
                 activeTab === topic.id
-                  ? 'bg-warm-500 text-white shadow-lg'
-                  : 'bg-white text-text-secondary hover:bg-warm-100 border border-warm-200'
+                  ? 'bg-gradient-to-r from-sage-500 to-sage-600 text-white shadow-lg'
+                  : 'bg-white/80 backdrop-blur-sm text-text-secondary hover:bg-sage-50 border border-warm-200'
               }`}
             >
               <topic.icon size={18} />
@@ -140,33 +143,31 @@ const ParentsGuide = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 card">
-          <h2 className="text-xl md:text-2xl font-display font-semibold text-text-primary mb-4">
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 card-glass">
+          <h2 className="text-xl md:text-2xl font-display font-bold text-text-primary mb-4">
             {currentContent.title}
           </h2>
-          <p className="text-text-secondary mb-6 leading-relaxed">
+          <p className="text-text-secondary mb-8 leading-relaxed">
             {currentContent.text}
           </p>
 
-          {/* Tips or Resources */}
           {activeTab === 'resources' ? (
             <div className="space-y-4">
               {currentContent.resources.map((resource, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-4 p-4 bg-warm-50 rounded-xl border border-warm-200"
+                  className="flex items-start gap-5 p-5 bg-sage-50/50 rounded-2xl border border-sage-200 hover:shadow-soft transition-all duration-300"
                 >
-                  <div className="w-12 h-12 rounded-lg bg-warm-200 flex items-center justify-center flex-shrink-0">
-                    <FileText className="w-6 h-6 text-warm-700" />
+                  <div className="w-14 h-14 rounded-xl bg-sage-100 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-6 h-6 text-sage-600" />
                   </div>
                   <div>
-                    <span className="text-xs font-medium text-warm-600 uppercase">
+                    <span className="text-xs font-semibold text-sage-600 uppercase tracking-wide">
                       {resource.type}
                     </span>
-                    <h4 className="font-medium text-text-primary">{resource.title}</h4>
-                    <p className="text-sm text-text-muted">{resource.description}</p>
+                    <h4 className="font-semibold text-text-primary mt-1">{resource.title}</h4>
+                    <p className="text-sm text-text-muted mt-1">{resource.description}</p>
                   </div>
                 </div>
               ))}
@@ -176,79 +177,76 @@ const ParentsGuide = () => {
               {currentContent.tips.map((tip, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-3 p-3 bg-warm-50 rounded-xl"
+                  className="flex items-start gap-4 p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-warm-100 hover:shadow-soft transition-all duration-300"
                 >
-                  <CheckCircle className="w-5 h-5 text-warm-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-text-secondary">{tip}</span>
+                  <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-text-secondary leading-relaxed">{tip}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-4">
-          {/* Period Kit Card */}
-          <div className="card bg-gradient-to-br from-primary-50 to-warm-50 border border-primary-200">
-            <Lightbulb className="w-8 h-8 text-primary-500 mb-3" />
-            <h3 className="font-display font-semibold text-text-primary mb-2">
+        <div className="space-y-6">
+          <div className="card-glass gradient-sage border border-sage-200">
+            <Lightbulb className="w-9 h-9 text-sage-600 mb-4" />
+            <h3 className="font-display font-bold text-text-primary mb-3">
               {t('parents.prepareKit')}
             </h3>
-            <p className="text-sm text-text-secondary mb-4">
+            <p className="text-sm text-text-secondary mb-5 leading-relaxed">
               {t('parents.prepareKitContent')}
             </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary-500" />
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500" />
                 <span className="text-text-secondary">Pads (various sizes)</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary-500" />
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500" />
                 <span className="text-text-secondary">Clean underwear</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary-500" />
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500" />
                 <span className="text-text-secondary">Pain relief (if needed)</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary-500" />
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500" />
                 <span className="text-text-secondary">Small pouch or bag</span>
               </div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="card">
-            <h3 className="font-display font-semibold text-text-primary mb-3">
+          <div className="card-glass">
+            <h3 className="font-display font-semibold text-text-primary mb-4">
               Related Resources
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Link
                 to="/girls"
-                className="flex items-center justify-between p-3 bg-warm-50 rounded-xl hover:bg-warm-100 transition-colors group"
+                className="flex items-center justify-between p-4 bg-primary-50/50 rounded-xl hover:bg-primary-50 transition-all duration-300 group"
               >
-                <span className="text-sm text-text-secondary group-hover:text-text-primary">
+                <span className="text-sm text-text-secondary group-hover:text-primary-700 font-medium">
                   {t('navigation.girls')}
                 </span>
-                <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-primary-500" />
+                <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-primary-500 transition-colors" />
               </Link>
               <Link
                 to="/boys"
-                className="flex items-center justify-between p-3 bg-warm-50 rounded-xl hover:bg-warm-100 transition-colors group"
+                className="flex items-center justify-between p-4 bg-secondary-50/50 rounded-xl hover:bg-secondary-50 transition-all duration-300 group"
               >
-                <span className="text-sm text-text-secondary group-hover:text-text-primary">
+                <span className="text-sm text-text-secondary group-hover:text-secondary-700 font-medium">
                   {t('navigation.boys')}
                 </span>
-                <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-primary-500" />
+                <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-secondary-500 transition-colors" />
               </Link>
               <Link
                 to="/faq"
-                className="flex items-center justify-between p-3 bg-warm-50 rounded-xl hover:bg-warm-100 transition-colors group"
+                className="flex items-center justify-between p-4 bg-warm-50/50 rounded-xl hover:bg-warm-100 transition-all duration-300 group"
               >
-                <span className="text-sm text-text-secondary group-hover:text-text-primary">
+                <span className="text-sm text-text-secondary group-hover:text-text-primary font-medium">
                   {t('navigation.faq')}
                 </span>
-                <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-primary-500" />
+                <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-primary-500 transition-colors" />
               </Link>
             </div>
           </div>

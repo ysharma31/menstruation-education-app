@@ -102,35 +102,40 @@ const Boys = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 md:p-8 mb-6 border border-blue-200">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
-            <Users className="w-7 h-7 md:w-8 md:h-8 text-white" />
+      <header className="bg-gradient-to-r from-secondary-50 to-secondary-100/50 rounded-3xl p-6 md:p-10 mb-8 border border-secondary-200">
+        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-secondary flex items-center justify-center shadow-blue">
+              <Users className="w-8 h-8 md:w-9 md:h-9 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+                {t('boys.title')}
+              </h1>
+              <p className="text-secondary-600 font-medium">{t('boys.subtitle')}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-blue-900">
-              {t('boys.title')}
-            </h1>
-            <p className="text-blue-700">{t('boys.subtitle')}</p>
+          <div className="hidden md:block w-48 h-40 rounded-2xl bg-gradient-to-br from-secondary-100 to-secondary-50 flex items-center justify-center ml-auto">
+            <p className="text-xs text-secondary-600/70 text-center p-4">Illustration: Supportive boy helping classmate</p>
           </div>
         </div>
-        <p className="text-text-secondary text-sm md:text-base">
+        <p className="text-text-secondary mt-5 leading-relaxed max-w-3xl">
           {t('boys.intro')}
         </p>
       </header>
 
-      <div className="grid lg:grid-cols-4 gap-6">
-        <aside className="lg:col-span-1 space-y-4">
-          <div className="card sticky top-4">
-            <div className="flex items-center justify-between mb-4">
+      <div className="grid lg:grid-cols-4 gap-8">
+        <aside className="lg:col-span-1 space-y-5">
+          <div className="card-glass sticky top-4">
+            <div className="flex items-center justify-between mb-5">
               <h3 className="font-display font-semibold text-text-primary">
                 {t('boys.progress')}
               </h3>
-              <span className="text-2xl font-bold text-blue-600">{progress}%</span>
+              <span className="text-2xl font-bold text-secondary-600">{progress}%</span>
             </div>
-            <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+            <div className="w-full bg-warm-200 rounded-full h-2.5 mb-6">
               <div
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500"
+                className="gradient-secondary h-2.5 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -145,12 +150,12 @@ const Boys = () => {
                   <button
                     key={section.id}
                     onClick={() => setCurrentSection(index)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all touch-target ${
+                    className={`w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-all duration-300 touch-target ${
                       isCurrent
-                        ? 'bg-blue-500 text-white shadow-lg'
+                        ? 'gradient-secondary text-white shadow-blue'
                         : isCompleted
-                        ? 'bg-green-50 text-green-700 hover:bg-green-100'
-                        : 'bg-warm-50 text-text-secondary hover:bg-warm-100'
+                        ? 'bg-sage-50 text-sage-700 hover:bg-sage-100'
+                        : 'bg-warm-50 text-text-secondary hover:bg-secondary-50 hover:text-secondary-700'
                     }`}
                   >
                     {isCompleted ? (
@@ -164,10 +169,10 @@ const Boys = () => {
               })}
             </nav>
 
-            <div className="mt-6 p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
+            <div className="mt-6 p-5 bg-secondary-50 rounded-xl border border-secondary-200">
               <div className="flex items-start gap-3">
-                <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-blue-800">
+                <Lightbulb className="w-5 h-5 text-secondary-600 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-secondary-700 leading-relaxed">
                   {t('boys.whyLearnContent')}
                 </p>
               </div>
@@ -176,7 +181,7 @@ const Boys = () => {
         </aside>
 
         <main className="lg:col-span-3">
-          <div className="card">
+          <div className="card-glass mb-8">
             {currentSection === 0 && (
               <div className="space-y-6">
                 <div>
@@ -188,41 +193,41 @@ const Boys = () => {
                   </p>
                 </div>
 
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-xl">
-                  <h3 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
-                    <BookOpen size={20} />
+                <div className="bg-secondary-50 border-l-4 border-secondary-500 p-6 rounded-r-2xl">
+                  <h3 className="font-semibold text-secondary-800 mb-2 flex items-center gap-2">
+                    <BookOpen size={20} className="text-secondary-500" />
                     {t('boys.basics.whatIsTitle')}
                   </h3>
-                  <p className="text-blue-800 text-sm leading-relaxed">
+                  <p className="text-secondary-700 text-sm leading-relaxed">
                     {t('boys.basics.whatIsText')}
                   </p>
                 </div>
 
-                <div className="bg-cyan-50 border-l-4 border-cyan-500 p-5 rounded-r-xl">
-                  <h3 className="font-semibold text-cyan-900 mb-2 flex items-center gap-2">
-                    <Lightbulb size={20} />
+                <div className="bg-secondary-50/70 border-l-4 border-secondary-400 p-6 rounded-r-2xl">
+                  <h3 className="font-semibold text-secondary-800 mb-2 flex items-center gap-2">
+                    <Lightbulb size={20} className="text-secondary-500" />
                     {t('boys.basics.whyHappensTitle')}
                   </h3>
-                  <p className="text-cyan-800 text-sm leading-relaxed">
+                  <p className="text-secondary-700 text-sm leading-relaxed">
                     {t('boys.basics.whyHappensText')}
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <CheckCircle size={20} className="text-blue-600" />
+                    <CheckCircle size={20} className="text-secondary-500" />
                     {t('boys.basics.keyFacts')}
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-3">
+                  <div className="grid md:grid-cols-2 gap-4">
                     {['fact1', 'fact2', 'fact3', 'fact4', 'fact5'].map((fact, index) => (
                       <div
                         key={fact}
-                        className="flex items-start gap-3 p-4 bg-warm-50 rounded-xl hover:bg-warm-100 transition-colors"
+                        className="flex items-start gap-4 p-5 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 hover:shadow-soft transition-all duration-300"
                       >
-                        <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        <div className="w-7 h-7 rounded-full gradient-secondary text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
                           {index + 1}
                         </div>
-                        <span className="text-sm text-text-secondary">
+                        <span className="text-sm text-text-secondary leading-relaxed">
                           {t(`boys.basics.${fact}`)}
                         </span>
                       </div>
@@ -230,7 +235,7 @@ const Boys = () => {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-warm-50 to-secondary-50 p-5 rounded-xl border border-warm-200">
+                <div className="bg-secondary-50/50 p-6 rounded-2xl border border-secondary-100">
                   <h3 className="font-semibold text-text-primary mb-2">
                     {t('boys.basics.biologySectionTitle')}
                   </h3>
@@ -575,11 +580,11 @@ const Boys = () => {
             )}
           </div>
 
-          <div className="flex items-center justify-between mt-6 gap-4">
+          <div className="flex items-center justify-between mt-8 gap-4">
             <button
               onClick={handlePrevious}
               disabled={currentSection === 0}
-              className="px-6 py-3 bg-warm-100 text-text-primary rounded-xl font-medium hover:bg-warm-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+              className="btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t('boys.previous')}
             </button>
@@ -587,7 +592,7 @@ const Boys = () => {
             {currentSection < sections.length - 1 && (
               <button
                 onClick={handleNext}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all touch-target"
+                className="btn-secondary"
               >
                 {t('boys.next')}
               </button>
@@ -596,23 +601,23 @@ const Boys = () => {
             {currentSection === sections.length - 1 && showQuizResults && (
               <Link
                 to="/"
-                className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all touch-target"
+                className="btn px-8 py-4 bg-gradient-to-r from-sage-500 to-sage-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
               >
                 {t('boys.completed')}
               </Link>
             )}
           </div>
 
-          <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
-            <h3 className="font-display font-semibold text-blue-900 mb-3 flex items-center gap-2">
-              <Heart size={20} />
+          <div className="mt-8 p-6 bg-secondary-50 rounded-2xl border border-secondary-200">
+            <h3 className="font-display font-semibold text-secondary-700 mb-4 flex items-center gap-2">
+              <Heart size={20} className="text-secondary-500" />
               {t('boys.summary.title')}
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {['point1', 'point2', 'point3', 'point4', 'point5'].map((point, index) => (
                 <div key={point} className="flex items-start gap-3">
-                  <CheckCircle size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-blue-800">{t(`boys.summary.${point}`)}</span>
+                  <CheckCircle size={18} className="text-secondary-500 flex-shrink-0 mt-1" />
+                  <span className="text-sm text-secondary-700 leading-relaxed">{t(`boys.summary.${point}`)}</span>
                 </div>
               ))}
             </div>

@@ -27,15 +27,15 @@ const MobileNavigation = () => {
           key={item.path}
           to={item.path}
           className={({ isActive }) =>
-            `nav-item flex-1 ${isActive ? 'active' : ''}`
+            `nav-item flex-1 py-2.5 ${isActive ? 'active' : ''}`
           }
         >
           <item.icon
             size={22}
-            className="mb-1"
+            className="mb-1.5"
             aria-hidden="true"
           />
-          <span className="text-[10px] sm:text-xs font-medium truncate max-w-full">
+          <span className="text-[11px] sm:text-xs font-medium truncate max-w-full">
             {item.label}
           </span>
         </NavLink>

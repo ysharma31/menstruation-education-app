@@ -122,27 +122,32 @@ const Girls = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl p-6 md:p-8 mb-6 border border-pink-200">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center shadow-lg">
-            <Heart className="w-7 h-7 md:w-8 md:h-8 text-white" />
+      <header className="gradient-warm rounded-3xl p-6 md:p-10 mb-8 border border-primary-100">
+        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-primary flex items-center justify-center shadow-warm">
+              <Heart className="w-8 h-8 md:w-9 md:h-9 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+                {t('girls.title')}
+              </h1>
+              <p className="text-primary-600 font-medium">{t('girls.subtitle')}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-pink-900">
-              {t('girls.title')}
-            </h1>
-            <p className="text-pink-700">{t('girls.subtitle')}</p>
+          <div className="hidden md:block w-48 h-40 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center ml-auto">
+            <p className="text-xs text-primary-600/70 text-center p-4">Illustration: Confident girl feeling empowered</p>
           </div>
         </div>
-        <p className="text-text-secondary text-sm md:text-base">
+        <p className="text-text-secondary mt-5 leading-relaxed max-w-3xl">
           {t('girls.intro')}
         </p>
       </header>
 
-      <div className="grid lg:grid-cols-4 gap-6">
-        <aside className="lg:col-span-1 space-y-4">
-          <div className="card sticky top-4">
-            <h3 className="font-display font-semibold text-text-primary mb-4">
+      <div className="grid lg:grid-cols-4 gap-8">
+        <aside className="lg:col-span-1 space-y-5">
+          <div className="card-glass sticky top-4">
+            <h3 className="font-display font-semibold text-text-primary mb-5">
               Sections
             </h3>
             <nav className="space-y-2">
@@ -154,10 +159,10 @@ const Girls = () => {
                   <button
                     key={section.id}
                     onClick={() => setCurrentSection(index)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all touch-target ${
+                    className={`w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-all duration-300 touch-target ${
                       isCurrent
-                        ? 'bg-pink-500 text-white shadow-lg'
-                        : 'bg-warm-50 text-text-secondary hover:bg-warm-100'
+                        ? 'gradient-primary text-white shadow-warm'
+                        : 'bg-warm-50 text-text-secondary hover:bg-primary-50 hover:text-primary-700'
                     }`}
                   >
                     <SectionIcon size={20} className="flex-shrink-0" />
@@ -167,14 +172,14 @@ const Girls = () => {
               })}
             </nav>
 
-            <div className="mt-6 p-4 bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl border border-pink-200">
+            <div className="mt-6 p-5 gradient-warm rounded-xl border border-primary-100">
               <div className="flex items-start gap-3">
-                <Heart className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
+                <Heart className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-pink-900 text-sm mb-1">
+                  <h4 className="font-semibold text-primary-700 text-sm mb-1">
                     {t('girls.empowerment')}
                   </h4>
-                  <p className="text-xs text-pink-800">
+                  <p className="text-xs text-primary-600/80 leading-relaxed">
                     {t('girls.empowermentText')}
                   </p>
                 </div>
@@ -184,7 +189,7 @@ const Girls = () => {
         </aside>
 
         <main className="lg:col-span-3">
-          <div className="card mb-6">
+          <div className="card-glass mb-8">
             {currentSection === 0 && (
               <div className="space-y-6">
                 <div>
@@ -193,31 +198,31 @@ const Girls = () => {
                   </h2>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="bg-pink-50 border-l-4 border-pink-500 p-5 rounded-r-xl">
-                    <h3 className="font-semibold text-pink-900 mb-2 flex items-center gap-2">
-                      <Info size={20} />
+                <div className="space-y-5">
+                  <div className="bg-primary-50 border-l-4 border-primary-500 p-6 rounded-r-2xl">
+                    <h3 className="font-semibold text-primary-800 mb-2 flex items-center gap-2">
+                      <Info size={20} className="text-primary-500" />
                       {t('girls.understanding.whatIs')}
                     </h3>
-                    <p className="text-pink-800 text-sm leading-relaxed">
+                    <p className="text-primary-700 text-sm leading-relaxed">
                       {t('girls.understanding.whatIsText')}
                     </p>
                   </div>
 
-                  <div className="bg-rose-50 border-l-4 border-rose-500 p-5 rounded-r-xl">
-                    <h3 className="font-semibold text-rose-900 mb-2 flex items-center gap-2">
-                      <Sparkles size={20} />
+                  <div className="bg-primary-50/70 border-l-4 border-primary-400 p-6 rounded-r-2xl">
+                    <h3 className="font-semibold text-primary-800 mb-2 flex items-center gap-2">
+                      <Sparkles size={20} className="text-primary-500" />
                       {t('girls.understanding.whyHappens')}
                     </h3>
-                    <p className="text-rose-800 text-sm leading-relaxed">
+                    <p className="text-primary-700 text-sm leading-relaxed">
                       {t('girls.understanding.whyHappensText')}
                     </p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="p-5 bg-gradient-to-br from-warm-50 to-secondary-50 rounded-xl border border-warm-200">
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 shadow-soft">
                       <h3 className="font-semibold text-text-primary mb-2 flex items-center gap-2">
-                        <Calendar size={20} className="text-pink-600" />
+                        <Calendar size={20} className="text-primary-500" />
                         {t('girls.understanding.howLong')}
                       </h3>
                       <p className="text-sm text-text-secondary leading-relaxed">
@@ -225,9 +230,9 @@ const Girls = () => {
                       </p>
                     </div>
 
-                    <div className="p-5 bg-gradient-to-br from-warm-50 to-secondary-50 rounded-xl border border-warm-200">
+                    <div className="p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 shadow-soft">
                       <h3 className="font-semibold text-text-primary mb-2 flex items-center gap-2">
-                        <Heart size={20} className="text-pink-600" />
+                        <Heart size={20} className="text-primary-500" />
                         {t('girls.understanding.firstPeriod')}
                       </h3>
                       <p className="text-sm text-text-secondary leading-relaxed">
@@ -248,25 +253,25 @@ const Girls = () => {
                   <p className="text-text-secondary">{t('girls.bodyChanges.subtitle')}</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-5">
                   {bodyParts.map(({ key, icon: Icon }) => {
                     const isSelected = selectedBodyPart === key;
                     return (
                       <div
                         key={key}
-                        className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                        className={`p-5 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
                           isSelected
-                            ? 'bg-pink-50 border-pink-500'
-                            : 'bg-warm-50 border-warm-200 hover:border-pink-300'
+                            ? 'bg-primary-50 border-primary-400 shadow-warm'
+                            : 'bg-white/60 border-warm-200 hover:border-primary-300 hover:shadow-soft'
                         }`}
                         onClick={() => setSelectedBodyPart(isSelected ? null : key)}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                              isSelected ? 'bg-pink-100' : 'bg-white'
+                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
+                              isSelected ? 'bg-primary-100' : 'bg-warm-50'
                             }`}>
-                              <Icon size={20} className={isSelected ? 'text-pink-600' : 'text-text-muted'} />
+                              <Icon size={20} className={isSelected ? 'text-primary-600' : 'text-text-muted'} />
                             </div>
                             <h3 className="font-semibold text-text-primary">
                               {t(`girls.bodyChanges.${key}`)}
@@ -274,13 +279,13 @@ const Girls = () => {
                           </div>
                           <ChevronDown
                             size={20}
-                            className={`text-text-muted transition-transform ${
+                            className={`text-text-muted transition-transform duration-300 ${
                               isSelected ? 'rotate-180' : ''
                             }`}
                           />
                         </div>
                         <div
-                          className={`overflow-hidden transition-all ${
+                          className={`overflow-hidden transition-all duration-300 ${
                             isSelected ? 'max-h-40 mt-3' : 'max-h-0'
                           }`}
                         >
@@ -312,15 +317,15 @@ const Girls = () => {
                     return (
                       <div
                         key={key}
-                        className="border border-warm-200 rounded-xl overflow-hidden hover:shadow-md transition-all"
+                        className="border border-warm-200 rounded-2xl overflow-hidden hover:shadow-soft transition-all duration-300"
                       >
                         <button
                           onClick={() => setSelectedProduct(isSelected ? null : key)}
-                          className="w-full p-4 bg-gradient-to-r from-pink-50 to-rose-50 flex items-center justify-between touch-target"
+                          className="w-full p-5 gradient-warm flex items-center justify-between touch-target"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
-                              <Icon size={20} className="text-pink-600" />
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-primary-100 flex items-center justify-center">
+                              <Icon size={20} className="text-primary-600" />
                             </div>
                             <h3 className="font-semibold text-text-primary text-left">
                               {t(`girls.products.${key}`)}
@@ -328,18 +333,18 @@ const Girls = () => {
                           </div>
                           <ChevronDown
                             size={20}
-                            className={`text-text-muted transition-transform ${
+                            className={`text-text-muted transition-transform duration-300 ${
                               isSelected ? 'rotate-180' : ''
                             }`}
                           />
                         </button>
                         {isSelected && (
-                          <div className="p-4 bg-white">
-                            <p className="text-sm text-text-secondary mb-3 leading-relaxed">
+                          <div className="p-5 bg-white/80">
+                            <p className="text-sm text-text-secondary mb-4 leading-relaxed">
                               {t(`girls.products.${key}Desc`)}
                             </p>
-                            <div className="p-3 bg-warm-50 rounded-lg">
-                              <p className="text-xs text-text-secondary leading-relaxed">
+                            <div className="p-4 bg-warm-50 rounded-xl">
+                              <p className="text-sm text-text-secondary leading-relaxed">
                                 {t(`girls.products.${key}How`)}
                               </p>
                             </div>
@@ -350,11 +355,11 @@ const Girls = () => {
                   })}
                 </div>
 
-                <div className="bg-gradient-to-r from-pink-50 to-rose-50 p-5 rounded-xl border border-pink-200">
-                  <h3 className="font-semibold text-pink-900 mb-2">
+                <div className="gradient-warm p-6 rounded-2xl border border-primary-100">
+                  <h3 className="font-semibold text-primary-700 mb-2">
                     {t('girls.products.choosing')}
                   </h3>
-                  <p className="text-sm text-pink-800 leading-relaxed">
+                  <p className="text-sm text-primary-600/90 leading-relaxed">
                     {t('girls.products.choosingText')}
                   </p>
                 </div>
@@ -372,15 +377,15 @@ const Girls = () => {
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-5">
                   {painManagementTips.map(({ key, icon: Icon }) => (
                     <div
                       key={key}
-                      className="p-4 bg-gradient-to-br from-warm-50 to-secondary-50 rounded-xl border border-warm-200 hover:shadow-md transition-all"
+                      className="p-5 bg-white/60 backdrop-blur-sm rounded-2xl border border-warm-100 hover:shadow-soft transition-all duration-300"
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center flex-shrink-0">
-                          <Icon size={20} className="text-pink-600" />
+                      <div className="flex items-start gap-4">
+                        <div className="w-11 h-11 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0">
+                          <Icon size={20} className="text-primary-600" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-text-primary mb-1">
@@ -425,17 +430,17 @@ const Girls = () => {
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
-                      <Info size={20} className="text-pink-600" />
+                    <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                      <Info size={20} className="text-primary-500" />
                       {t('girls.tracking.whyTrack')}
                     </h3>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {['reason1', 'reason2', 'reason3', 'reason4'].map((reason) => (
-                        <li key={reason} className="flex items-start gap-2">
-                          <CheckCircle size={16} className="text-pink-500 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-text-secondary">
+                        <li key={reason} className="flex items-start gap-3">
+                          <CheckCircle size={16} className="text-primary-500 flex-shrink-0 mt-1" />
+                          <span className="text-sm text-text-secondary leading-relaxed">
                             {t(`girls.tracking.${reason}`)}
                           </span>
                         </li>
@@ -444,15 +449,15 @@ const Girls = () => {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
-                      <Calendar size={20} className="text-pink-600" />
+                    <h3 className="font-semibold text-text-primary mb-4 flex items-center gap-2">
+                      <Calendar size={20} className="text-primary-500" />
                       {t('girls.tracking.howToTrack')}
                     </h3>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {['method1', 'method2', 'method3', 'method4'].map((method) => (
-                        <li key={method} className="flex items-start gap-2">
-                          <ChevronRight size={16} className="text-pink-500 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-text-secondary">
+                        <li key={method} className="flex items-start gap-3">
+                          <ChevronRight size={16} className="text-primary-500 flex-shrink-0 mt-1" />
+                          <span className="text-sm text-text-secondary leading-relaxed">
                             {t(`girls.tracking.${method}`)}
                           </span>
                         </li>
@@ -461,43 +466,43 @@ const Girls = () => {
                   </div>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl border border-pink-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-pink-900">
+                <div className="p-6 gradient-warm rounded-2xl border border-primary-100">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-semibold text-primary-700">
                       {t('girls.tracking.calendarTitle')}
                     </h3>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => navigateMonth(-1)}
-                        className="p-2 hover:bg-pink-100 rounded-lg transition-colors touch-target"
+                        className="p-2.5 hover:bg-primary-100 rounded-xl transition-colors touch-target"
                       >
-                        <ChevronLeft size={20} className="text-pink-600" />
+                        <ChevronLeft size={20} className="text-primary-600" />
                       </button>
-                      <span className="text-sm font-medium text-pink-900 min-w-[120px] text-center">
+                      <span className="text-sm font-medium text-primary-700 min-w-[120px] text-center">
                         {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                       </span>
                       <button
                         onClick={() => navigateMonth(1)}
-                        className="p-2 hover:bg-pink-100 rounded-lg transition-colors touch-target"
+                        className="p-2.5 hover:bg-primary-100 rounded-xl transition-colors touch-target"
                       >
-                        <ChevronRight size={20} className="text-pink-600" />
+                        <ChevronRight size={20} className="text-primary-600" />
                       </button>
                     </div>
                   </div>
 
-                  <p className="text-xs text-pink-800 mb-4">
+                  <p className="text-sm text-primary-600/80 mb-5">
                     {t('girls.tracking.calendarDesc')}
                   </p>
 
                   <div className="grid grid-cols-7 gap-1 mb-2">
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                      <div key={day} className="text-center text-xs font-semibold text-pink-700 p-2">
+                      <div key={day} className="text-center text-xs font-semibold text-primary-600 p-2">
                         {day}
                       </div>
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-7 gap-1">
+                  <div className="grid grid-cols-7 gap-1.5">
                     {getDaysInMonth(currentMonth).map((date, index) => {
                       if (!date) {
                         return <div key={`empty-${index}`} className="aspect-square" />;
@@ -510,12 +515,12 @@ const Girls = () => {
                         <button
                           key={date.toDateString()}
                           onClick={() => togglePeriodDate(date)}
-                          className={`aspect-square rounded-lg text-sm font-medium transition-all touch-target ${
+                          className={`aspect-square rounded-xl text-sm font-medium transition-all duration-300 touch-target ${
                             isPeriodDay
-                              ? 'bg-pink-500 text-white shadow-md'
+                              ? 'gradient-primary text-white shadow-warm'
                               : isToday
-                              ? 'bg-pink-100 text-pink-900 border-2 border-pink-500'
-                              : 'bg-white text-text-secondary hover:bg-pink-50'
+                              ? 'bg-primary-100 text-primary-700 border-2 border-primary-400'
+                              : 'bg-white text-text-secondary hover:bg-primary-50'
                           }`}
                         >
                           {date.getDate()}
@@ -572,11 +577,11 @@ const Girls = () => {
             )}
           </div>
 
-          <div className="flex items-center justify-between mb-6 gap-4">
+          <div className="flex items-center justify-between mb-8 gap-4">
             <button
               onClick={handlePrevSection}
               disabled={currentSection === 0}
-              className="px-6 py-3 bg-warm-100 text-text-primary rounded-xl font-medium hover:bg-warm-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+              className="btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t('boys.previous')}
             </button>
@@ -584,45 +589,45 @@ const Girls = () => {
             {currentSection < sections.length - 1 ? (
               <button
                 onClick={handleNextSection}
-                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all touch-target"
+                className="btn-primary"
               >
                 {t('boys.next')}
               </button>
             ) : (
               <Link
                 to="/"
-                className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all touch-target"
+                className="btn px-8 py-4 bg-gradient-to-r from-sage-500 to-sage-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
               >
                 {t('boys.completed')}
               </Link>
             )}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div className="card bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200">
-              <h3 className="font-display font-semibold text-pink-900 mb-3 flex items-center gap-2">
-                <Sparkles size={20} />
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div className="card-glass gradient-warm border border-primary-100">
+              <h3 className="font-display font-semibold text-primary-700 mb-4 flex items-center gap-2">
+                <Sparkles size={20} className="text-primary-500" />
                 {t('girls.empowermentSection.title')}
               </h3>
               <div className="space-y-3">
                 {['message1', 'message2', 'message3', 'message4', 'message5'].map((msg) => (
-                  <p key={msg} className="text-sm text-pink-800 leading-relaxed">
+                  <p key={msg} className="text-sm text-primary-600/90 leading-relaxed">
                     {t(`girls.empowermentSection.${msg}`)}
                   </p>
                 ))}
               </div>
             </div>
 
-            <div className="card">
-              <h3 className="font-display font-semibold text-text-primary mb-3 flex items-center gap-2">
-                <CheckCircle size={20} className="text-pink-600" />
+            <div className="card-glass">
+              <h3 className="font-display font-semibold text-text-primary mb-4 flex items-center gap-2">
+                <CheckCircle size={20} className="text-primary-500" />
                 {t('girls.quickTips.title')}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {['tip1', 'tip2', 'tip3', 'tip4', 'tip5'].map((tip) => (
-                  <li key={tip} className="flex items-start gap-2">
-                    <Heart size={16} className="text-pink-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-text-secondary">
+                  <li key={tip} className="flex items-start gap-3">
+                    <Heart size={16} className="text-primary-500 flex-shrink-0 mt-1" />
+                    <span className="text-sm text-text-secondary leading-relaxed">
                       {t(`girls.quickTips.${tip}`)}
                     </span>
                   </li>

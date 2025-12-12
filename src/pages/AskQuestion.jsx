@@ -128,28 +128,26 @@ const AskQuestion = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      {/* Header */}
-      <header className="bg-gradient-to-r from-primary-50 to-pink-100 rounded-2xl p-6 md:p-8 mb-6 border border-primary-200">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg">
-            <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-white" />
+      <header className="gradient-warm rounded-3xl p-6 md:p-10 mb-8 border border-primary-100">
+        <div className="flex items-center gap-5 mb-4">
+          <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-primary flex items-center justify-center shadow-warm">
+            <MessageCircle className="w-8 h-8 md:w-9 md:h-9 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-primary-700">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
               {t('ask.title')}
             </h1>
-            <p className="text-primary-600/70">{t('ask.subtitle')}</p>
+            <p className="text-primary-600 font-medium">{t('ask.subtitle')}</p>
           </div>
         </div>
-        <p className="text-text-secondary text-sm md:text-base">
+        <p className="text-text-secondary leading-relaxed">
           {t('ask.description')}
         </p>
       </header>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Form */}
+      <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="card">
+          <form onSubmit={handleSubmit} className="card-glass">
             {/* Question Input */}
             <div className="mb-6">
               <label htmlFor="question" className="block text-sm font-medium text-text-primary mb-2">
@@ -268,55 +266,51 @@ const AskQuestion = () => {
           </form>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-4">
-          {/* Guidelines Card */}
-          <div className="card bg-warm-50 border border-warm-200">
-            <div className="flex items-center gap-2 mb-3">
-              <Info className="w-5 h-5 text-warm-600" />
+        <div className="space-y-6">
+          <div className="card-glass gradient-warm border border-warm-200">
+            <div className="flex items-center gap-3 mb-4">
+              <Info className="w-6 h-6 text-primary-500" />
               <h3 className="font-display font-semibold text-text-primary">
                 {t('ask.guidelines')}
               </h3>
             </div>
-            <p className="text-sm text-text-secondary mb-4">
+            <p className="text-sm text-text-secondary mb-5 leading-relaxed">
               {t('ask.guidelinesText')}
             </p>
-            <ul className="space-y-2 text-sm text-text-secondary">
-              <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+            <ul className="space-y-3 text-sm text-text-secondary">
+              <li className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
                 Be specific about your question
               </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+              <li className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
                 No question is too simple
               </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+              <li className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
                 Be respectful in your language
               </li>
             </ul>
           </div>
 
-          {/* Privacy Note */}
-          <div className="card bg-accent-50 border border-accent-200">
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="w-5 h-5 text-accent-600" />
+          <div className="card-glass bg-accent-50/50 border border-accent-200">
+            <div className="flex items-center gap-3 mb-3">
+              <Shield className="w-6 h-6 text-accent-500" />
               <h3 className="font-display font-semibold text-text-primary">
                 Your Privacy
               </h3>
             </div>
-            <p className="text-sm text-text-secondary">
+            <p className="text-sm text-text-secondary leading-relaxed">
               Your email is optional and only used to send you a reply.
               Questions can still be submitted anonymously without an email.
             </p>
           </div>
 
-          {/* FAQ Link */}
-          <div className="card">
-            <h3 className="font-display font-semibold text-text-primary mb-2">
+          <div className="card-glass">
+            <h3 className="font-display font-semibold text-text-primary mb-3">
               Check the FAQ First
             </h3>
-            <p className="text-sm text-text-secondary mb-3">
+            <p className="text-sm text-text-secondary mb-4 leading-relaxed">
               Your question might already be answered!
             </p>
             <Link to="/faq" className="btn-outline w-full">

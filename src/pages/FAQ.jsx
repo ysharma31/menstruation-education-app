@@ -205,34 +205,37 @@ const FAQ = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      {/* Header */}
-      <header className="bg-gradient-to-r from-secondary-50 to-orange-100 rounded-2xl p-6 md:p-8 mb-6 border border-secondary-200">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-secondary-400 to-secondary-600 flex items-center justify-center shadow-lg">
-            <HelpCircle className="w-7 h-7 md:w-8 md:h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-secondary-700">
-              {t('faq.title')}
-            </h1>
-            <p className="text-secondary-600/70">{t('faq.subtitle')}</p>
+      <header className="bg-gradient-to-r from-secondary-50 to-secondary-100/50 rounded-3xl p-6 md:p-10 mb-8 border border-secondary-200">
+        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 mb-6">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-secondary flex items-center justify-center shadow-blue">
+              <HelpCircle className="w-8 h-8 md:w-9 md:h-9 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+                {t('faq.title')}
+              </h1>
+              <p className="text-secondary-600 font-medium">{t('faq.subtitle')}</p>
+            </div>
           </div>
         </div>
 
-        {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input
             type="text"
             placeholder={t('faq.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="input pl-12 pr-12"
+            className="w-full px-6 py-4 pl-14 pr-14 rounded-2xl border-2 border-secondary-200
+                     bg-white/80 text-text-primary placeholder-text-light
+                     focus:outline-none focus:border-secondary-400 focus:ring-4 focus:ring-secondary-100
+                     transition-all duration-300"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
               aria-label={t('faq.clearSearch')}
             >
               <X size={20} />
@@ -241,17 +244,16 @@ const FAQ = () => {
         </div>
       </header>
 
-      {/* Category Tabs */}
-      <div className="mb-6 -mx-4 px-4 md:mx-0 md:px-0">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="mb-8 -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2.5 rounded-xl whitespace-nowrap transition-all duration-200 touch-target font-medium text-sm ${
+              className={`px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target font-medium text-sm ${
                 activeCategory === cat.id
-                  ? 'bg-secondary-500 text-white shadow-lg'
-                  : 'bg-white text-text-secondary hover:bg-secondary-50 border border-warm-200'
+                  ? 'gradient-secondary text-white shadow-blue'
+                  : 'bg-white/80 backdrop-blur-sm text-text-secondary hover:bg-secondary-50 border border-warm-200'
               }`}
             >
               {cat.label}
@@ -267,10 +269,8 @@ const FAQ = () => {
         </div>
       )}
 
-      {/* FAQ Grid */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Questions List */}
-        <div className="lg:col-span-2 space-y-3">
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-4">
           {filteredQuestions.length > 0 ? (
             filteredQuestions.map((q) => {
               const isOpen = openQuestions.has(q.id);
@@ -284,7 +284,7 @@ const FAQ = () => {
                 <div
                   key={q.id}
                   id={q.id}
-                  className="card hover:shadow-warm transition-shadow"
+                  className="card-glass hover:shadow-soft transition-all duration-300"
                 >
                   <div
                     className="flex items-start gap-3 cursor-pointer"
@@ -400,22 +400,20 @@ const FAQ = () => {
               );
             })
           ) : (
-            <div className="card text-center py-8">
-              <HelpCircle className="w-12 h-12 text-text-muted mx-auto mb-3" />
+            <div className="card-glass text-center py-12">
+              <HelpCircle className="w-12 h-12 text-text-muted mx-auto mb-4" />
               <p className="text-text-secondary">{t('faq.noResults')}</p>
             </div>
           )}
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-4">
-          {/* Still Have Questions Card */}
-          <div className="card bg-gradient-to-br from-primary-50 to-secondary-50 border border-primary-200 sticky top-4">
-            <MessageCircle className="w-8 h-8 text-primary-500 mb-3" />
-            <h3 className="font-display font-semibold text-text-primary mb-2">
+        <div className="space-y-6">
+          <div className="card-glass gradient-peach border border-primary-100 sticky top-4">
+            <MessageCircle className="w-9 h-9 text-primary-500 mb-4" />
+            <h3 className="font-display font-bold text-text-primary mb-3">
               {t('faq.stillHaveQuestions')}
             </h3>
-            <p className="text-sm text-text-secondary mb-4">
+            <p className="text-sm text-text-secondary mb-5 leading-relaxed">
               {t('faq.askUs')}
             </p>
             <Link to="/ask" className="btn-primary w-full">
@@ -423,34 +421,32 @@ const FAQ = () => {
             </Link>
           </div>
 
-          {/* Quick Stats */}
-          <div className="card hidden lg:block">
-            <h3 className="font-display font-semibold text-text-primary mb-3">
+          <div className="card-glass hidden lg:block">
+            <h3 className="font-display font-semibold text-text-primary mb-4">
               Quick Facts
             </h3>
             <div className="space-y-3">
-              <div className="p-3 bg-warm-50 rounded-xl">
-                <p className="text-2xl font-bold text-primary-500">3-7</p>
-                <p className="text-xs text-text-muted">Days per period (average)</p>
+              <div className="p-4 bg-primary-50/50 rounded-xl">
+                <p className="text-2xl font-bold text-primary-600">3-7</p>
+                <p className="text-sm text-text-muted">Days per period (average)</p>
               </div>
-              <div className="p-3 bg-warm-50 rounded-xl">
-                <p className="text-2xl font-bold text-primary-500">21-35</p>
-                <p className="text-xs text-text-muted">Days per cycle</p>
+              <div className="p-4 bg-secondary-50/50 rounded-xl">
+                <p className="text-2xl font-bold text-secondary-600">21-35</p>
+                <p className="text-sm text-text-muted">Days per cycle</p>
               </div>
-              <div className="p-3 bg-warm-50 rounded-xl">
-                <p className="text-2xl font-bold text-primary-500">9-16</p>
-                <p className="text-xs text-text-muted">Typical age for first period</p>
+              <div className="p-4 bg-accent-50/50 rounded-xl">
+                <p className="text-2xl font-bold text-accent-600">9-16</p>
+                <p className="text-sm text-text-muted">Typical age for first period</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Back to Top Button */}
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 p-3 bg-secondary-500 text-white rounded-full shadow-lg hover:bg-secondary-600 transition-all duration-200 z-50 touch-target"
+          className="fixed bottom-24 md:bottom-8 right-6 p-3.5 gradient-secondary text-white rounded-xl shadow-blue hover:shadow-lg transition-all duration-300 z-40 touch-target"
           aria-label={t('faq.backToTop')}
         >
           <ArrowUp size={20} />

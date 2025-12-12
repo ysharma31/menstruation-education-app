@@ -313,31 +313,31 @@ const Chat = () => {
           </div>
         </div>
 
-        <header className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-6 mb-4 border border-primary-200">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg">
-              <MessageCircle className="w-7 h-7 text-white" />
+        <header className="gradient-peach rounded-3xl p-6 md:p-8 mb-6 border border-primary-100">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-warm">
+              <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-white" />
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-primary-700">
+              <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary">
                 {t('chat.title')}
               </h1>
-              <p className="text-primary-600/70 text-sm">{t('chat.subtitle')}</p>
+              <p className="text-primary-600 font-medium text-sm">{t('chat.subtitle')}</p>
             </div>
           </div>
         </header>
 
-        <div className="bg-warm-50 border border-warm-200 rounded-xl p-3 mb-4 text-xs text-text-muted">
-          <div className="flex items-start gap-2">
-            <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
+        <div className="bg-warm-50/80 backdrop-blur-sm border border-warm-200 rounded-2xl p-4 mb-6 text-sm text-text-muted">
+          <div className="flex items-start gap-3">
+            <AlertCircle size={16} className="flex-shrink-0 mt-0.5 text-primary-400" />
             <div>
               <p className="font-medium mb-1">{t('chat.disclaimer')}</p>
-              <p>{t('chat.privacyNotice')}</p>
+              <p className="text-xs">{t('chat.privacyNotice')}</p>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col bg-white rounded-2xl border border-warm-200 shadow-sm overflow-hidden">
+        <div className="flex-1 flex flex-col bg-white/80 backdrop-blur-sm rounded-3xl border border-warm-100 shadow-soft overflow-hidden">
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
             {messages.length === 0 ? (
               <div className="text-center py-12">
