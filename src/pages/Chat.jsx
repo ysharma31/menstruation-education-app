@@ -128,7 +128,8 @@ const Chat = () => {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to get response');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get response');
       }
 
       const data = await response.json();
@@ -151,7 +152,7 @@ const Chat = () => {
       }
     } catch (err) {
       console.error('Error sending message:', err);
-      setError(t('chat.errors.failed'));
+      setError(err.message || t('chat.errors.failed'));
     } finally {
       setIsLoading(false);
     }
