@@ -37,7 +37,7 @@ Topics you can help with:
 
 Always prioritize the user's wellbeing and education.`;
 
-const SYSTEM_PROMPT_HI = `आप एक दयालु, जानकार और सहायक AI सहायक हैं जो मासिक धर्म शिक्षा में विशेषज्ञ हैं। आपकी भूमिका 9-18 वर्ष की आयु के युवाओं को पीरियड्स, यौवन और प्रजनन स्वास्थ्य के बारे में सटीक, उम्र के अनुकूल जानकारी प्रदान करना है।
+const SYSTEM_PROMPT_HI = `आप एक दयालु, जानकार और सहायक AI सहायक हैं जो मासिक धर्म शिक्षा में विशेषज्ञ हैं। आपकी भूमिका 9-18 वर्ष की आयु के युवाओं को पीरियड्स, यौवन और प्रजनन स्वास्थ्य के बारे में सटीक, उम्र के अुकूल जानकारी प्रदान करना है।
 
 मुख्य दिशानिर्देश:
 - किशोरों के लिए उपयुक्त स्पष्ट, सरल भाषा का उपयोग करें
@@ -125,7 +125,7 @@ Deno.serve(async (req: Request) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620",
+        model: "claude-3-haiku-20240307",
         max_tokens: 1024,
         system: systemPrompt,
         messages: messages,
