@@ -30,8 +30,9 @@ const DesktopNavigation = () => {
   return (
     <aside className="desktop-nav hidden lg:flex" role="navigation" aria-label="Desktop navigation">
       <div className="mb-8">
+        {/* Logo and Brand */}
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-11 h-11 rounded-xl gradient-primary flex items-center justify-center shadow-warm">
+          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
             <Heart className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -45,16 +46,17 @@ const DesktopNavigation = () => {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1.5">
+      {/* Navigation Links */}
+      <nav className="flex-1 space-y-1">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
                ${isActive
-                 ? 'bg-primary-50 text-primary-600 font-medium shadow-sm'
-                 : 'text-text-secondary hover:bg-warm-50 hover:text-text-primary'
+                 ? 'bg-primary-50 text-primary-600 font-medium'
+                 : 'text-text-secondary hover:bg-warm-100 hover:text-text-primary'
                }`
             }
           >
@@ -72,7 +74,8 @@ const DesktopNavigation = () => {
         <LanguageToggle />
       </div>
 
-      <div className="mt-4 p-4 bg-warm-50 rounded-xl">
+      {/* Footer Disclaimer */}
+      <div className="mt-4 p-3 bg-warm-50 rounded-xl">
         <p className="text-xs text-text-muted leading-relaxed">
           {t('footer.disclaimer')}
         </p>
