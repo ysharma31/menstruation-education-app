@@ -6,8 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-
 const SYSTEM_PROMPT_EN = `You are a compassionate, knowledgeable, and supportive AI assistant specializing in menstruation education. Your role is to provide accurate, age-appropriate information about periods, puberty, and reproductive health to young people aged 9-18.
 
 Key guidelines:
@@ -85,9 +83,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    console.log("Chat function called");
-    console.log("ANTHROPIC_API_KEY exists:", !!ANTHROPIC_API_KEY);
-    console.log("ANTHROPIC_API_KEY length:", ANTHROPIC_API_KEY?.length || 0);
+    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
     
     if (!ANTHROPIC_API_KEY) {
       console.error("ANTHROPIC_API_KEY is not set in environment variables");
@@ -116,7 +112,6 @@ Deno.serve(async (req: Request) => {
 
     const systemPrompt = language === "hi" ? SYSTEM_PROMPT_HI : SYSTEM_PROMPT_EN;
 
-    console.log("Calling Anthropic API...");
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -135,7 +130,6 @@ Deno.serve(async (req: Request) => {
     if (!response.ok) {
       const error = await response.text();
       console.error("Anthropic API error:", error);
-      console.error("Status:", response.status);
       return new Response(
         JSON.stringify({ 
           error: `API error (${response.status}): ${error.substring(0, 200)}`
@@ -148,7 +142,6 @@ Deno.serve(async (req: Request) => {
     }
 
     const data = await response.json();
-    console.log("Anthropic API success");
 
     return new Response(
       JSON.stringify({
