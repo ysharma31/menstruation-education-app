@@ -6,7 +6,8 @@ import {
   CheckCircle,
   ArrowLeft,
   Info,
-  Shield
+  Shield,
+  Mail
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
@@ -21,7 +22,8 @@ const AskQuestion = () => {
   const [formData, setFormData] = useState({
     question: '',
     category: 'general',
-    ageGroup: ''
+    ageGroup: '',
+    email: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,7 +58,8 @@ const AskQuestion = () => {
       const { error } = await supabase.from('questions').insert({
         question: formData.question.trim(),
         category: formData.category,
-        age_group: formData.ageGroup
+        age_group: formData.ageGroup,
+        email: formData.email.trim() || null
       });
 
       if (error) throw error;
@@ -72,7 +75,8 @@ const AskQuestion = () => {
     setFormData({
       question: '',
       category: 'general',
-      ageGroup: ''
+      ageGroup: '',
+      email: ''
     });
     setIsSubmitted(false);
   };
@@ -205,6 +209,29 @@ const AskQuestion = () => {
               </div>
             </div>
 
+            {/* Email Input */}
+            <div className="mb-6">
+              <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">
+                Email Address
+                <span className="text-text-muted font-normal ml-1">(optional)</span>
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your@email.com"
+                  className="input pl-10"
+                />
+              </div>
+              <p className="text-xs text-text-muted mt-1.5">
+                Provide your email if you would like to receive a personal reply to your question.
+              </p>
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
@@ -279,8 +306,8 @@ const AskQuestion = () => {
               </h3>
             </div>
             <p className="text-sm text-text-secondary">
-              All questions are submitted anonymously. We don't collect any personal
-              information that could identify you.
+              Your email is optional and only used to send you a reply.
+              Questions can still be submitted anonymously without an email.
             </p>
           </div>
 
