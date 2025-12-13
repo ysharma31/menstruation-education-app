@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VideoPlayer } from '../components/video';
+import { getVideoUrl } from '../config/videoUrls';
 
 const AnimatedExplainer = () => {
   const { t, i18n } = useTranslation();
@@ -25,7 +26,7 @@ const AnimatedExplainer = () => {
       duration: '3-4 min',
       category: 'basics',
       forAudience: t('animated.audienceLabels.everyone'),
-      videoUrl: null,
+      videoUrl: getVideoUrl('intro'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.intro')
     },
@@ -36,7 +37,7 @@ const AnimatedExplainer = () => {
       duration: '4-5 min',
       category: 'education',
       forAudience: t('animated.audienceLabels.everyone'),
-      videoUrl: null,
+      videoUrl: getVideoUrl('cycle'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.cycle')
     },
@@ -47,7 +48,7 @@ const AnimatedExplainer = () => {
       duration: '5-6 min',
       category: 'practical',
       forAudience: t('animated.audienceLabels.girls'),
-      videoUrl: null,
+      videoUrl: getVideoUrl('products'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.products')
     },
@@ -58,7 +59,7 @@ const AnimatedExplainer = () => {
       duration: '3-4 min',
       category: 'education',
       forAudience: t('animated.audienceLabels.everyone'),
-      videoUrl: null,
+      videoUrl: getVideoUrl('myths'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.myths')
     },
@@ -69,7 +70,7 @@ const AnimatedExplainer = () => {
       duration: '4-5 min',
       category: 'practical',
       forAudience: t('animated.audienceLabels.girls'),
-      videoUrl: null,
+      videoUrl: getVideoUrl('hygiene'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.hygiene')
     },
@@ -80,7 +81,7 @@ const AnimatedExplainer = () => {
       duration: '3-4 min',
       category: 'education',
       forAudience: t('animated.audienceLabels.boys'),
-      videoUrl: null,
+      videoUrl: getVideoUrl('support'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.support')
     }
