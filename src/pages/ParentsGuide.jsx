@@ -123,8 +123,8 @@ const ParentsGuide = () => {
 
           <div className="flex justify-center mt-6 md:mt-0">
             <img
-              src="/hero-group-study.png"
-              alt="Parents and children learning together about puberty and growth"
+              src="/parents-child.png"
+              alt="Parents and child growing together"
               className="w-full max-w-xs md:max-w-md rounded-2xl"
             />
           </div>
