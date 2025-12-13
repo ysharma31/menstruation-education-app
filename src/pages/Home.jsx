@@ -84,11 +84,7 @@ const Home = () => {
         <div className="bg-pink-50 rounded-2xl p-8 border border-pink-100">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div className="order-2 lg:order-1">
-              <div className="bg-white rounded-2xl p-8 text-center shadow-sm">
-                <p className="text-sm text-gray-500">
-                  Illustration: Diverse students learning together
-                </p>
-              </div>
+              <img src="/hero-learning-together.png" alt="Diverse students learning together about menstruation and puberty" className="w-full h-auto rounded-2xl shadow-lg" />
             </div>
 
             <div className="order-1 lg:order-2 text-center lg:text-left">
