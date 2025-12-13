@@ -289,47 +289,47 @@ const Chat = () => {
               <>
                 <button
                   onClick={downloadConversation}
-                  className="p-2 hover:bg-warm-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-orange-100 rounded-lg transition-colors"
                   title={t('chat.downloadChat')}
                 >
-                  <Download size={18} className="text-text-muted" />
+                  <Download size={18} className="text-gray-600" />
                 </button>
                 <button
                   onClick={shareConversation}
-                  className="p-2 hover:bg-warm-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-orange-100 rounded-lg transition-colors"
                   title={t('chat.shareChat')}
                 >
-                  <Share2 size={18} className="text-text-muted" />
+                  <Share2 size={18} className="text-gray-600" />
                 </button>
                 <button
                   onClick={() => setShowConfirmClear(true)}
                   className="p-2 hover:bg-red-50 rounded-lg transition-colors"
                   title={t('chat.clearChat')}
                 >
-                  <Trash2 size={18} className="text-text-muted hover:text-red-600" />
+                  <Trash2 size={18} className="text-gray-600 hover:text-red-600" />
                 </button>
               </>
             )}
           </div>
         </div>
 
-        <header className="gradient-peach rounded-3xl p-6 md:p-8 mb-6 border border-primary-100">
+        <header className="bg-red-50 rounded-3xl p-6 md:p-8 mb-6 border border-red-100">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-warm">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-red-400 flex items-center justify-center shadow-lg">
               <MessageCircle className="w-7 h-7 md:w-8 md:h-8 text-white" />
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-text-primary">
+              <h1 className="text-2xl md:text-3xl font-display font-bold text-red-500">
                 {t('chat.title')}
               </h1>
-              <p className="text-primary-600 font-medium text-sm">{t('chat.subtitle')}</p>
+              <p className="text-red-400 font-medium text-sm">{t('chat.subtitle')}</p>
             </div>
           </div>
         </header>
 
-        <div className="bg-warm-50 border border-warm-200 rounded-2xl p-4 mb-6 text-sm text-text-muted">
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-6 text-sm text-gray-600">
           <div className="flex items-start gap-3">
-            <AlertCircle size={16} className="flex-shrink-0 mt-0.5 text-primary-400" />
+            <AlertCircle size={16} className="flex-shrink-0 mt-0.5 text-orange-400" />
             <div>
               <p className="font-medium mb-1">{t('chat.disclaimer')}</p>
               <p className="text-xs">{t('chat.privacyNotice')}</p>
@@ -337,7 +337,7 @@ const Chat = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col bg-white rounded-3xl border border-warm-100 shadow-sm overflow-hidden">
+        <div className="flex-1 flex flex-col bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
             {messages.length === 0 ? (
               <div className="text-center py-12">
@@ -358,7 +358,7 @@ const Chat = () => {
                       <button
                         key={index}
                         onClick={() => handleStarterQuestion(question)}
-                        className="p-3 text-left text-sm bg-warm-50 hover:bg-warm-100 border border-warm-200 rounded-lg transition-colors"
+                        className="p-3 text-left text-sm bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-lg transition-colors"
                       >
                         {question}
                       </button>
@@ -378,8 +378,8 @@ const Chat = () => {
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                         message.role === 'user'
-                          ? 'bg-secondary-100 text-secondary-700'
-                          : 'bg-primary-100 text-primary-700'
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'bg-red-100 text-red-700'
                       }`}
                     >
                       {message.role === 'user' ? (
@@ -399,8 +399,8 @@ const Chat = () => {
                       <div
                         className={`rounded-2xl p-4 ${
                           message.role === 'user'
-                            ? 'bg-secondary-500 text-white rounded-tr-sm'
-                            : 'bg-warm-100 text-text-primary rounded-tl-sm'
+                            ? 'bg-blue-500 text-white rounded-tr-sm'
+                            : 'bg-orange-50 text-gray-800 rounded-tl-sm'
                         }`}
                       >
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -418,13 +418,13 @@ const Chat = () => {
                         {message.role === 'assistant' && (
                           <button
                             onClick={() => copyMessage(message.content, message.id)}
-                            className="p-1 hover:bg-warm-100 rounded transition-colors"
+                            className="p-1 hover:bg-orange-100 rounded transition-colors"
                             title={t('chat.copyMessage')}
                           >
                             {copiedMessageId === message.id ? (
-                              <Check size={12} className="text-green-600" />
+                              <Check size={12} className="text-green-500" />
                             ) : (
-                              <Copy size={12} className="text-text-muted" />
+                              <Copy size={12} className="text-gray-600" />
                             )}
                           </button>
                         )}
@@ -435,14 +435,14 @@ const Chat = () => {
 
                 {isLoading && (
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center flex-shrink-0">
                       <MessageCircle size={16} />
                     </div>
-                    <div className="bg-warm-100 rounded-2xl rounded-tl-sm p-4">
+                    <div className="bg-orange-50 rounded-2xl rounded-tl-sm p-4">
                       <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                        <div className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                        <div className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
                     </div>
                   </div>
@@ -458,7 +458,7 @@ const Chat = () => {
             </div>
           )}
 
-          <div className="border-t border-warm-200 p-4">
+          <div className="border-t border-gray-200 p-4">
             <div className="flex gap-2">
               <div className="flex-1 relative">
                 <textarea
@@ -468,7 +468,7 @@ const Chat = () => {
                   onKeyPress={handleKeyPress}
                   placeholder={t('chat.placeholder')}
                   disabled={isLoading}
-                  className="w-full resize-none rounded-xl border border-warm-300 px-4 py-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-warm-50 disabled:cursor-not-allowed"
+                  className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent disabled:bg-orange-50 disabled:cursor-not-allowed"
                   rows={1}
                   style={{
                     minHeight: '48px',
@@ -492,7 +492,7 @@ const Chat = () => {
                 className={`p-3 rounded-xl transition-colors touch-target ${
                   isListening
                     ? 'bg-red-500 text-white hover:bg-red-600'
-                    : 'bg-warm-100 text-text-muted hover:bg-warm-200'
+                    : 'bg-orange-50 text-gray-600 hover:bg-orange-100'
                 }`}
                 title={isListening ? t('chat.stopListening') : t('chat.voiceInput')}
               >
@@ -502,7 +502,7 @@ const Chat = () => {
               <button
                 onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
-                className="p-3 bg-primary-500 text-white rounded-xl hover:bg-primary-600 disabled:bg-warm-300 disabled:cursor-not-allowed transition-colors touch-target"
+                className="p-3 bg-red-400 text-white rounded-xl hover:bg-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors touch-target"
                 title={t('chat.send')}
               >
                 <Send size={20} />
@@ -524,13 +524,13 @@ const Chat = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirmClear(false)}
-                className="flex-1 px-4 py-2 border border-warm-300 rounded-lg hover:bg-warm-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-orange-50 transition-colors"
               >
                 {t('chat.no')}
               </button>
               <button
                 onClick={clearChat}
-                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                className="flex-1 px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-500 transition-colors"
               >
                 {t('chat.yes')}
               </button>
