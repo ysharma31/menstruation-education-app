@@ -81,43 +81,42 @@ const Home = () => {
   return (
     <div className="page-container animate-fade-in">
       <section className="mb-12">
-        <div className="bg-pink-50 rounded-2xl p-8 border border-pink-100">
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div className="order-2 lg:order-1">
-              <img src="/hero-learning-together.png" alt="Diverse students learning together about menstruation and puberty" className="w-full h-auto rounded-2xl shadow-lg" />
-            </div>
+        <div className="text-center max-w-4xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-pink-50 rounded-full shadow-sm">
+            <Sparkles className="w-4 h-4 text-pink-500" />
+            <span className="text-sm font-medium text-pink-600">
+              {t('home.safeSpace')}
+            </span>
+          </div>
 
-            <div className="order-1 lg:order-2 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-white rounded-full shadow-sm">
-                <Sparkles className="w-4 h-4 text-pink-500" />
-                <span className="text-sm font-medium text-pink-600">
-                  {t('home.safeSpace')}
-                </span>
-              </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-balance leading-tight">
+            {t('home.title')}
+          </h1>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-balance leading-tight">
-                {t('home.title')}
-              </h1>
+          <p className="text-lg text-gray-600 mb-3 leading-relaxed max-w-3xl mx-auto">
+            {t('home.subtitle')}
+          </p>
 
-              <p className="text-lg text-gray-600 mb-3 leading-relaxed">
-                {t('home.subtitle')}
-              </p>
+          <p className="text-base text-gray-500 leading-relaxed max-w-2xl mx-auto">
+            {t('home.description')}
+          </p>
+        </div>
 
-              <p className="text-base text-gray-500 mb-6 leading-relaxed">
-                {t('home.description')}
-              </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-blue-100 via-pink-50 to-pink-100 p-6">
+            <img
+              src="/hero-group-study.png"
+              alt="Diverse students learning together in a supportive environment"
+              className="w-full h-auto rounded-xl shadow-md"
+            />
+          </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Link to="/girls" className="btn-primary">
-                  <User className="w-5 h-5 mr-2" />
-                  {t('navigation.girls')}
-                </Link>
-                <Link to="/boys" className="btn-secondary">
-                  <Users className="w-5 h-5 mr-2" />
-                  {t('navigation.boys')}
-                </Link>
-              </div>
-            </div>
+          <div className="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-pink-100 via-blue-50 to-blue-100 p-6">
+            <img
+              src="/hero-classroom.png"
+              alt="Inclusive classroom education about puberty and menstruation"
+              className="w-full h-auto rounded-xl shadow-md"
+            />
           </div>
         </div>
       </section>
