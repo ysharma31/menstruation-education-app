@@ -206,6 +206,16 @@ const Girls = () => {
                 <div className="space-y-6">
                   <div className="bg-white border-l-4 border-pink-500 p-5 rounded-r-2xl">
                     <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <User size={20} className="text-pink-500" />
+                      {t('girls.understanding.whatIsUterus')}
+                    </h3>
+                    <p className="text-pink-700 text-sm leading-relaxed">
+                      {t('girls.understanding.whatIsUterusText')}
+                    </p>
+                  </div>
+
+                  <div className="bg-white border-l-4 border-pink-500 p-5 rounded-r-2xl">
+                    <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <Info size={20} className="text-pink-500" />
                       {t('girls.understanding.whatIs')}
                     </h3>
