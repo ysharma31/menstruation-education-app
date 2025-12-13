@@ -8,7 +8,8 @@ import {
   FAQ,
   ParentsGuide,
   AskQuestion,
-  Chat
+  Chat,
+  UploadVideo
 } from './pages';
 
 // Initialize i18n
@@ -27,6 +28,7 @@ function App() {
           <Route path="parents" element={<ParentsGuide />} />
           <Route path="ask" element={<AskQuestion />} />
           <Route path="chat" element={<Chat />} />
+          <Route path="upload-video" element={<UploadVideo />} />
         </Route>
       </Routes>
     </Router>

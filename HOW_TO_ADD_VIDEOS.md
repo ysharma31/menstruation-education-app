@@ -2,29 +2,17 @@
 
 ## Step 1: Upload Videos to Supabase Storage
 
-### Option A: Using Supabase Dashboard (Recommended)
+### Using the Upload Page in Your App (Recommended)
 
-1. Go to your Supabase Dashboard: https://tnuvtylcrrnoewpxtzcb.supabase.co
-2. Click on **Storage** in the left sidebar
-3. You should see a bucket named **videos**
-4. Click on the **videos** bucket
-5. Click **Upload file** button
-6. Select your mp4 video file
-7. Give it a clear name like:
-   - `intro-puberty.mp4` (for Introduction to Puberty)
-   - `menstrual-cycle.mp4` (for Understanding the Cycle)
-   - `hygiene-products.mp4` (for Hygiene & Products)
-   - etc.
-8. After upload, click on the file to view its details
-9. Copy the **public URL** (it will look like: `https://tnuvtylcrrnoewpxtzcb.supabase.co/storage/v1/object/public/videos/intro-puberty.mp4`)
-
-### Option B: Using the Upload Page in Your App
-
-1. Navigate to `/upload-video` in your app
+1. Navigate to `/upload-video` in your app (or click this link when running locally: http://localhost:5173/upload-video)
 2. Click the upload area
-3. Select your video file
+3. Select your video file (MP4, WebM, or OGG)
 4. Wait for upload to complete
-5. Copy the URL that appears
+5. Copy the **file name** that appears (you'll need this for Step 2)
+
+### Alternative: Using Supabase Dashboard
+
+Note: The Supabase Storage UI may not be available yet. If you see "Viewing and managing files is coming soon", use the Upload Page method above instead.
 
 ## Step 2: Add Video URLs to Your App
 

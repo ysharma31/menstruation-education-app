@@ -6,3 +6,4 @@ export { default as FAQ } from './FAQ';
 export { default as ParentsGuide } from './ParentsGuide';
 export { default as AskQuestion } from './AskQuestion';
 export { default as Chat } from './Chat';
+export { default as UploadVideo } from './UploadVideo';
