@@ -142,10 +142,10 @@ const Girls = () => {
       <div className="grid lg:grid-cols-4 gap-6">
         <aside className="lg:col-span-1">
           <div className="card sticky top-4">
-            <h3 className="font-display font-semibold text-gray-900 mb-4">
+            <h3 className="font-display font-semibold text-gray-900 mb-5">
               Sections
             </h3>
-            <nav className="space-y-4">
+            <nav className="space-y-3">
               {sections.map((section, index) => {
                 const SectionIcon = section.icon;
                 const isCurrent = currentSection === index;
@@ -154,27 +154,27 @@ const Girls = () => {
                   <button
                     key={section.id}
                     onClick={() => setCurrentSection(index)}
-                    className={`w-full flex items-center gap-3 p-4 rounded-xl text-left transition-all duration-300 touch-target ${
+                    className={`w-full flex items-center gap-3 rounded-2xl text-left transition-all duration-300 ${
                       isCurrent
-                        ? 'bg-pink-500 text-white shadow-lg'
-                        : 'bg-white text-gray-600 hover:bg-pink-50 hover:text-pink-700'
+                        ? 'bg-pink-500 text-white shadow-md p-4'
+                        : 'text-gray-600 hover:text-pink-600 px-4 py-3'
                     }`}
                   >
                     <SectionIcon size={20} className="flex-shrink-0" />
-                    <span className="text-sm font-medium leading-relaxed">{section.title}</span>
+                    <span className="text-sm font-medium leading-snug">{section.title}</span>
                   </button>
                 );
               })}
             </nav>
 
-            <div className="mt-5 p-5 bg-pink-50 rounded-xl border border-pink-200">
-              <div className="flex items-start gap-2.5">
-                <Heart className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+            <div className="mt-6 p-5 bg-pink-50 rounded-2xl">
+              <div className="flex items-start gap-3">
+                <Heart className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-pink-700 text-sm mb-1">
+                  <h4 className="font-semibold text-pink-700 text-sm mb-2">
                     {t('girls.empowerment')}
                   </h4>
-                  <p className="text-xs text-pink-600 leading-relaxed">
+                  <p className="text-xs text-pink-700/80 leading-relaxed">
                     {t('girls.empowermentText')}
                   </p>
                 </div>
