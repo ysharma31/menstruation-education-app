@@ -37,8 +37,8 @@ const MobileHeader = () => {
       <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-warm-200 z-50 safe-area-inset-top">
         <div className="flex items-center justify-between px-4 py-3">
           <NavLink to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl gradient-primary flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-full bg-pink-400 flex items-center justify-center shadow-sm">
+              <Heart className="w-5 h-5 text-white fill-white" />
             </div>
             <span className="font-display font-bold text-text-primary">
               {t('common.appName')}
