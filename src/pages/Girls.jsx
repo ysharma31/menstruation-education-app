@@ -122,21 +122,33 @@ const Girls = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="bg-pink-50 rounded-3xl p-8 mb-8 border border-pink-100">
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 rounded-2xl bg-pink-500 flex items-center justify-center shadow-lg">
-            <Heart className="w-8 h-8 text-white" />
-          </div>
+      <header className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-8 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h1 className="text-3xl font-display font-bold text-pink-600">
-              {t('girls.title')}
-            </h1>
-            <p className="text-pink-500 font-medium">{t('girls.subtitle')}</p>
+            <div className="flex items-center gap-6 mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-pink-500 flex items-center justify-center shadow-lg">
+                <Heart className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-display font-bold text-pink-600">
+                  {t('girls.title')}
+                </h1>
+                <p className="text-pink-500 font-medium">{t('girls.subtitle')}</p>
+              </div>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
+              {t('girls.intro')}
+            </p>
+          </div>
+
+          <div className="flex justify-center mt-6 md:mt-0">
+            <img
+              src="/girl-empowerment.png"
+              alt="Confident teenage girl with books representing learning and empowerment"
+              className="w-full max-w-xs md:max-w-md"
+            />
           </div>
         </div>
-        <p className="text-gray-600 mt-4 leading-relaxed">
-          {t('girls.intro')}
-        </p>
       </header>
 
       <div className="grid lg:grid-cols-4 gap-6">
