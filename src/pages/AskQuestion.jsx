@@ -128,19 +128,19 @@ const AskQuestion = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="gradient-warm rounded-3xl p-6 md:p-10 mb-8 border border-primary-100">
+      <header className="bg-red-50 rounded-3xl p-6 md:p-10 mb-8 border border-red-100">
         <div className="flex items-center gap-5 mb-4">
-          <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl gradient-primary flex items-center justify-center shadow-warm">
+          <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-red-400 flex items-center justify-center shadow-lg">
             <MessageCircle className="w-8 h-8 md:w-9 md:h-9 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-text-primary">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-red-500">
               {t('ask.title')}
             </h1>
-            <p className="text-primary-600 font-medium">{t('ask.subtitle')}</p>
+            <p className="text-red-400 font-medium">{t('ask.subtitle')}</p>
           </div>
         </div>
-        <p className="text-text-secondary leading-relaxed">
+        <p className="text-gray-600 leading-relaxed">
           {t('ask.description')}
         </p>
       </header>
@@ -197,8 +197,8 @@ const AskQuestion = () => {
                     onClick={() => setFormData((prev) => ({ ...prev, ageGroup: age.value }))}
                     className={`p-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                       formData.ageGroup === age.value
-                        ? 'bg-primary-500 text-white shadow-warm'
-                        : 'bg-warm-100 text-text-secondary hover:bg-warm-200'
+                        ? 'bg-red-400 text-white shadow-lg'
+                        : 'bg-orange-50 text-gray-700 hover:bg-orange-100'
                     }`}
                   >
                     {age.label}
@@ -234,7 +234,7 @@ const AskQuestion = () => {
             <button
               type="submit"
               disabled={!formData.question.trim() || !formData.ageGroup || isSubmitting}
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-6 py-3 bg-red-400 text-white rounded-xl font-medium hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
@@ -267,53 +267,53 @@ const AskQuestion = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="card bg-pink-50 border border-warm-200">
+          <div className="card bg-white border border-gray-200">
             <div className="flex items-center gap-3 mb-4">
-              <Info className="w-6 h-6 text-primary-500" />
-              <h3 className="font-display font-semibold text-text-primary">
+              <Info className="w-6 h-6 text-orange-400" />
+              <h3 className="font-display font-semibold text-gray-800">
                 {t('ask.guidelines')}
               </h3>
             </div>
-            <p className="text-sm text-text-secondary mb-5 leading-relaxed">
+            <p className="text-sm text-gray-600 mb-5 leading-relaxed">
               {t('ask.guidelinesText')}
             </p>
-            <ul className="space-y-3 text-sm text-text-secondary">
+            <ul className="space-y-3 text-sm text-gray-700">
               <li className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                 Be specific about your question
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                 No question is too simple
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-sage-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                 Be respectful in your language
               </li>
             </ul>
           </div>
 
-          <div className="card bg-accent-50 border border-accent-200">
+          <div className="card bg-white border border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <Shield className="w-6 h-6 text-accent-500" />
-              <h3 className="font-display font-semibold text-text-primary">
+              <Shield className="w-6 h-6 text-purple-500" />
+              <h3 className="font-display font-semibold text-gray-800">
                 Your Privacy
               </h3>
             </div>
-            <p className="text-sm text-text-secondary leading-relaxed">
+            <p className="text-sm text-gray-600 leading-relaxed">
               Your email is optional and only used to send you a reply.
               Questions can still be submitted anonymously without an email.
             </p>
           </div>
 
-          <div className="card">
-            <h3 className="font-display font-semibold text-text-primary mb-3">
+          <div className="card bg-white border border-gray-200">
+            <h3 className="font-display font-semibold text-gray-800 mb-3">
               Check the FAQ First
             </h3>
-            <p className="text-sm text-text-secondary mb-4 leading-relaxed">
+            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
               Your question might already be answered!
             </p>
-            <Link to="/faq" className="btn-outline w-full">
+            <Link to="/faq" className="block w-full text-center px-4 py-3 border-2 border-red-400 text-red-500 rounded-xl font-medium hover:bg-red-50 transition-colors">
               Browse FAQ
             </Link>
           </div>
