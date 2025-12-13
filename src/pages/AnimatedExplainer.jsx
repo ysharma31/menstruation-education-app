@@ -28,7 +28,8 @@ const AnimatedExplainer = () => {
       forAudience: t('animated.audienceLabels.everyone'),
       videoUrl: getVideoUrl('intro'),
       thumbnailUrl: null,
-      transcript: t('animated.transcripts.intro')
+      transcript: t('animated.transcripts.intro'),
+      guideUrl: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/guides/introduction-to-puberty-guide.pdf`
     },
     {
       id: 'cycle',
@@ -336,13 +337,26 @@ const AnimatedExplainer = () => {
                     </div>
                   </div>
 
-                  <button
-                    className="w-full btn-outline flex items-center justify-center gap-2"
-                    disabled
-                  >
-                    <Download size={18} />
-                    {t('animated.downloadPDF')}
-                  </button>
+                  {selectedVideo.guideUrl ? (
+                    <a
+                      href={selectedVideo.guideUrl}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full btn-outline flex items-center justify-center gap-2"
+                    >
+                      <Download size={18} />
+                      {t('animated.downloadPDF')}
+                    </a>
+                  ) : (
+                    <button
+                      className="w-full btn-outline flex items-center justify-center gap-2"
+                      disabled
+                    >
+                      <Download size={18} />
+                      {t('animated.downloadPDF')}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
