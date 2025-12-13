@@ -102,26 +102,33 @@ const Boys = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="bg-blue-50 rounded-3xl p-6 md:p-10 mb-8 border border-secondary-200">
-        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-blue-500 flex items-center justify-center shadow-sm">
-              <Users className="w-8 h-8 md:w-9 md:h-9 text-white" />
+      <header className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <div className="flex items-center gap-6 mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500 flex items-center justify-center shadow-lg">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-display font-bold text-blue-600">
+                  {t('boys.title')}
+                </h1>
+                <p className="text-blue-500 font-medium">{t('boys.subtitle')}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-gray-900">
-                {t('boys.title')}
-              </h1>
-              <p className="text-secondary-600 font-medium">{t('boys.subtitle')}</p>
-            </div>
+            <p className="text-gray-600 leading-relaxed">
+              {t('boys.intro')}
+            </p>
           </div>
-          <div className="hidden md:block w-48 h-40 rounded-2xl bg-white flex items-center justify-center ml-auto">
-            <p className="text-xs text-secondary-600/70 text-center p-4">Illustration: Supportive boy helping classmate</p>
+
+          <div className="flex justify-center mt-6 md:mt-0">
+            <img
+              src="/boy-ally.png"
+              alt="Boy and girl studying together learning about puberty and growth"
+              className="w-full max-w-xs md:max-w-md"
+            />
           </div>
         </div>
-        <p className="text-gray-600 mt-5 leading-relaxed max-w-3xl">
-          {t('boys.intro')}
-        </p>
       </header>
 
       <div className="grid lg:grid-cols-4 gap-8">
