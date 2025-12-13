@@ -122,35 +122,30 @@ const Girls = () => {
         <span className="text-sm">{t('common.backToHome')}</span>
       </Link>
 
-      <header className="bg-pink-50 rounded-3xl p-6 md:p-10 mb-8 border border-pink-100">
-        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-pink-500 flex items-center justify-center shadow-lg">
-              <Heart className="w-8 h-8 md:w-9 md:h-9 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-pink-600">
-                {t('girls.title')}
-              </h1>
-              <p className="text-pink-500 font-medium">{t('girls.subtitle')}</p>
-            </div>
+      <header className="bg-pink-50 rounded-3xl p-8 mb-8 border border-pink-100">
+        <div className="flex items-center gap-6">
+          <div className="w-16 h-16 rounded-2xl bg-pink-500 flex items-center justify-center shadow-lg">
+            <Heart className="w-8 h-8 text-white" />
           </div>
-          <div className="hidden md:block w-48 h-40 rounded-2xl bg-white flex items-center justify-center ml-auto">
-            <p className="text-xs text-primary-600/70 text-center p-4">Illustration: Confident girl feeling empowered</p>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-pink-600">
+              {t('girls.title')}
+            </h1>
+            <p className="text-pink-500 font-medium">{t('girls.subtitle')}</p>
           </div>
         </div>
-        <p className="text-gray-600 mt-5 leading-relaxed max-w-3xl">
+        <p className="text-gray-600 mt-4 leading-relaxed">
           {t('girls.intro')}
         </p>
       </header>
 
-      <div className="grid lg:grid-cols-4 gap-8">
-        <aside className="lg:col-span-1 space-y-5">
+      <div className="grid lg:grid-cols-4 gap-6">
+        <aside className="lg:col-span-1">
           <div className="card sticky top-4">
-            <h3 className="font-display font-semibold text-gray-900 mb-5">
+            <h3 className="font-display font-semibold text-gray-900 mb-4">
               Sections
             </h3>
-            <nav className="space-y-2">
+            <nav className="space-y-2.5">
               {sections.map((section, index) => {
                 const SectionIcon = section.icon;
                 const isCurrent = currentSection === index;
@@ -159,7 +154,7 @@ const Girls = () => {
                   <button
                     key={section.id}
                     onClick={() => setCurrentSection(index)}
-                    className={`w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-all duration-300 touch-target ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-300 touch-target ${
                       isCurrent
                         ? 'bg-pink-500 text-white shadow-lg'
                         : 'bg-white text-gray-600 hover:bg-pink-50 hover:text-pink-700'
@@ -172,14 +167,14 @@ const Girls = () => {
               })}
             </nav>
 
-            <div className="mt-6 p-5 bg-pink-50 rounded-xl border border-pink-200">
-              <div className="flex items-start gap-3">
+            <div className="mt-5 p-4 bg-pink-50 rounded-xl border border-pink-200">
+              <div className="flex items-start gap-2.5">
                 <Heart className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-semibold text-pink-700 text-sm mb-1">
                     {t('girls.empowerment')}
                   </h4>
-                  <p className="text-xs text-pink-600/80 leading-relaxed">
+                  <p className="text-xs text-pink-600 leading-relaxed">
                     {t('girls.empowermentText')}
                   </p>
                 </div>
@@ -189,17 +184,15 @@ const Girls = () => {
         </aside>
 
         <main className="lg:col-span-3">
-          <div className="card mb-8">
+          <div className="card mb-6">
             {currentSection === 0 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
-                    {t('girls.understanding.title')}
-                  </h2>
-                </div>
+              <div className="space-y-8">
+                <h2 className="text-3xl font-display font-bold text-gray-900">
+                  {t('girls.understanding.title')}
+                </h2>
 
-                <div className="space-y-5">
-                  <div className="bg-white border-l-4 border-pink-500 p-6 rounded-r-2xl">
+                <div className="space-y-6">
+                  <div className="bg-white border-l-4 border-pink-500 p-5 rounded-r-2xl">
                     <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <Info size={20} className="text-pink-500" />
                       {t('girls.understanding.whatIs')}
@@ -209,7 +202,7 @@ const Girls = () => {
                     </p>
                   </div>
 
-                  <div className="bg-white border-l-4 border-pink-500 p-6 rounded-r-2xl">
+                  <div className="bg-white border-l-4 border-pink-500 p-5 rounded-r-2xl">
                     <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <Sparkles size={20} className="text-pink-500" />
                       {t('girls.understanding.whyHappens')}
@@ -219,9 +212,9 @@ const Girls = () => {
                     </p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-5">
-                    <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                      <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="p-5 bg-white rounded-2xl border border-gray-200">
+                      <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
                         <Calendar size={20} className="text-pink-500" />
                         {t('girls.understanding.howLong')}
                       </h3>
@@ -230,8 +223,8 @@ const Girls = () => {
                       </p>
                     </div>
 
-                    <div className="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                      <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <div className="p-5 bg-white rounded-2xl border border-gray-200">
+                      <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
                         <Heart size={20} className="text-pink-500" />
                         {t('girls.understanding.firstPeriod')}
                       </h3>
@@ -245,15 +238,15 @@ const Girls = () => {
             )}
 
             {currentSection === 1 && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-2">
+                  <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.bodyChanges.title')}
                   </h2>
                   <p className="text-gray-600">{t('girls.bodyChanges.subtitle')}</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-5">
+                <div className="grid md:grid-cols-2 gap-4">
                   {bodyParts.map(({ key, icon: Icon }) => {
                     const isSelected = selectedBodyPart === key;
                     return (
@@ -301,9 +294,9 @@ const Girls = () => {
             )}
 
             {currentSection === 2 && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
+                  <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.products.title')}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -367,9 +360,9 @@ const Girls = () => {
             )}
 
             {currentSection === 3 && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
+                  <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.painManagement.title')}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -377,7 +370,7 @@ const Girls = () => {
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-5">
+                <div className="grid md:grid-cols-2 gap-4">
                   {painManagementTips.map(({ key, icon: Icon }) => (
                     <div
                       key={key}
@@ -420,9 +413,9 @@ const Girls = () => {
             )}
 
             {currentSection === 4 && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
+                  <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.tracking.title')}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -533,9 +526,9 @@ const Girls = () => {
             )}
 
             {currentSection === 5 && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-3">
+                  <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
                     {t('girls.myths.title')}
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -577,7 +570,7 @@ const Girls = () => {
             )}
           </div>
 
-          <div className="flex items-center justify-between mb-8 gap-4">
+          <div className="flex items-center justify-between mt-8 gap-4">
             <button
               onClick={handlePrevSection}
               disabled={currentSection === 0}
@@ -603,7 +596,7 @@ const Girls = () => {
             )}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-6 mt-8">
             <div className="card bg-pink-50 border border-pink-200">
               <h3 className="font-display font-semibold text-pink-700 mb-4 flex items-center gap-2">
                 <Sparkles size={20} className="text-pink-500" />
