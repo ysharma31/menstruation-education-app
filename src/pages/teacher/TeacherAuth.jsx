@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Mail, Lock, Eye, EyeOff, User, Shield } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { GraduationCap, Mail, Lock, Eye, EyeOff, User, Shield, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const TeacherAuth = () => {
@@ -197,7 +197,17 @@ const TeacherAuth = () => {
               </button>
             </form>
 
-            <div className="mt-5 p-4 bg-green-50 rounded-xl border border-green-100">
+            <div className="mt-4 text-center">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <ArrowLeft size={14} />
+                Back to Home
+              </Link>
+            </div>
+
+            <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-100">
               <div className="flex items-start gap-2">
                 <Shield size={14} className="text-green-600 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-green-800 leading-relaxed">
