@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User, GraduationCap } from 'lucide-react';
+import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User, GraduationCap, CalendarCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -147,6 +147,16 @@ const Auth = () => {
           </div>
 
           <div className="p-8">
+            {!pendingCode && (
+              <div className="mb-5 pl-4 border-l-4 border-pink-300 bg-pink-50 rounded-r-xl py-3 pr-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <CalendarCheck size={14} className="text-pink-600 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-pink-800">Period & Cycle Tracker</p>
+                </div>
+                <p className="text-xs text-pink-700">Sign in to log your periods, track your cycle, and view your history — all stored privately.</p>
+              </div>
+            )}
+
             {pendingCode && (
               <div className="mb-5 pl-4 border-l-4 border-green-400 bg-green-50 rounded-r-xl py-3 pr-3">
                 <div className="flex items-center gap-2 mb-1">

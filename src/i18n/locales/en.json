@@ -615,8 +615,8 @@
   "auth": {
     "welcomeBack": "Welcome back",
     "createAccount": "Create your account",
-    "signInSubtitle": "Sign in to access your period tracking history",
-    "signUpSubtitle": "Track your cycles privately and securely",
+    "signInSubtitle": "Sign in to track your period and cycle history",
+    "signUpSubtitle": "Create an account to start tracking your period and cycle",
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "signingIn": "Signing in...",
