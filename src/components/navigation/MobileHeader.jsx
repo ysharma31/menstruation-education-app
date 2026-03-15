@@ -117,7 +117,7 @@ const MobileHeader = () => {
               className="mt-3 flex items-center gap-2 px-3 py-2.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-colors text-sm font-medium"
             >
               <GraduationCap size={16} />
-              Teacher / School Portal
+              {t('navigation.teacherPortal')}
             </Link>
             <Link
               to="/student"
@@ -125,7 +125,7 @@ const MobileHeader = () => {
               className="mt-2 flex items-center gap-2 px-3 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl transition-colors text-sm font-medium"
             >
               <BookOpen size={16} />
-              Student Portal
+              {t('navigation.studentPortal')}
             </Link>
             <p className="mt-3 text-xs text-text-muted">
               {t('footer.disclaimer')}

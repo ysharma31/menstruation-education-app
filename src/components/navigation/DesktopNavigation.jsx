@@ -82,14 +82,14 @@ const DesktopNavigation = () => {
           className="flex items-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-colors text-xs font-medium"
         >
           <GraduationCap size={14} />
-          Teacher / School Portal
+          {t('navigation.teacherPortal')}
         </Link>
         <Link
           to="/student"
           className="flex items-center gap-2 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl transition-colors text-xs font-medium"
         >
           <BookOpen size={14} />
-          Student Portal
+          {t('navigation.studentPortal')}
         </Link>
         <LanguageToggle />
         {isAppUser ? (

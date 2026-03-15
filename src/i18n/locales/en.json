@@ -33,7 +33,9 @@
     "parents": "For Parents",
     "ask": "Ask Questions",
     "chat": "AI Chat",
-    "teachers": "For Teachers"
+    "teachers": "For Teachers",
+    "teacherPortal": "Teacher / School Portal",
+    "studentPortal": "Student Portal"
   },
   "home": {
     "title": "Learn About Your Body",
