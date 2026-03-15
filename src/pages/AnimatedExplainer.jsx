@@ -32,7 +32,9 @@ const AnimatedExplainer = () => {
       forAudience: t('animated.audienceLabels.everyone'),
       videoUrl: getVideoUrl('cycle'),
       thumbnailUrl: null,
-      transcript: t('animated.transcripts.cycle')
+      transcript: t('animated.transcripts.cycle'),
+      guideUrl: '/menstrual_cycle_guide.pdf',
+      guideFileName: 'menstrual_cycle_guide.pdf'
     },
     {
       id: 'products',
@@ -338,7 +340,7 @@ const AnimatedExplainer = () => {
                   {selectedVideo.guideUrl ? (
                     <a
                       href={selectedVideo.guideUrl}
-                      download="introduction-to-puberty-guide.pdf"
+                      download={selectedVideo.guideFileName || 'guide.pdf'}
                       className="w-full btn-outline flex items-center justify-center gap-2"
                     >
                       <Download size={18} />
