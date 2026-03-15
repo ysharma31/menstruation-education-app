@@ -2,6 +2,46 @@ import { useState } from 'react';
 import { Upload, CircleCheck as CheckCircle, Circle as XCircle, Loader, Copy } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const uploadWithTus = async (file, fileName, onProgress) => {
+  const { Upload } = await import('tus-js-client');
+
+  return new Promise((resolve, reject) => {
+    const upload = new Upload(file, {
+      endpoint: `${SUPABASE_URL}/storage/v1/upload/resumable`,
+      retryDelays: [0, 3000, 5000, 10000, 20000],
+      headers: {
+        authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'x-upsert': 'false',
+      },
+      uploadDataDuringCreation: true,
+      removeFingerprintOnSuccess: true,
+      metadata: {
+        bucketName: 'videos',
+        objectName: fileName,
+        contentType: file.type,
+        cacheControl: '3600',
+      },
+      chunkSize: 6 * 1024 * 1024,
+      onError: (error) => reject(error),
+      onProgress: (bytesUploaded, bytesTotal) => {
+        const pct = Math.round((bytesUploaded / bytesTotal) * 100);
+        onProgress(pct);
+      },
+      onSuccess: () => resolve(),
+    });
+
+    upload.findPreviousUploads().then((previousUploads) => {
+      if (previousUploads.length > 0) {
+        upload.resumeFromPreviousUpload(previousUploads[0]);
+      }
+      upload.start();
+    });
+  });
+};
+
 const UploadVideo = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -31,21 +71,7 @@ const UploadVideo = () => {
       const generatedName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       setFileName(generatedName);
 
-      const { data, error: uploadError } = await supabase.storage
-        .from('videos')
-        .upload(generatedName, file, {
-          cacheControl: '3600',
-          upsert: false,
-          duplex: 'half',
-          onUploadProgress: (progress) => {
-            const pct = Math.round((progress.loaded / progress.total) * 100);
-            setUploadProgress(pct);
-          },
-        });
-
-      if (uploadError) {
-        throw uploadError;
-      }
+      await uploadWithTus(file, generatedName, setUploadProgress);
 
       const { data: { publicUrl } } = supabase.storage
         .from('videos')
@@ -68,7 +94,7 @@ const UploadVideo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-blue-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Upload Video</h1>
@@ -105,6 +131,15 @@ const UploadVideo = () => {
                 </span>
               </label>
             </div>
+
+            {uploading && (
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-pink-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            )}
 
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">

@@ -1042,7 +1042,7 @@
     "uploadMaterial": "सामग्री अपलोड करें",
     "class": "कक्षा",
     "selectClass": "कक्षा चुनें",
-    "title": "शीर्षक",
+    "materialTitle": "शीर्षक",
     "titlePlaceholder": "जैसे: युवावस्था का परिचय - पाठ 1",
     "description": "विवरण",
     "descriptionPlaceholder": "इस सामग्री में क्या है उसका संक्षिप्त विवरण",

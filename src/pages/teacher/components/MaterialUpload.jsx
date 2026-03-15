@@ -154,7 +154,7 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            {t('teacherPortal.title')} <span className="text-red-400">*</span>
+            {t('teacherPortal.materialTitle')} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
