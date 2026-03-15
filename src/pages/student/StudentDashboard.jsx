@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, FileText, Image, Video, GraduationCap, User, X } from 'lucide-react';
+import { BookOpen, FileText, Image, Video, GraduationCap, User, X, CircleAlert as AlertCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { INDIAN_SCHOOLS } from '../../config/indianSchools';
 
 const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
 
@@ -38,6 +39,13 @@ const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [lightboxMaterial, setLightboxMaterial] = useState(null);
+
+  const [profileGrade, setProfileGrade] = useState('');
+  const [profileClassName, setProfileClassName] = useState('');
+  const [profileGender, setProfileGender] = useState('');
+  const [profileSchool, setProfileSchool] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState('');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -115,6 +123,28 @@ const StudentDashboard = () => {
     load();
   }, [user]);
 
+  const handleCompleteProfile = async (e) => {
+    e.preventDefault();
+    if (!profileGrade || !profileClassName.trim() || !profileGender) return;
+    setProfileSaving(true);
+    setProfileError('');
+    const updates = {
+      id: user.id,
+      grade: parseInt(profileGrade),
+      class_name: profileClassName.trim(),
+      gender: profileGender,
+      school_name: profileSchool.trim() || null
+    };
+    const { error } = await supabase.from('student_profiles').upsert(updates);
+    if (error) {
+      setProfileError(t('studentPortal.completeProfileError'));
+      setProfileSaving(false);
+      return;
+    }
+    setProfile((prev) => ({ ...prev, ...updates }));
+    setProfileSaving(false);
+  };
+
   const handleOpen = async (material) => {
     await supabase.from('material_access').upsert(
       { material_id: material.id, student_id: user.id },
@@ -182,8 +212,102 @@ const StudentDashboard = () => {
       </div>
 
       {!profile?.grade ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="text-sm text-amber-800">{t('studentPortal.gradeNotSet')}</p>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 max-w-md mx-auto shadow-sm">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+              <AlertCircle size={20} className="text-amber-600" />
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900 text-base">{t('studentPortal.completeProfileTitle')}</h3>
+              <p className="text-sm text-gray-500">{t('studentPortal.completeProfileSubtitle')}</p>
+            </div>
+          </div>
+
+          {profileError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">{profileError}</div>
+          )}
+
+          <form onSubmit={handleCompleteProfile} className="mt-5 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                {t('studentPortal.grade')} <span className="text-red-400">*</span>
+              </label>
+              <select
+                value={profileGrade}
+                onChange={(e) => setProfileGrade(e.target.value)}
+                required
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm bg-white"
+              >
+                <option value="">{t('studentPortal.gradeSelectPlaceholder')}</option>
+                {GRADES.map((g) => <option key={g} value={g}>{t('studentPortal.gradeLabel', { grade: g })}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                {t('studentPortal.className')} <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={profileClassName}
+                onChange={(e) => setProfileClassName(e.target.value)}
+                required
+                placeholder={t('studentPortal.classNamePlaceholder')}
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                {t('studentPortal.gender')} <span className="text-red-400">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: 'female', label: t('studentPortal.genderFemale') },
+                  { value: 'male', label: t('studentPortal.genderMale') },
+                  { value: 'other', label: t('studentPortal.genderOther') },
+                  { value: 'prefer_not_to_say', label: t('studentPortal.genderPreferNotToSay') }
+                ].map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setProfileGender(value)}
+                    className={`py-2 px-3 rounded-xl border text-sm font-medium transition-all ${
+                      profileGender === value
+                        ? 'bg-rose-600 text-white border-rose-600'
+                        : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-rose-300'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                {t('studentPortal.schoolName')} <span className="text-gray-400 font-normal">{t('studentPortal.schoolNameOptional')}</span>
+              </label>
+              <select
+                value={profileSchool}
+                onChange={(e) => setProfileSchool(e.target.value)}
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm bg-white"
+              >
+                <option value="">{t('studentPortal.schoolNamePlaceholder')}</option>
+                {INDIAN_SCHOOLS.map((school) => (
+                  <option key={school} value={school}>{school}</option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={profileSaving || !profileGrade || !profileClassName.trim() || !profileGender}
+              className="w-full py-3 bg-rose-600 hover:bg-rose-700 disabled:bg-rose-300 text-white font-semibold rounded-xl transition-colors text-sm"
+            >
+              {profileSaving ? t('studentPortal.completeProfileSaving') : t('studentPortal.completeProfileSave')}
+            </button>
+          </form>
         </div>
       ) : (
         <>
