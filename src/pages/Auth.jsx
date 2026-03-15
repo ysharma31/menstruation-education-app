@@ -47,7 +47,7 @@ const Auth = () => {
             navigate('/teacher');
             return;
           }
-          navigate('/');
+          navigate('/girls?section=tracking');
         }
       } else {
         const { error } = await signUp(email, password, name.trim(), nameHi.trim());

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearch } from '../contexts/SearchContext';
+import { useLocation } from 'react-router-dom';
 import { Heart, Calendar, Sparkles, Activity, ShoppingBag, ChevronRight, CircleCheck as CheckCircle, ArrowLeft, Circle as XCircle, Info, User, Droplet, Sun, Wind, Smile, ChevronDown, CircleAlert as AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PeriodTracker from '../components/tracker/PeriodTracker';
@@ -9,7 +10,11 @@ import AnatomyExplorer from '../components/education/AnatomyExplorer';
 const Girls = () => {
   const { t } = useTranslation();
   const { searchQuery } = useSearch();
-  const [currentSection, setCurrentSection] = useState(0);
+  const location = useLocation();
+  const [currentSection, setCurrentSection] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('section') === 'tracking' ? 4 : 0;
+  });
   const [selectedBodyPart, setSelectedBodyPart] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
