@@ -2,7 +2,7 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
 export const videoUrls = {
   intro: '1773592378673-a052n43319v.mp4',
-  cycle: null,
+  cycle: 'understanding_the_menstrual_cycle.mp4',
   products: null,
   myths: null,
   hygiene: null,
