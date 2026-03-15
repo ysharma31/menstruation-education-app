@@ -54,13 +54,32 @@ const StudentDashboard = () => {
         .eq('id', user.id)
         .maybeSingle();
 
-      const resolvedProfile = profileData ?? {
-        full_name: user.user_metadata?.full_name,
-        grade: user.user_metadata?.grade,
-        gender: user.user_metadata?.gender,
-        school_name: user.user_metadata?.school_name
-      };
+      let resolvedProfile = profileData;
+
+      if (!resolvedProfile && user.user_metadata?.full_name) {
+        const fallback = {
+          id: user.id,
+          full_name: user.user_metadata.full_name,
+          grade: user.user_metadata.grade ? parseInt(user.user_metadata.grade) : null,
+          gender: user.user_metadata.gender ?? null,
+          school_name: user.user_metadata.school_name ?? null
+        };
+        await supabase.from('student_profiles').upsert(fallback);
+        resolvedProfile = fallback;
+      }
+
+      if (!resolvedProfile) {
+        resolvedProfile = {
+          full_name: user.user_metadata?.full_name,
+          grade: user.user_metadata?.grade ? parseInt(user.user_metadata.grade) : null,
+          gender: user.user_metadata?.gender ?? null,
+          school_name: user.user_metadata?.school_name ?? null
+        };
+      }
+
       setProfile(resolvedProfile);
+
+      if (resolvedProfile.grade) resolvedProfile.grade = parseInt(resolvedProfile.grade);
 
       if (resolvedProfile.grade) {
         const { data: mats } = await supabase
