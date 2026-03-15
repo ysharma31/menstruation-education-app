@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearch } from '../contexts/SearchContext';
-import { Heart, Calendar, Sparkles, Activity, ShoppingBag, ChevronRight, CircleCheck as CheckCircle, ArrowLeft, Circle as XCircle, Info, User, Droplet, Sun, Wind, Smile, ChevronDown, CircleAlert as AlertCircle, ChevronLeft } from 'lucide-react';
+import { Heart, Calendar, Sparkles, Activity, ShoppingBag, ChevronRight, CircleCheck as CheckCircle, ArrowLeft, Circle as XCircle, Info, User, Droplet, Sun, Wind, Smile, ChevronDown, CircleAlert as AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import PeriodTracker from '../components/tracker/PeriodTracker';
 
 const Girls = () => {
   const { t } = useTranslation();
@@ -10,8 +11,6 @@ const Girls = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [selectedBodyPart, setSelectedBodyPart] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [periodDates, setPeriodDates] = useState([]);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const sections = [
     { id: 'understanding', icon: Sparkles, title: t('girls.understanding.title') },
@@ -48,33 +47,6 @@ const Girls = () => {
     { key: 'medicine', icon: AlertCircle }
   ];
 
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    const days = [];
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null);
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(year, month, i));
-    }
-    return days;
-  };
-
-  const togglePeriodDate = (date) => {
-    const dateStr = date.toDateString();
-    if (periodDates.includes(dateStr)) {
-      setPeriodDates(periodDates.filter(d => d !== dateStr));
-    } else {
-      setPeriodDates([...periodDates, dateStr]);
-    }
-  };
-
   const handlePrevSection = () => {
     if (currentSection > 0) {
       setCurrentSection(currentSection - 1);
@@ -87,12 +59,6 @@ const Girls = () => {
       setCurrentSection(currentSection + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  };
-
-  const navigateMonth = (direction) => {
-    const newDate = new Date(currentMonth);
-    newDate.setMonth(newDate.getMonth() + direction);
-    setCurrentMonth(newDate);
   };
 
   const matchesSearch = (text) => {
@@ -502,69 +468,7 @@ const Girls = () => {
                   </div>
                 </div>
 
-                <div className="p-6 bg-pink-50 rounded-2xl border border-pink-200">
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-semibold text-pink-700">
-                      {t('girls.tracking.calendarTitle')}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => navigateMonth(-1)}
-                        className="p-2.5 hover:bg-pink-100 rounded-xl transition-colors touch-target"
-                      >
-                        <ChevronLeft size={20} className="text-pink-600" />
-                      </button>
-                      <span className="text-sm font-medium text-pink-700 min-w-[120px] text-center">
-                        {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                      </span>
-                      <button
-                        onClick={() => navigateMonth(1)}
-                        className="p-2.5 hover:bg-pink-100 rounded-xl transition-colors touch-target"
-                      >
-                        <ChevronRight size={20} className="text-pink-600" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-pink-600/80 mb-5">
-                    {t('girls.tracking.calendarDesc')}
-                  </p>
-
-                  <div className="grid grid-cols-7 gap-1 mb-2">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                      <div key={day} className="text-center text-xs font-semibold text-pink-600 p-2">
-                        {day}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-7 gap-1.5">
-                    {getDaysInMonth(currentMonth).map((date, index) => {
-                      if (!date) {
-                        return <div key={`empty-${index}`} className="aspect-square" />;
-                      }
-
-                      const isToday = date.toDateString() === new Date().toDateString();
-                      const isPeriodDay = periodDates.includes(date.toDateString());
-
-                      return (
-                        <button
-                          key={date.toDateString()}
-                          onClick={() => togglePeriodDate(date)}
-                          className={`aspect-square rounded-xl text-sm font-medium transition-all duration-300 touch-target ${
-                            isPeriodDay
-                              ? 'bg-pink-500 text-white shadow-lg'
-                              : isToday
-                              ? 'bg-pink-100 text-pink-700 border-2 border-pink-400'
-                              : 'bg-white text-gray-600 hover:bg-pink-50'
-                          }`}
-                        >
-                          {date.getDate()}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                <PeriodTracker />
               </div>
             )}
 
