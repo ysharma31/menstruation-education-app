@@ -1,5 +1,5 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { GraduationCap, LogOut, BookOpen } from 'lucide-react';
+import { GraduationCap, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const TeacherLayout = () => {
@@ -26,13 +26,6 @@ const TeacherLayout = () => {
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link
-              to="/"
-              className="hidden sm:flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors"
-            >
-              <BookOpen className="w-4 h-4" />
-              Student App
-            </Link>
             {user && (
               <button
                 onClick={handleSignOut}

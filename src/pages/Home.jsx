@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMemo, useState, useEffect } from 'react';
-import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight, GraduationCap, CircleCheck as CheckCircle, X, AlertCircle } from 'lucide-react';
+import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight, GraduationCap, CircleCheck as CheckCircle, X, CircleAlert as AlertCircle } from 'lucide-react';
 import { useSearch } from '../contexts/SearchContext';
 import SearchResults from '../components/search/SearchResults';
 import { searchGlobalContent } from '../utils/contentIndex';
