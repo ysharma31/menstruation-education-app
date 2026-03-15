@@ -1,10 +1,12 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { GraduationCap, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 
 const TeacherLayout = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -20,8 +22,8 @@ const TeacherLayout = () => {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="font-bold text-gray-900 text-sm leading-none block">Teacher Dashboard</span>
-              <span className="text-xs text-green-600 leading-none">Period Education App</span>
+              <span className="font-bold text-gray-900 text-sm leading-none block">{t('teacherPortal.title')}</span>
+              <span className="text-xs text-green-600 leading-none">{t('common.appName')}</span>
             </div>
           </Link>
 
@@ -32,7 +34,7 @@ const TeacherLayout = () => {
                 className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors px-3 py-2 rounded-lg hover:bg-red-50"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Out</span>
+                <span className="hidden sm:inline">{t('auth.signOut')}</span>
               </button>
             )}
           </div>

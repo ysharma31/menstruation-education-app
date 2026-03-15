@@ -1,11 +1,13 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { BookOpen, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 
 const StudentLayout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -21,8 +23,8 @@ const StudentLayout = () => {
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="font-bold text-gray-900 text-sm leading-tight">Student Portal</p>
-              <p className="text-xs text-indigo-500 leading-tight">Period Education App</p>
+              <p className="font-bold text-gray-900 text-sm leading-tight">{t('studentPortal.title')}</p>
+              <p className="text-xs text-indigo-500 leading-tight">{t('common.appName')}</p>
             </div>
           </Link>
 
@@ -32,7 +34,7 @@ const StudentLayout = () => {
               className="text-sm text-gray-500 hover:text-red-600 flex items-center gap-2 transition-colors"
             >
               <LogOut size={16} />
-              <span className="hidden sm:inline">Sign Out</span>
+              <span className="hidden sm:inline">{t('auth.signOut')}</span>
             </button>
           )}
         </div>
