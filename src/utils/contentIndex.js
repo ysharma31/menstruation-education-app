@@ -7,15 +7,15 @@ export const getContentIndex = (t) => {
       color: 'pink',
       sections: [
         {
-          id: 'basics',
-          title: t('girls.basics.title'),
-          keywords: ['period', 'menstruation', 'what is', 'basics', 'माहवारी', 'पीरियड'],
+          id: 'understanding',
+          title: t('girls.understanding.title'),
+          keywords: ['period', 'menstruation', 'what is', 'basics', 'uterus', 'माहवारी', 'पीरियड'],
           path: '/girls'
         },
         {
-          id: 'body',
-          title: t('girls.body.title'),
-          keywords: ['body', 'anatomy', 'uterus', 'ovaries', 'शरीर', 'गर्भाशय'],
+          id: 'bodyChanges',
+          title: t('girls.bodyChanges.title'),
+          keywords: ['body', 'puberty', 'changes', 'growth', 'breasts', 'शरीर', 'बदलाव'],
           path: '/girls'
         },
         {
@@ -25,21 +25,21 @@ export const getContentIndex = (t) => {
           path: '/girls'
         },
         {
-          id: 'hygiene',
-          title: t('girls.hygiene.title'),
-          keywords: ['hygiene', 'clean', 'wash', 'care', 'स्वच्छता', 'साफ'],
+          id: 'painManagement',
+          title: t('girls.painManagement.title'),
+          keywords: ['cramps', 'pain', 'discomfort', 'relief', 'दर्द', 'ऐंठन'],
+          path: '/girls'
+        },
+        {
+          id: 'tracking',
+          title: t('girls.tracking.title'),
+          keywords: ['track', 'calendar', 'cycle', 'predict', 'ट्रैक', 'कैलेंडर'],
           path: '/girls'
         },
         {
           id: 'myths',
           title: t('girls.myths.title'),
-          keywords: ['myths', 'facts', 'truth', 'मिथक', 'सच'],
-          path: '/girls'
-        },
-        {
-          id: 'tracker',
-          title: t('girls.tracker.title'),
-          keywords: ['track', 'calendar', 'cycle', 'ट्रैक', 'कैलेंडर'],
+          keywords: ['myths', 'facts', 'truth', 'misconceptions', 'मिथक', 'सच'],
           path: '/girls'
         }
       ]
@@ -123,37 +123,37 @@ export const getContentIndex = (t) => {
         {
           id: 'basics',
           title: t('faq.categories.basics'),
-          keywords: ['period', 'age', 'first time', 'normal', 'पीरियड', 'उम्र'],
+          keywords: ['period', 'age', 'first time', 'normal', 'menstrual cycle', 'पीरियड', 'उम्र'],
           path: '/faq'
         },
         {
           id: 'health',
           title: t('faq.categories.health'),
-          keywords: ['pain', 'cramps', 'heavy', 'irregular', 'दर्द', 'अनियमित'],
+          keywords: ['pain', 'cramps', 'heavy', 'irregular', 'clots', 'doctor', 'दर्द', 'अनियमित'],
           path: '/faq'
         },
         {
           id: 'hygiene',
           title: t('faq.categories.hygiene'),
-          keywords: ['pad', 'change', 'wash', 'clean', 'पैड', 'साफ'],
+          keywords: ['pad', 'tampon', 'change', 'wash', 'clean', 'dispose', 'पैड', 'साफ'],
           path: '/faq'
         },
         {
           id: 'school',
           title: t('faq.categories.school'),
-          keywords: ['school', 'sports', 'swimming', 'activities', 'स्कूल', 'खेल'],
+          keywords: ['school', 'sports', 'swimming', 'exercise', 'activities', 'स्कूल', 'खेल'],
           path: '/faq'
         },
         {
           id: 'emotions',
           title: t('faq.categories.emotions'),
-          keywords: ['mood', 'feelings', 'emotions', 'pms', 'मूड', 'भावनाएं'],
+          keywords: ['mood', 'feelings', 'emotions', 'pms', 'cravings', 'मूड', 'भावनाएं'],
           path: '/faq'
         },
         {
           id: 'myths',
           title: t('faq.categories.myths'),
-          keywords: ['myths', 'taboos', 'beliefs', 'मिथक', 'वर्जनाएं'],
+          keywords: ['myths', 'taboos', 'beliefs', 'facts', 'truth', 'मिथक', 'वर्जनाएं'],
           path: '/faq'
         }
       ]
