@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Upload, CheckCircle, XCircle, Loader, Copy } from 'lucide-react';
+import { Upload, CircleCheck as CheckCircle, Circle as XCircle, Loader, Copy } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const UploadVideo = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState('');
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
@@ -15,25 +16,31 @@ const UploadVideo = () => {
       setError('');
       setUploadStatus(null);
       setVideoUrl('');
+      setUploadProgress(0);
 
       const file = event.target.files[0];
       if (!file) return;
 
-      if (file.size > 100 * 1024 * 1024) {
-        setError('File size must be less than 100MB');
+      if (file.size > 500 * 1024 * 1024) {
+        setError('File size must be less than 500MB');
         setUploading(false);
         return;
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      setFileName(fileName);
+      const generatedName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      setFileName(generatedName);
 
       const { data, error: uploadError } = await supabase.storage
         .from('videos')
-        .upload(fileName, file, {
+        .upload(generatedName, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: false,
+          duplex: 'half',
+          onUploadProgress: (progress) => {
+            const pct = Math.round((progress.loaded / progress.total) * 100);
+            setUploadProgress(pct);
+          },
         });
 
       if (uploadError) {
@@ -42,7 +49,7 @@ const UploadVideo = () => {
 
       const { data: { publicUrl } } = supabase.storage
         .from('videos')
-        .getPublicUrl(fileName);
+        .getPublicUrl(generatedName);
 
       setVideoUrl(publicUrl);
       setUploadStatus('success');
@@ -91,10 +98,10 @@ const UploadVideo = () => {
                   <Upload className="w-16 h-16 text-pink-500 mb-4" />
                 )}
                 <span className="text-lg font-medium text-gray-700 mb-2">
-                  {uploading ? 'Uploading...' : 'Click to upload video'}
+                  {uploading ? `Uploading... ${uploadProgress}%` : 'Click to upload video'}
                 </span>
                 <span className="text-sm text-gray-500">
-                  MP4, WebM, OGG (Max 100MB)
+                  MP4, WebM, OGG (Max 500MB)
                 </span>
               </label>
             </div>
