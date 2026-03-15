@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart } from 'lucide-react';
+import { Menu, X, Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, GraduationCap } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
 import SearchBar from '../ui/SearchBar';
 
@@ -111,6 +111,14 @@ const MobileHeader = () => {
 
           <div className="p-4 border-t border-warm-200">
             <LanguageToggle />
+            <Link
+              to="/teacher"
+              onClick={closeMenu}
+              className="mt-3 flex items-center gap-2 px-3 py-2.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-colors text-sm font-medium"
+            >
+              <GraduationCap size={16} />
+              Teacher / School Portal
+            </Link>
             <p className="mt-3 text-xs text-text-muted">
               {t('footer.disclaimer')}
             </p>

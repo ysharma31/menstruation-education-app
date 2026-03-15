@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut } from 'lucide-react';
+import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut, GraduationCap } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
 import SearchBar from '../ui/SearchBar';
 import { useAuth } from '../../contexts/AuthContext';
@@ -112,6 +112,14 @@ const DesktopNavigation = () => {
           {t('footer.disclaimer')}
         </p>
       </div>
+
+      <Link
+        to="/teacher"
+        className="mt-3 flex items-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-colors text-xs font-medium"
+      >
+        <GraduationCap size={14} />
+        Teacher / School Portal
+      </Link>
     </aside>
   );
 };
