@@ -3,12 +3,21 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GraduationCap, Mail, Lock, Eye, EyeOff, User, Shield, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { INDIAN_SCHOOLS } from '../../config/indianSchools';
+
+const SchoolIcon = ({ size = 16, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+);
 
 const TeacherAuth = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [mode, setMode] = useState('signin');
   const [name, setName] = useState('');
+  const [schoolName, setSchoolName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -50,7 +59,7 @@ const TeacherAuth = () => {
           email,
           password,
           options: {
-            data: { full_name: name.trim(), role: 'teacher' }
+            data: { full_name: name.trim(), role: 'teacher', school_name: schoolName || null }
           }
         });
         if (signUpError) {
@@ -66,6 +75,7 @@ const TeacherAuth = () => {
           setPassword('');
           setConfirmPassword('');
           setName('');
+          setSchoolName('');
         }, 2000);
       }
     } catch {
@@ -118,20 +128,38 @@ const TeacherAuth = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'signup' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('teacherPortal.yourName')}</label>
-                  <div className="relative">
-                    <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
-                      placeholder={t('teacherPortal.namePlaceholder')}
-                    />
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('teacherPortal.yourName')}</label>
+                    <div className="relative">
+                      <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
+                        placeholder={t('teacherPortal.namePlaceholder')}
+                      />
+                    </div>
                   </div>
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">School Name <span className="text-gray-400 font-normal">(optional)</span></label>
+                    <div className="relative">
+                      <SchoolIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <select
+                        value={schoolName}
+                        onChange={(e) => setSchoolName(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm bg-white appearance-none"
+                      >
+                        <option value="">Select your school</option>
+                        {INDIAN_SCHOOLS.map((school) => (
+                          <option key={school} value={school}>{school}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </>
               )}
 
               <div>

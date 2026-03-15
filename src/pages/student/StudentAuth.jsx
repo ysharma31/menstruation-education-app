@@ -5,6 +5,7 @@ import {
   BookOpen, ArrowLeft, User, Mail, Lock, Eye, EyeOff, GraduationCap
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { INDIAN_SCHOOLS } from '../../config/indianSchools';
 
 const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
 
@@ -225,13 +226,16 @@ const StudentAuth = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.schoolName')} <span className="text-gray-400 font-normal">{t('studentPortal.schoolNameOptional')}</span></label>
                   <div className="relative">
                     <SchoolIcon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
+                    <select
                       value={schoolName}
                       onChange={(e) => setSchoolName(e.target.value)}
-                      placeholder={t('studentPortal.schoolNamePlaceholder')}
-                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
-                    />
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm bg-white appearance-none"
+                    >
+                      <option value="">{t('studentPortal.schoolNamePlaceholder')}</option>
+                      {INDIAN_SCHOOLS.map((school) => (
+                        <option key={school} value={school}>{school}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
