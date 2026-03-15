@@ -12,7 +12,7 @@ const MobileNavigation = () => {
     { path: '/girls', icon: User, label: t('navigation.girls') },
     { path: '/boys', icon: Users, label: t('navigation.boys') },
     { path: '/chat', icon: Bot, label: t('navigation.chat') },
-    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? 'Account' : 'Sign In' },
+    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? t('auth.greeting', { name: user.user_metadata?.full_name || user.email?.split('@')[0] }) : t('auth.signInNav') },
   ];
 
   return (
