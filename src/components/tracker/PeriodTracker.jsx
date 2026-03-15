@@ -115,7 +115,7 @@ const getDateStatus = (date, cycles) => {
 };
 
 const PeriodTracker = () => {
-  const { user } = useAuth();
+  const { user, isAppUser } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [cycles, setCycles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,13 +138,13 @@ const PeriodTracker = () => {
   ];
 
   useEffect(() => {
-    if (user) {
+    if (isAppUser) {
       loadCyclesFromDatabase();
       loadJournalEntries();
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [isAppUser]);
 
   const loadCyclesFromDatabase = async () => {
     try {
@@ -211,7 +211,7 @@ const PeriodTracker = () => {
 
     const exactMatch = cycles.find(c => c.start_date === dateStr);
     if (exactMatch) {
-      if (user) {
+      if (isAppUser) {
         const existing = journalEntries.find(e => e.entry_date === dateStr);
         setJournalModal({ date: dateStr, existing: existing || null });
       }
@@ -252,7 +252,7 @@ const PeriodTracker = () => {
 
     await handleStartNewCycle(dateStr);
 
-    if (user) {
+    if (isAppUser) {
       const existing = journalEntries.find(e => e.entry_date === dateStr);
       if (!awaitingEndFor) {
         setJournalModal({ date: dateStr, existing: existing || null });
@@ -261,7 +261,7 @@ const PeriodTracker = () => {
   };
 
   const handleSaveJournalEntry = async (entryData) => {
-    if (!user) return;
+    if (!isAppUser) return;
     setJournalSaving(true);
 
     try {
@@ -319,7 +319,7 @@ const PeriodTracker = () => {
       created_at: new Date().toISOString()
     };
 
-    if (user) {
+    if (isAppUser) {
       try {
         const { data, error } = await supabase
           .from('period_cycles')
@@ -356,7 +356,7 @@ const PeriodTracker = () => {
 
     const periodLength = Math.max(1, Math.floor((clampedEnd - startDate) / (1000 * 60 * 60 * 24)) + 1);
 
-    if (user) {
+    if (isAppUser) {
       try {
         const { data, error } = await supabase
           .from('period_cycles')
@@ -381,7 +381,7 @@ const PeriodTracker = () => {
   const cancelOngoingCycle = async () => {
     if (!awaitingEndFor) return;
 
-    if (user) {
+    if (isAppUser) {
       try {
         await supabase.from('period_cycles').delete().eq('id', awaitingEndFor.id);
         setCycles(prev => prev.filter(c => c.id !== awaitingEndFor.id));
@@ -401,7 +401,7 @@ const PeriodTracker = () => {
       return;
     }
 
-    if (user) {
+    if (isAppUser) {
       try {
         await supabase.from('period_cycles').delete().eq('id', cycle.id);
         setCycles(prev => prev.filter(c => c.id !== cycle.id));
@@ -465,7 +465,7 @@ const PeriodTracker = () => {
   };
 
   const hasJournalEntry = (date) => {
-    if (!user) return false;
+    if (!isAppUser) return false;
     const dateStr = toDateStr(date);
     return journalEntries.some(e => e.entry_date === dateStr);
   };
@@ -576,7 +576,7 @@ const PeriodTracker = () => {
             <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
               <p className="text-sm text-pink-700">
                 <span className="font-semibold">How to record:</span> Tap the first day of your period to start recording. Then tap the last day to mark it complete. You can record more than one period per month.
-                {user && <span> You can also tap any day to add a journal entry.</span>}
+                {isAppUser && <span> You can also tap any day to add a journal entry.</span>}
               </p>
             </div>
           )}
@@ -721,7 +721,7 @@ const PeriodTracker = () => {
                   )}
                 </>
               )}
-              {user && (
+              {isAppUser && (
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-pink-400" />
                   <span className="text-gray-500">Journal entry</span>
@@ -820,7 +820,7 @@ const PeriodTracker = () => {
             </div>
           )}
 
-          {!user && cycles.length > 0 && (
+          {!isAppUser && cycles.length > 0 && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-4">
               <div className="flex items-start gap-3">
                 <Info size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
@@ -838,7 +838,7 @@ const PeriodTracker = () => {
             </div>
           )}
 
-          {!user && cycles.length === 0 && (
+          {!isAppUser && cycles.length === 0 && (
             <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-5 text-center">
               <p className="text-sm text-gray-500 mb-3">Sign in to save your data and unlock medication tracking and cycle analysis.</p>
               <Link
@@ -861,14 +861,14 @@ const PeriodTracker = () => {
 
       {activeTab === 'analysis' && <CycleAnalysis cycles={cycles} journalEntries={journalEntries} />}
 
-      {activeTab === 'journal' && user && (
+      {activeTab === 'journal' && isAppUser && (
         <JournalTab
           entries={journalEntries}
           onEditEntry={(entry) => setJournalModal({ date: entry.entry_date, existing: entry })}
         />
       )}
 
-      {activeTab === 'journal' && !user && (
+      {activeTab === 'journal' && !isAppUser && (
         <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
           <BookOpen size={28} className="text-gray-300 mx-auto mb-3" />
           <p className="text-sm text-gray-600 font-medium mb-1">Sign in to see your period journal</p>

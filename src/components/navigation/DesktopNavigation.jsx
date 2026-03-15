@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const DesktopNavigation = () => {
   const { t, i18n } = useTranslation();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAppUser } = useAuth();
   const isHindi = i18n.language === 'hi';
 
   const displayName = () => {
@@ -92,7 +92,7 @@ const DesktopNavigation = () => {
           Student Portal
         </Link>
         <LanguageToggle />
-        {user ? (
+        {isAppUser ? (
           <div className="flex items-center justify-between px-2 py-2 bg-pink-50 rounded-xl">
             <div className="flex items-center gap-2 min-w-0">
               <div className="w-7 h-7 rounded-full bg-pink-200 flex items-center justify-center flex-shrink-0">

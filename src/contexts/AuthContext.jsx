@@ -39,8 +39,10 @@ export const AuthProvider = ({ children }) => {
     return { error };
   };
 
+  const isAppUser = !!user && !user.user_metadata?.role;
+
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, isAppUser }}>
       {children}
     </AuthContext.Provider>
   );

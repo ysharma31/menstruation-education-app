@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const MobileNavigation = () => {
   const { t, i18n } = useTranslation();
-  const { user } = useAuth();
+  const { user, isAppUser } = useAuth();
   const isHindi = i18n.language === 'hi';
 
   const displayName = () => {
@@ -20,7 +20,7 @@ const MobileNavigation = () => {
     { path: '/girls', icon: User, label: t('navigation.girls') },
     { path: '/boys', icon: Users, label: t('navigation.boys') },
     { path: '/chat', icon: Bot, label: t('navigation.chat') },
-    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? t('auth.greeting', { name: displayName() }) : t('auth.signInNavTracker') },
+    { path: isAppUser ? '/girls' : '/auth', icon: isAppUser ? User : LogIn, label: isAppUser ? t('auth.greeting', { name: displayName() }) : t('auth.signInNavTracker') },
   ];
 
   return (
