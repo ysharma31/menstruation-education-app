@@ -3,22 +3,20 @@ import { FileText, Image, Video, ExternalLink, Trash2 } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
 
-const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
-
 const TYPE_ICON = {
   pdf: { icon: FileText, bg: 'bg-red-100', color: 'text-red-600' },
   image: { icon: Image, bg: 'bg-blue-100', color: 'text-blue-600' },
-  video: { icon: Video, bg: 'bg-purple-100', color: 'text-purple-600' }
+  video: { icon: Video, bg: 'bg-teal-100', color: 'text-teal-600' }
 };
 
 const formatDate = (ts) =>
   new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 
-const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId }) => {
+const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, classes = [] }) => {
   const { user } = useAuth();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [gradeFilter, setGradeFilter] = useState('');
+  const [classFilter, setClassFilter] = useState('');
   const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
@@ -27,7 +25,7 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId }) 
       setLoading(true);
       const { data } = await supabase
         .from('course_materials')
-        .select('*')
+        .select('*, teacher_classes(class_name)')
         .eq('teacher_id', user.id)
         .order('created_at', { ascending: false });
       setMaterials(data ?? []);
@@ -52,18 +50,30 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId }) 
     }
   };
 
-  const filtered = gradeFilter
-    ? materials.filter((m) => m.grade === parseInt(gradeFilter))
+  const filtered = classFilter
+    ? materials.filter((m) => m.class_id === classFilter)
     : materials;
 
-  const byGrade = filtered.reduce((acc, m) => {
-    const key = m.grade;
+  const byClass = filtered.reduce((acc, m) => {
+    const key = m.class_id ?? '__none__';
     if (!acc[key]) acc[key] = [];
     acc[key].push(m);
     return acc;
   }, {});
 
-  const sortedGrades = Object.keys(byGrade).map(Number).sort((a, b) => a - b);
+  const getClassName = (classId) => {
+    if (!classId) return 'No class assigned';
+    const found = classes.find((c) => c.id === classId);
+    if (found) return found.class_name;
+    const fromMaterial = materials.find((m) => m.class_id === classId);
+    return fromMaterial?.teacher_classes?.class_name ?? 'Unknown class';
+  };
+
+  const sortedClassKeys = Object.keys(byClass).sort((a, b) => {
+    if (a === '__none__') return 1;
+    if (b === '__none__') return -1;
+    return getClassName(a).localeCompare(getClassName(b));
+  });
 
   if (loading) {
     return (
@@ -83,13 +93,13 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId }) 
           <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{materials.length}</span>
         </div>
         <select
-          value={gradeFilter}
-          onChange={(e) => setGradeFilter(e.target.value)}
+          value={classFilter}
+          onChange={(e) => setClassFilter(e.target.value)}
           className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-300 bg-white"
         >
-          <option value="">All Grades</option>
-          {GRADES.map((g) => (
-            <option key={g} value={g}>Grade {g}</option>
+          <option value="">All Classes</option>
+          {classes.map((c) => (
+            <option key={c.id} value={c.id}>{c.class_name}</option>
           ))}
         </select>
       </div>
@@ -101,14 +111,14 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId }) 
         </div>
       ) : (
         <div className="max-h-[520px] overflow-y-auto">
-          {sortedGrades.map((g) => (
-            <div key={g}>
+          {sortedClassKeys.map((classKey) => (
+            <div key={classKey}>
               <div className="px-6 py-2 bg-gray-50 border-b border-gray-100">
                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Grade {g} ({byGrade[g].length})
+                  {getClassName(classKey === '__none__' ? null : classKey)} ({byClass[classKey].length})
                 </span>
               </div>
-              {byGrade[g].map((material, i) => {
+              {byClass[classKey].map((material, i) => {
                 const { icon: Icon, bg, color } = TYPE_ICON[material.type] ?? TYPE_ICON.pdf;
                 const isSelected = selectedMaterialId === material.id;
                 return (
@@ -117,7 +127,7 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId }) 
                     onClick={() => onSelectMaterial(material)}
                     className={`flex items-center gap-3 px-6 py-3 cursor-pointer hover:bg-green-50 transition-colors ${
                       isSelected ? 'bg-green-50 border-l-4 border-green-500' : ''
-                    } ${i < byGrade[g].length - 1 ? 'border-b border-gray-50' : ''}`}
+                    } ${i < byClass[classKey].length - 1 ? 'border-b border-gray-50' : ''}`}
                   >
                     <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0`}>
                       <Icon size={14} className={color} />

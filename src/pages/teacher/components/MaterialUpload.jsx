@@ -1,24 +1,23 @@
 import { useState, useRef } from 'react';
-import { FileText, Image, Video, Upload, Link, Loader, Check, X } from 'lucide-react';
+import { FileText, Image, Video, Upload, Link, Loader, Check, X, GraduationCap } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
 
-const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const TYPE_OPTIONS = [
   { value: 'pdf', label: 'PDF Document', icon: FileText, color: 'red' },
   { value: 'image', label: 'Image', icon: Image, color: 'blue' },
-  { value: 'video', label: 'Video Link', icon: Video, color: 'purple' }
+  { value: 'video', label: 'Video Link', icon: Video, color: 'teal' }
 ];
 
-const MaterialUpload = ({ onUploaded }) => {
+const MaterialUpload = ({ onUploaded, classes = [] }) => {
   const { user } = useAuth();
   const fileInputRef = useRef(null);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [grade, setGrade] = useState('');
+  const [classId, setClassId] = useState('');
   const [type, setType] = useState('');
   const [file, setFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState('');
@@ -40,7 +39,7 @@ const MaterialUpload = ({ onUploaded }) => {
   const resetForm = () => {
     setTitle('');
     setDescription('');
-    setGrade('');
+    setClassId('');
     setType('');
     setFile(null);
     setVideoUrl('');
@@ -52,11 +51,13 @@ const MaterialUpload = ({ onUploaded }) => {
     e.preventDefault();
     setError('');
 
+    if (!classId) { setError('Please select a class for this material.'); return; }
     if (!title.trim()) { setError('Title is required.'); return; }
-    if (!grade) { setError('Grade is required.'); return; }
     if (!type) { setError('Please select a material type.'); return; }
     if ((type === 'pdf' || type === 'image') && !file) { setError('Please select a file to upload.'); return; }
     if (type === 'video' && !videoUrl.trim()) { setError('Please enter a video URL.'); return; }
+
+    const selectedClass = classes.find((c) => c.id === classId);
 
     setSubmitting(true);
     try {
@@ -80,12 +81,13 @@ const MaterialUpload = ({ onUploaded }) => {
         .from('course_materials')
         .insert({
           teacher_id: user.id,
+          class_id: classId,
           title: title.trim(),
           description: description.trim() || null,
           type,
           url,
           file_name: filePath,
-          grade: parseInt(grade)
+          grade: selectedClass?.grade ?? null
         })
         .select()
         .single();
@@ -120,7 +122,33 @@ const MaterialUpload = ({ onUploaded }) => {
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">{error}</div>
       )}
 
+      {classes.length === 0 && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+          You need to create a class first before uploading materials.
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Class <span className="text-red-400">*</span>
+          </label>
+          <div className="relative">
+            <GraduationCap size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <select
+              value={classId}
+              onChange={(e) => setClassId(e.target.value)}
+              disabled={classes.length === 0}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm bg-white disabled:opacity-50"
+            >
+              <option value="">Select a class</option>
+              {classes.map((c) => (
+                <option key={c.id} value={c.id}>{c.class_name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
             Title <span className="text-red-400">*</span>
@@ -147,22 +175,6 @@ const MaterialUpload = ({ onUploaded }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Grade <span className="text-red-400">*</span>
-          </label>
-          <select
-            value={grade}
-            onChange={(e) => setGrade(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm bg-white"
-          >
-            <option value="">Select grade level</option>
-            {GRADES.map((g) => (
-              <option key={g} value={g}>Grade {g}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
             Material Type <span className="text-red-400">*</span>
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -171,7 +183,7 @@ const MaterialUpload = ({ onUploaded }) => {
               const colorMap = {
                 red: isSelected ? 'border-red-400 bg-red-50 text-red-700' : 'border-gray-200 text-gray-600 hover:border-red-200',
                 blue: isSelected ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:border-blue-200',
-                purple: isSelected ? 'border-purple-400 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-600 hover:border-purple-200'
+                teal: isSelected ? 'border-teal-400 bg-teal-50 text-teal-700' : 'border-gray-200 text-gray-600 hover:border-teal-200'
               };
               return (
                 <button
@@ -242,7 +254,7 @@ const MaterialUpload = ({ onUploaded }) => {
 
         <button
           type="submit"
-          disabled={submitting || success}
+          disabled={submitting || success || classes.length === 0}
           className={`w-full py-3 font-semibold rounded-xl transition-all text-sm flex items-center justify-center gap-2 ${
             success
               ? 'bg-green-500 text-white'

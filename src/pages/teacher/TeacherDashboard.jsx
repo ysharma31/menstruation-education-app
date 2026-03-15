@@ -142,9 +142,10 @@ const TeacherDashboard = () => {
 
       {activeTab === 'materials' && (
         <div className="grid lg:grid-cols-2 gap-6">
-          <MaterialUpload onUploaded={() => setMaterialRefreshKey((k) => k + 1)} />
+          <MaterialUpload onUploaded={() => setMaterialRefreshKey((k) => k + 1)} classes={classes} />
           <MaterialList
             refreshTrigger={materialRefreshKey}
+            classes={classes}
             onSelectMaterial={(material) => {
               setSelectedMaterial(material);
               setActiveTab('access');
@@ -158,6 +159,7 @@ const TeacherDashboard = () => {
         <div className="grid lg:grid-cols-2 gap-6">
           <MaterialList
             refreshTrigger={materialRefreshKey}
+            classes={classes}
             onSelectMaterial={(material) => setSelectedMaterial(material)}
             selectedMaterialId={selectedMaterial?.id}
           />
