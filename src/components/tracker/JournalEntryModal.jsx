@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { X, Star, Circle } from 'lucide-react';
+import { useState } from 'react';
+import { X, Star } from 'lucide-react';
 
 const FLOW_OPTIONS = [
   { value: 'none', label: 'None' },
