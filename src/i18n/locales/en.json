@@ -14,7 +14,7 @@
     "error": "Something went wrong",
     "success": "Success!",
     "welcome": "Welcome",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started."
   },
   "navigation": {
     "home": "Home",
@@ -24,7 +24,7 @@
     "faq": "FAQ",
     "parents": "For Parents",
     "ask": "Ask Questions",
-    "chat": "AI Chat"
+    "chat": "AI Chat."
   },
   "home": {
     "title": "Learn About Your Body",
@@ -32,7 +32,7 @@
     "description": "Everyone goes through changes as they grow up. This app helps you understand these changes in a friendly, easy-to-understand way.",
     "chooseSection": "Choose a section to explore:",
     "forEveryone": "This information is for everyone!",
-    "safeSpace": "Safe & Supportive Learning"
+    "safeSpace": "Safe & Supportive Learning."
   },
   "boys": {
     "title": "For Boys",
@@ -59,7 +59,7 @@
       "basics": "The Basics",
       "support": "Being Supportive",
       "myths": "Myths vs Facts",
-      "questions": "Common Questions"
+      "questions": "Common Questions."
     },
     "basics": {
       "title": "Understanding Menstruation: The Basics",
@@ -123,7 +123,7 @@
       "scenario2": "Someone asks to borrow your jacket",
       "scenario2Action": "Lend it without asking why. They might need it for privacy",
       "scenario3": "A friend says they can't play sports today",
-      "scenario3Action": "Accept it without pressing for details. Suggest something low-key instead"
+      "scenario3Action": "Accept it without pressing for details. Suggest something low-key instead."
     },
     "myths": {
       "title": "Busting Common Myths",
@@ -143,7 +143,7 @@
       "myth7": "Period pain isn't real",
       "fact7": "Period cramps are real and can be quite painful. They're caused by muscle contractions in the uterus",
       "myth8": "You lose a lot of blood during a period",
-      "fact8": "The average period involves only about 2-3 tablespoons of blood. It might look like more because it's mixed with other fluids"
+      "fact8": "The average period involves only about 2-3 tablespoons of blood. It might look like more because it's mixed with other fluids."
     },
     "quiz": {
       "title": "Test Your Knowledge",
@@ -183,7 +183,7 @@
       "excellent": "Excellent! You really understand how to be supportive!",
       "good": "Good job! You're on the right track!",
       "needsWork": "Keep learning! Review the sections again.",
-      "retakeQuiz": "Retake Quiz"
+      "retakeQuiz": "Retake Quiz."
     },
     "summary": {
       "title": "Key Takeaways",
@@ -191,7 +191,7 @@
       "point2": "Be understanding and supportive",
       "point3": "Never make jokes or tease about periods",
       "point4": "Speak up against period stigma",
-      "point5": "Educate yourself to be a better ally"
+      "point5": "Educate yourself to be a better ally."
     }
   },
   "girls": {
@@ -222,7 +222,7 @@
       "products": "Period Products",
       "selfCare": "Self Care",
       "emotions": "Managing Emotions",
-      "myths": "Myths & Facts"
+      "myths": "Myths & Facts."
     },
     "understanding": {
       "title": "Understanding Menstruation",
@@ -294,7 +294,7 @@
       "heavy": "Very heavy bleeding (soaking through pads in 1-2 hours)",
       "long": "Periods lasting more than 7 days",
       "irregular": "Very irregular cycles after having periods for 2+ years",
-      "other": "Any other concerns or questions you have"
+      "other": "Any other concerns or questions you have."
     },
     "tracking": {
       "title": "Tracking Your Cycle",
@@ -346,7 +346,7 @@
       "tip2": "Dark-colored clothes can help you feel more confident",
       "tip3": "Set a reminder on your phone to change products regularly",
       "tip4": "Keep a jacket or sweater tied around your waist just in case",
-      "tip5": "Tell a trusted friend or teacher so you have support at school"
+      "tip5": "Tell a trusted friend or teacher so you have support at school."
     }
   },
   "animated": {
@@ -359,7 +359,7 @@
       "products": "Period Products Guide",
       "myths": "Busting Period Myths",
       "hygiene": "Menstrual Hygiene Management",
-      "support": "How to Be Supportive"
+      "support": "How to Be Supportive."
     },
     "videoDescriptions": {
       "intro": "Learn about the amazing changes that happen during puberty. This video explains everything in a friendly, easy-to-understand way.",
@@ -381,13 +381,13 @@
       "all": "All Videos",
       "basics": "Basics",
       "education": "Educational",
-      "practical": "Practical Tips"
+      "practical": "Practical Tips."
     },
     "audienceLabels": {
       "everyone": "Everyone",
       "girls": "Girls",
       "boys": "Boys",
-      "parents": "Parents"
+      "parents": "Parents."
     },
     "comingSoon": "Videos Coming Soon!",
     "comingSoonBadge": "Soon",
@@ -401,7 +401,7 @@
     "videoInfo": "Video Information",
     "relatedTopics": "Related Topics",
     "transcript": "Video Transcript",
-    "downloadPDF": "Download PDF Guide"
+    "downloadPDF": "Download PDF Guide."
   },
   "faq": {
     "title": "Frequently Asked Questions",
@@ -415,7 +415,7 @@
       "hygiene": "Hygiene",
       "school": "School & Activities",
       "emotions": "Emotions",
-      "myths": "Myths"
+      "myths": "Myths."
     },
     "questions": {
       "q1": "What is a period?",
@@ -505,7 +505,7 @@
     "showingResults": "Showing {{count}} question",
     "showingResults_plural": "Showing {{count}} questions",
     "readMore": "Read more",
-    "readLess": "Read less"
+    "readLess": "Read less."
   },
   "chat": {
     "title": "Ask AI Assistant",
@@ -555,7 +555,7 @@
     "noHistory": "No conversation history yet.",
     "today": "Today",
     "yesterday": "Yesterday",
-    "older": "Older"
+    "older": "Older."
   },
   "parents": {
     "title": "Guide for Parents",
@@ -574,7 +574,7 @@
       "signs": "Signs of Puberty",
       "support": "Emotional Support",
       "medical": "When to See a Doctor",
-      "resources": "Resources"
+      "resources": "Resources."
     }
   },
   "ask": {
@@ -588,7 +588,7 @@
       "health": "Health",
       "products": "Products",
       "emotions": "Emotions & Feelings",
-      "other": "Other"
+      "other": "Other."
     },
     "ageLabel": "Your Age Group",
     "ageGroups": {
@@ -596,7 +596,7 @@
       "10to12": "10-12",
       "13to15": "13-15",
       "16plus": "16+",
-      "parent": "I'm a Parent"
+      "parent": "I'm a Parent."
     },
     "submitButton": "Submit Question",
     "thankYou": "Thank you for your question!",
