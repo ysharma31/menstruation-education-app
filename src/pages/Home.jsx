@@ -1,14 +1,96 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
-import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { useMemo, useState, useEffect } from 'react';
+import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight, GraduationCap, CircleCheck as CheckCircle, X } from 'lucide-react';
 import { useSearch } from '../contexts/SearchContext';
 import SearchResults from '../components/search/SearchResults';
 import { searchGlobalContent } from '../utils/contentIndex';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+
+const JoinClassBanner = ({ code, onDismiss }) => {
+  const { user } = useAuth();
+  const [inputCode, setInputCode] = useState(code || '');
+  const [status, setStatus] = useState('idle');
+  const [message, setMessage] = useState('');
+
+  const handleJoin = async () => {
+    if (!inputCode.trim()) return;
+    if (!user) { setMessage('Please sign in first to join a class.'); setStatus('error'); return; }
+    setStatus('loading');
+    setMessage('');
+    try {
+      const { data: cls, error: lookupErr } = await supabase
+        .from('teacher_classes')
+        .select('id, class_name')
+        .eq('class_code', inputCode.trim().toUpperCase())
+        .maybeSingle();
+      if (lookupErr || !cls) { setMessage('Class code not found. Please check and try again.'); setStatus('error'); return; }
+      const { error: enrollErr } = await supabase.from('class_enrollments').insert({ class_id: cls.id, student_id: user.id });
+      if (enrollErr && enrollErr.code !== '23505') { setMessage('Could not join. Please try again.'); setStatus('error'); return; }
+      setStatus('success');
+      setMessage(`Joined "${cls.class_name}" successfully!`);
+    } catch { setMessage('Something went wrong.'); setStatus('error'); }
+  };
+
+  return (
+    <div className="bg-green-50 border border-green-200 rounded-2xl p-5 mb-8 relative">
+      <button onClick={onDismiss} className="absolute top-3 right-3 p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-white transition-colors">
+        <X size={16} />
+      </button>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center flex-shrink-0">
+          <GraduationCap className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p className="font-bold text-gray-900 text-sm">Your teacher shared this app</p>
+          <p className="text-xs text-gray-500">Enter the class code to join (optional)</p>
+        </div>
+      </div>
+      {status === 'success' ? (
+        <div className="flex items-center gap-2 text-green-700 text-sm bg-green-100 rounded-xl px-4 py-3">
+          <CheckCircle size={16} /> {message}
+        </div>
+      ) : (
+        <>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={inputCode}
+              onChange={(e) => setInputCode(e.target.value.toUpperCase())}
+              maxLength={6}
+              placeholder="CLASS CODE"
+              className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 text-sm font-mono uppercase tracking-widest"
+            />
+            <button
+              onClick={handleJoin}
+              disabled={status === 'loading' || !inputCode.trim()}
+              className="px-5 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold rounded-xl text-sm transition-colors"
+            >
+              {status === 'loading' ? 'Joining...' : 'Join'}
+            </button>
+          </div>
+          {message && (
+            <p className={`mt-2 text-xs ${status === 'error' ? 'text-red-600' : 'text-green-700'}`}>{message}</p>
+          )}
+          <p className="mt-3 text-xs text-gray-400">Joining is optional. You can use the app fully without joining a class.</p>
+        </>
+      )}
+    </div>
+  );
+};
 
 const Home = () => {
   const { t } = useTranslation();
   const { searchQuery } = useSearch();
+  const [searchParams] = useSearchParams();
+  const [showJoinBanner, setShowJoinBanner] = useState(false);
+  const [joinCode, setJoinCode] = useState('');
+
+  useEffect(() => {
+    const code = searchParams.get('join');
+    if (code) { setJoinCode(code.toUpperCase()); setShowJoinBanner(true); }
+  }, [searchParams]);
 
   const sections = [
     {
@@ -81,6 +163,9 @@ const Home = () => {
 
   return (
     <div className="page-container animate-fade-in">
+      {showJoinBanner && (
+        <JoinClassBanner code={joinCode} onDismiss={() => setShowJoinBanner(false)} />
+      )}
       <section className="mb-12">
         <div className="text-center max-w-4xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-pink-50 rounded-full shadow-sm">

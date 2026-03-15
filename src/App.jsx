@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
+import TeacherLayout from './components/teacher/TeacherLayout';
 import {
   Home,
   Girls,
@@ -12,6 +13,8 @@ import {
   UploadVideo,
   Auth
 } from './pages';
+import TeacherAuth from './pages/teacher/TeacherAuth';
+import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import { SearchProvider } from './contexts/SearchContext';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -35,6 +38,10 @@ function App() {
               <Route path="ask" element={<AskQuestion />} />
               <Route path="chat" element={<Chat />} />
               <Route path="upload-video" element={<UploadVideo />} />
+            </Route>
+            <Route path="/teacher" element={<TeacherLayout />}>
+              <Route index element={<TeacherAuth />} />
+              <Route path="dashboard" element={<TeacherDashboard />} />
             </Route>
           </Routes>
         </Router>
