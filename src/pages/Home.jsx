@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight, School } from 'lucide-react';
 import { useSearch } from '../contexts/SearchContext';
 import SearchResults from '../components/search/SearchResults';
 import { searchGlobalContent } from '../utils/contentIndex';
@@ -16,7 +16,8 @@ const Home = () => {
     { path: '/animated', icon: PlayCircle, title: t('navigation.animated'), description: t('animated.description'), bgColor: 'bg-sky-50', borderColor: 'border-sky-400', iconBg: 'bg-sky-500', textColor: 'text-sky-700' },
     { path: '/faq', icon: HelpCircle, title: t('navigation.faq'), description: t('faq.subtitle'), bgColor: 'bg-blue-50', borderColor: 'border-blue-300', iconBg: 'bg-blue-500', textColor: 'text-blue-700' },
     { path: '/parents', icon: BookOpen, title: t('navigation.parents'), description: t('parents.intro'), bgColor: 'bg-green-50', borderColor: 'border-green-400', iconBg: 'bg-green-500', textColor: 'text-green-700' },
-    { path: '/ask', icon: MessageCircle, title: t('navigation.ask'), description: t('ask.description'), bgColor: 'bg-pink-50', borderColor: 'border-pink-300', iconBg: 'bg-pink-500', textColor: 'text-pink-700' }
+    { path: '/ask', icon: MessageCircle, title: t('navigation.ask'), description: t('ask.description'), bgColor: 'bg-pink-50', borderColor: 'border-pink-300', iconBg: 'bg-pink-500', textColor: 'text-pink-700' },
+    { path: '/teachers', icon: School, title: t('navigation.teachers'), description: t('teachers.intro'), bgColor: 'bg-green-50', borderColor: 'border-green-500', iconBg: 'bg-green-600', textColor: 'text-green-700' }
   ];
 
   const searchResults = useMemo(() => searchGlobalContent(searchQuery, t), [searchQuery, t]);

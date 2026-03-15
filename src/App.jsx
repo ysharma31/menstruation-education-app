@@ -5,6 +5,7 @@ import {
   Home,
   Girls,
   Boys,
+  Teachers,
   AnimatedExplainer,
   FAQ,
   ParentsGuide,
@@ -32,6 +33,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path="girls" element={<Girls />} />
               <Route path="boys" element={<Boys />} />
+              <Route path="teachers" element={<Teachers />} />
               <Route path="animated" element={<AnimatedExplainer />} />
               <Route path="faq" element={<FAQ />} />
               <Route path="parents" element={<ParentsGuide />} />

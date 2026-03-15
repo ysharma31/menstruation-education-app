@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut, GraduationCap, CalendarCheck } from 'lucide-react';
+import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut, GraduationCap, CalendarCheck, School } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
 import SearchBar from '../ui/SearchBar';
 import { useAuth } from '../../contexts/AuthContext';
@@ -26,6 +26,7 @@ const DesktopNavigation = () => {
     { path: '/parents', icon: BookOpen, label: t('navigation.parents') },
     { path: '/ask', icon: MessageCircle, label: t('navigation.ask') },
     { path: '/chat', icon: Bot, label: t('navigation.chat'), color: 'text-primary-600' },
+    { path: '/teachers', icon: School, label: t('navigation.teachers'), color: 'text-green-600' },
   ];
 
   return (
