@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User } from 'lucide-react';
+import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User, GraduationCap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+
+const getPendingCode = () =>
+  localStorage.getItem('pendingClassCode') || sessionStorage.getItem('pendingClassCode');
+
+const clearPendingCode = () => {
+  localStorage.removeItem('pendingClassCode');
+  sessionStorage.removeItem('pendingClassCode');
+};
 
 const Auth = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { signIn, signUp } = useAuth();
 
-  const [mode, setMode] = useState('signin');
+  const pendingCode = getPendingCode();
+
+  const [mode, setMode] = useState(pendingCode ? 'signup' : 'signin');
   const [name, setName] = useState('');
   const [nameHi, setNameHi] = useState('');
   const [email, setEmail] = useState('');
@@ -19,6 +30,37 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [joinToast, setJoinToast] = useState('');
+
+  useEffect(() => {
+    if (joinToast) {
+      const timer = setTimeout(() => setJoinToast(''), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [joinToast]);
+
+  const attemptEnrollAfterAuth = async (userId) => {
+    const code = getPendingCode();
+    if (!code) return null;
+    try {
+      const { data: cls } = await supabase
+        .from('teacher_classes')
+        .select('id, class_name')
+        .eq('class_code', code)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (!cls) { clearPendingCode(); return null; }
+      const { error: enrollErr } = await supabase
+        .from('class_enrollments')
+        .insert({ class_id: cls.id, student_id: userId });
+      if (enrollErr && enrollErr.code !== '23505') { clearPendingCode(); return null; }
+      clearPendingCode();
+      return cls.class_name;
+    } catch {
+      clearPendingCode();
+      return null;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,35 +68,35 @@ const Auth = () => {
     setSuccess('');
 
     if (mode === 'signup') {
-      if (!name.trim()) {
-        setError(t('auth.errorEnterName'));
-        return;
-      }
-      if (password !== confirmPassword) {
-        setError(t('auth.errorPasswordsNoMatch'));
-        return;
-      }
-      if (password.length < 6) {
-        setError(t('auth.errorPasswordTooShort'));
-        return;
-      }
+      if (!name.trim()) { setError(t('auth.errorEnterName')); return; }
+      if (password !== confirmPassword) { setError(t('auth.errorPasswordsNoMatch')); return; }
+      if (password.length < 6) { setError(t('auth.errorPasswordTooShort')); return; }
     }
 
     setLoading(true);
 
     try {
       if (mode === 'signin') {
-        const { error } = await signIn(email, password);
+        const { data, error } = await signIn(email, password);
         if (error) {
           setError(error.message === 'Invalid login credentials'
             ? t('auth.errorInvalidCredentials')
             : error.message
           );
         } else {
-          navigate('/girls');
+          const role = data?.user?.user_metadata?.role;
+          if (role === 'teacher') {
+            navigate('/teacher');
+            return;
+          }
+          const className = await attemptEnrollAfterAuth(data.user.id);
+          if (className) {
+            setJoinToast(`You have joined "${className}"!`);
+          }
+          navigate('/');
         }
       } else {
-        const { error } = await signUp(email, password, name.trim(), nameHi.trim());
+        const { data, error } = await signUp(email, password, name.trim(), nameHi.trim());
         if (error) {
           setError(error.message.includes('already registered')
             ? t('auth.errorEmailExists')
@@ -79,13 +121,16 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 flex items-center justify-center p-4">
+      {joinToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-5 py-3 rounded-2xl shadow-lg text-sm font-medium">
+          {joinToast}
+        </div>
+      )}
+
       <div className="w-full max-w-md">
-        <Link
-          to="/girls"
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 mb-6 transition-colors text-sm"
-        >
+        <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 mb-6 transition-colors text-sm">
           <ArrowLeft size={16} />
-          {t('auth.backToGirls')}
+          Back to home
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
@@ -102,115 +147,82 @@ const Auth = () => {
           </div>
 
           <div className="p-8">
+            {pendingCode && (
+              <div className="mb-5 pl-4 border-l-4 border-green-400 bg-green-50 rounded-r-xl py-3 pr-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <GraduationCap size={14} className="text-green-700 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-green-800">You are joining a class.</p>
+                </div>
+                <p className="text-xs text-green-700 mb-1">Create an account or sign in to complete joining.</p>
+                <p className="text-xs font-mono font-bold text-green-700 tracking-widest">{pendingCode}</p>
+              </div>
+            )}
+
             <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
               <button
                 onClick={() => { setMode('signin'); setError(''); setSuccess(''); setName(''); }}
-                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-                  mode === 'signin'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${mode === 'signin' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 {t('auth.signIn')}
               </button>
               <button
                 onClick={() => { setMode('signup'); setError(''); setSuccess(''); }}
-                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-                  mode === 'signup'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${mode === 'signup' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 {t('auth.signUp')}
               </button>
             </div>
 
             {error && (
-              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
-                {error}
-              </div>
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">{error}</div>
             )}
-
             {success && (
-              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
-                {success}
-              </div>
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">{success}</div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'signup' && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('auth.yourName')}
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.yourName')}</label>
                     <div className="relative">
                       <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
+                      <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
                         className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                        placeholder={t('auth.namePlaceholder')}
-                      />
+                        placeholder={t('auth.namePlaceholder')} />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('auth.yourNameHi')}
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.yourNameHi')}</label>
                     <div className="relative">
                       <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="text"
-                        value={nameHi}
-                        onChange={(e) => setNameHi(e.target.value)}
+                      <input type="text" value={nameHi} onChange={(e) => setNameHi(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                        placeholder={t('auth.nameHiPlaceholder')}
-                        dir="auto"
-                      />
+                        placeholder={t('auth.nameHiPlaceholder')} dir="auto" />
                     </div>
                   </div>
                 </>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('auth.emailAddress')}
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.emailAddress')}</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                    placeholder="you@example.com"
-                  />
+                    placeholder="you@example.com" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('auth.password')}
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.password')}</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                  <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required
                     className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                    placeholder={mode === 'signup' ? t('auth.passwordPlaceholder') : t('auth.passwordExisting')}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
+                    placeholder={mode === 'signup' ? t('auth.passwordPlaceholder') : t('auth.passwordExisting')} />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -218,28 +230,18 @@ const Auth = () => {
 
               {mode === 'signup' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('auth.confirmPassword')}
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.confirmPassword')}</label>
                   <div className="relative">
                     <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
+                    <input type={showPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                      placeholder={t('auth.confirmPasswordPlaceholder')}
-                    />
+                      placeholder={t('auth.confirmPasswordPlaceholder')} />
                   </div>
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white font-semibold rounded-xl transition-colors shadow-sm text-sm mt-2"
-              >
+              <button type="submit" disabled={loading}
+                className="w-full py-3 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white font-semibold rounded-xl transition-colors shadow-sm text-sm mt-2">
                 {loading
                   ? (mode === 'signin' ? t('auth.signingIn') : t('auth.creatingAccount'))
                   : (mode === 'signin' ? t('auth.signIn') : t('auth.createAccountButton'))
@@ -250,9 +252,7 @@ const Auth = () => {
             <div className="mt-6 p-4 bg-gray-50 rounded-xl">
               <div className="flex items-start gap-2">
                 <User size={14} className="text-gray-400 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-gray-500 leading-relaxed">
-                  {t('auth.privacyNote')}
-                </p>
+                <p className="text-xs text-gray-500 leading-relaxed">{t('auth.privacyNote')}</p>
               </div>
             </div>
           </div>
