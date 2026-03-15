@@ -90,7 +90,8 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
           url,
           file_name: filePath,
           grade: selectedClass?.grade ?? null,
-          class_name: selectedClass?.class_name ?? null
+          class_name: selectedClass?.class_name ?? null,
+          school_name: selectedClass?.school_name ?? null
         })
         .select()
         .single();

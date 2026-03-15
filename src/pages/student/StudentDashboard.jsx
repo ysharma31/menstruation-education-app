@@ -108,6 +108,10 @@ const StudentDashboard = () => {
           query = query.eq('class_name', resolvedProfile.class_name);
         }
 
+        if (resolvedProfile.school_name) {
+          query = query.eq('school_name', resolvedProfile.school_name);
+        }
+
         const { data: mats } = await query.order('created_at', { ascending: false });
         setMaterials(mats ?? []);
 

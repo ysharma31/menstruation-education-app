@@ -10,10 +10,11 @@ const CreateClassForm = ({ onCreated }) => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [className, setClassName] = useState('');
-  const [schoolName, setSchoolName] = useState('');
   const [grade, setGrade] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const teacherSchool = user?.user_metadata?.school_name ?? null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ const CreateClassForm = ({ onCreated }) => {
         .insert({
           teacher_id: user.id,
           class_name: className.trim(),
-          school_name: schoolName.trim() || null,
+          school_name: teacherSchool,
           grade: parseInt(grade)
         })
         .select()
@@ -35,7 +36,6 @@ const CreateClassForm = ({ onCreated }) => {
 
       if (insertError) throw insertError;
       setClassName('');
-      setSchoolName('');
       setGrade('');
       onCreated(data);
     } catch (err) {
@@ -92,21 +92,17 @@ const CreateClassForm = ({ onCreated }) => {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('teacherPortal.schoolName')} <span className="text-gray-400 font-normal">{t('teacherPortal.schoolNameOptional')}</span>
-          </label>
-          <div className="relative">
-            <School size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              value={schoolName}
-              onChange={(e) => setSchoolName(e.target.value)}
-              placeholder={t('teacherPortal.schoolNamePlaceholder')}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
-            />
+        {teacherSchool && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t('teacherPortal.schoolName')}
+            </label>
+            <div className="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
+              <School size={15} className="text-green-600 flex-shrink-0" />
+              <span className="text-sm text-green-800 font-medium">{teacherSchool}</span>
+            </div>
           </div>
-        </div>
+        )}
 
         <button
           type="submit"
