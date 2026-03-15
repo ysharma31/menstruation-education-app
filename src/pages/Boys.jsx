@@ -1,20 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Users,
-  BookOpen,
-  Heart,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-  ChevronRight,
-  ChevronDown,
-  ArrowLeft,
-  Award,
-  Lightbulb,
-  Activity,
-  ShieldCheck
-} from 'lucide-react';
+import { Users, BookOpen, Heart, CircleAlert as AlertCircle, CircleCheck as CheckCircle, Circle as XCircle, ChevronRight, ChevronDown, ArrowLeft, Award, Lightbulb, Activity, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Boys = () => {
@@ -467,7 +453,7 @@ const Boys = () => {
                         </h3>
                         <div className="space-y-2">
                           {question.options.map((option) => {
-                            const optionLetter = option.slice(-2, -1);
+                            const optionLetter = option.slice(-1);
                             return (
                               <button
                                 key={option}
