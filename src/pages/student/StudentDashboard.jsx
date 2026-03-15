@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BookOpen, FileText, Image, Video, GraduationCap, User, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,16 +15,22 @@ const SchoolIcon = ({ size = 16, className = '' }) => (
 );
 
 const TYPE_CONFIG = {
-  pdf: { icon: FileText, iconBg: 'bg-red-100', iconColor: 'text-red-600', bar: 'bg-red-400', badge: 'bg-red-50 text-red-600', action: 'Open' },
-  image: { icon: Image, iconBg: 'bg-blue-100', iconColor: 'text-blue-600', bar: 'bg-blue-400', badge: 'bg-blue-50 text-blue-600', action: 'View' },
-  video: { icon: Video, iconBg: 'bg-purple-100', iconColor: 'text-purple-600', bar: 'bg-purple-400', badge: 'bg-purple-50 text-purple-600', action: 'Watch' }
+  pdf: { icon: FileText, iconBg: 'bg-red-100', iconColor: 'text-red-600', bar: 'bg-red-400', badge: 'bg-red-50 text-red-600', actionKey: 'studentPortal.actionOpen' },
+  image: { icon: Image, iconBg: 'bg-blue-100', iconColor: 'text-blue-600', bar: 'bg-blue-400', badge: 'bg-blue-50 text-blue-600', actionKey: 'studentPortal.actionView' },
+  video: { icon: Video, iconBg: 'bg-purple-100', iconColor: 'text-purple-600', bar: 'bg-purple-400', badge: 'bg-purple-50 text-purple-600', actionKey: 'studentPortal.actionWatch' }
 };
-
-const FILTER_OPTIONS = ['All', 'PDF', 'Image', 'Video'];
 
 const StudentDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const FILTER_OPTIONS = [
+    { key: 'All', label: t('studentPortal.filterAll') },
+    { key: 'PDF', label: t('studentPortal.filterPdf') },
+    { key: 'Image', label: t('studentPortal.filterImage') },
+    { key: 'Video', label: t('studentPortal.filterVideo') }
+  ];
 
   const [profile, setProfile] = useState(null);
   const [materials, setMaterials] = useState([]);
@@ -131,7 +138,7 @@ const StudentDashboard = () => {
       <div className="flex items-center justify-center min-h-64">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">Loading your materials...</p>
+          <p className="text-sm text-gray-500">{t('studentPortal.loadingMaterials')}</p>
         </div>
       </div>
     );
@@ -145,12 +152,12 @@ const StudentDashboard = () => {
             <User className="w-7 h-7 text-white" />
           </div>
           <div>
-            <p className="text-xl font-bold">Welcome, {profile?.full_name ?? 'Student'}!</p>
+            <p className="text-xl font-bold">{t('studentPortal.welcome', { name: profile?.full_name ?? 'Student' })}</p>
             <div className="flex flex-wrap items-center gap-2 mt-1">
               {profile?.grade && (
                 <span className="flex items-center gap-1 text-xs text-indigo-100 bg-white/10 rounded-full px-2.5 py-0.5">
                   <GraduationCap size={12} />
-                  Grade {profile.grade}
+                  {t('studentPortal.gradeLabel', { grade: profile.grade })}
                 </span>
               )}
               {profile?.class_name && (
@@ -170,37 +177,37 @@ const StudentDashboard = () => {
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold">{accessedIds.size}</p>
-          <p className="text-xs text-indigo-200">materials viewed</p>
+          <p className="text-xs text-indigo-200">{t('studentPortal.materialsViewed')}</p>
         </div>
       </div>
 
       {!profile?.grade ? (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="text-sm text-amber-800">Your grade is not set on your profile. Please contact support.</p>
+          <p className="text-sm text-amber-800">{t('studentPortal.gradeNotSet')}</p>
         </div>
       ) : !profile?.class_name ? (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="text-sm text-amber-800">Your class name is not set on your profile. Please contact support or re-register.</p>
+          <p className="text-sm text-amber-800">{t('studentPortal.classNotSet')}</p>
         </div>
       ) : (
         <>
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-2">
               <h2 className="font-bold text-gray-900">
-              Grade {profile.grade}{profile?.class_name ? ` · ${profile.class_name}` : ''} Materials
+              {t('studentPortal.gradeMaterialsTitle', { grade: profile.grade, className: profile.class_name ?? '' })}
             </h2>
               <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5">{filteredMaterials.length}</span>
             </div>
             <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
-              {FILTER_OPTIONS.map((f) => (
+              {FILTER_OPTIONS.map(({ key, label }) => (
                 <button
-                  key={f}
-                  onClick={() => setFilter(f)}
+                  key={key}
+                  onClick={() => setFilter(key)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    filter === f ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                    filter === key ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  {f}
+                  {label}
                 </button>
               ))}
             </div>
@@ -209,11 +216,11 @@ const StudentDashboard = () => {
           {filteredMaterials.length === 0 ? (
             <div className="text-center py-16">
               <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="font-semibold text-gray-500">No materials yet</p>
+              <p className="font-semibold text-gray-500">{t('studentPortal.noMaterialsYet')}</p>
               <p className="text-sm text-gray-400 mt-1">
                 {filter !== 'All'
-                  ? `No ${filter.toLowerCase()} materials available.`
-                  : `Your teacher hasn't uploaded materials for Grade ${profile.grade}${profile?.class_name ? ` · ${profile.class_name}` : ''} yet.`}
+                  ? t('studentPortal.noMaterialsForFilter', { filter: filter.toLowerCase() })
+                  : t('studentPortal.noMaterialsFromTeacher', { grade: profile.grade, className: profile.class_name ?? '' })}
               </p>
             </div>
           ) : (
@@ -250,7 +257,7 @@ const StudentDashboard = () => {
                           {viewed && (
                             <span className="flex items-center gap-1 text-xs text-green-600">
                               <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-                              Viewed
+                              {t('studentPortal.viewed')}
                             </span>
                           )}
                         </div>
@@ -258,7 +265,7 @@ const StudentDashboard = () => {
                           onClick={() => handleOpen(material)}
                           className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg px-3 py-2 transition-colors"
                         >
-                          {cfg.action}
+                          {t(cfg.actionKey)}
                         </button>
                       </div>
                     </div>

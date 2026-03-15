@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BookOpen, Clock } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
 
 const GENDER_CONFIG = {
-  female: { label: 'Female', color: 'bg-pink-500', dot: 'bg-pink-400' },
-  male: { label: 'Male', color: 'bg-blue-500', dot: 'bg-blue-400' },
-  other: { label: 'Other', color: 'bg-purple-500', dot: 'bg-purple-400' },
-  prefer_not_to_say: { label: 'Not stated', color: 'bg-gray-400', dot: 'bg-gray-400' }
+  female: { labelKey: 'teacherPortal.genderFemale', color: 'bg-pink-500', dot: 'bg-pink-400' },
+  male: { labelKey: 'teacherPortal.genderMale', color: 'bg-blue-500', dot: 'bg-blue-400' },
+  other: { labelKey: 'teacherPortal.genderOther', color: 'bg-purple-500', dot: 'bg-purple-400' },
+  prefer_not_to_say: { labelKey: 'teacherPortal.genderNotStated', color: 'bg-gray-400', dot: 'bg-gray-400' }
 };
 
 const AVATAR_BG = {
@@ -20,14 +21,14 @@ const AVATAR_BG = {
 const formatDate = (ts) =>
   new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
-const GenderBar = ({ genderCounts, total }) => (
+const GenderBar = ({ genderCounts, total, t }) => (
   <div className="space-y-2">
-    {Object.entries(GENDER_CONFIG).map(([key, { label, color }]) => {
+    {Object.entries(GENDER_CONFIG).map(([key, { labelKey, color }]) => {
       const count = genderCounts[key] ?? 0;
       const pct = total > 0 ? Math.round((count / total) * 100) : 0;
       return (
         <div key={key} className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 w-20 flex-shrink-0">{label}</span>
+          <span className="text-xs text-gray-500 w-20 flex-shrink-0">{t(labelKey)}</span>
           <div className="flex-1 bg-gray-100 rounded-full h-2">
             <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
           </div>
@@ -40,6 +41,7 @@ const GenderBar = ({ genderCounts, total }) => (
 
 const StudentAccessPanel = ({ selectedMaterial }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [overallStats, setOverallStats] = useState(null);
   const [overallGender, setOverallGender] = useState({});
@@ -143,7 +145,7 @@ const StudentAccessPanel = ({ selectedMaterial }) => {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-6 space-y-5">
-        <h2 className="font-bold text-gray-900">Overall Engagement</h2>
+        <h2 className="font-bold text-gray-900">{t('teacherPortal.overallEngagement')}</h2>
 
         {loadingOverall ? (
           <div className="space-y-3">
@@ -155,20 +157,20 @@ const StudentAccessPanel = ({ selectedMaterial }) => {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-green-50 rounded-xl p-4 text-center">
                 <p className="text-2xl font-bold text-green-700">{overallStats?.uniqueStudents ?? 0}</p>
-                <p className="text-xs text-green-600 mt-0.5">Unique Students Reached</p>
+                <p className="text-xs text-green-600 mt-0.5">{t('teacherPortal.uniqueStudentsReached')}</p>
               </div>
               <div className="bg-blue-50 rounded-xl p-4 text-center">
                 <p className="text-2xl font-bold text-blue-700">{overallStats?.totalViews ?? 0}</p>
-                <p className="text-xs text-blue-600 mt-0.5">Total Material Views</p>
+                <p className="text-xs text-blue-600 mt-0.5">{t('teacherPortal.totalMaterialViews')}</p>
               </div>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-3">Overall Gender Breakdown</p>
+              <p className="text-sm font-medium text-gray-700 mb-3">{t('teacherPortal.overallGenderBreakdown')}</p>
               {overallTotal === 0 ? (
-                <p className="text-sm text-gray-400">No student data yet.</p>
+                <p className="text-sm text-gray-400">{t('teacherPortal.noStudentDataYet')}</p>
               ) : (
-                <GenderBar genderCounts={overallGender} total={overallTotal} />
+                <GenderBar genderCounts={overallGender} total={overallTotal} t={t} />
               )}
             </div>
           </>
@@ -181,28 +183,28 @@ const StudentAccessPanel = ({ selectedMaterial }) => {
             <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
               <BookOpen size={22} className="text-gray-400" />
             </div>
-            <p className="text-sm text-gray-500">Click on any material from the list to see which students accessed it.</p>
+            <p className="text-sm text-gray-500">{t('teacherPortal.clickMaterialToSeeStudents')}</p>
           </div>
         ) : (
           <>
             <h3 className="font-bold text-gray-900 mb-1 text-sm">
-              Who accessed:
+              {t('teacherPortal.whoAccessed')}
             </h3>
             <p className="text-sm text-gray-600 mb-4 font-medium truncate">{selectedMaterial.title}</p>
 
             {Object.keys(materialGender).length > 0 && (
               <div className="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-                {Object.entries(GENDER_CONFIG).map(([key, { label, dot }]) => {
+                {Object.entries(GENDER_CONFIG).map(([key, { labelKey, dot }]) => {
                   const count = materialGender[key];
                   if (!count) return null;
                   return (
                     <div key={key} className="flex items-center gap-1.5">
                       <div className={`w-2 h-2 rounded-full ${dot}`} />
-                      <span className="text-xs text-gray-600">{label}: {count}</span>
+                      <span className="text-xs text-gray-600">{t(labelKey)}: {count}</span>
                     </div>
                   );
                 })}
-                <span className="ml-auto text-xs text-gray-400">Total: {studentList.length}</span>
+                <span className="ml-auto text-xs text-gray-400">{t('teacherPortal.total')}: {studentList.length}</span>
               </div>
             )}
 
@@ -211,14 +213,14 @@ const StudentAccessPanel = ({ selectedMaterial }) => {
                 <div className="w-8 h-8 border-4 border-green-200 border-t-green-500 rounded-full animate-spin" />
               </div>
             ) : studentList.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-6">No students have accessed this material yet.</p>
+              <p className="text-sm text-gray-400 text-center py-6">{t('teacherPortal.noStudentsAccessedYet')}</p>
             ) : (
               <div className="max-h-80 overflow-y-auto space-y-2">
                 {studentList.map((s) => {
                   const gender = s.gender ?? 'prefer_not_to_say';
                   const avatarCls = AVATAR_BG[gender] ?? AVATAR_BG.prefer_not_to_say;
                   const initial = s.full_name ? s.full_name[0].toUpperCase() : '?';
-                  const gLabel = GENDER_CONFIG[gender]?.label ?? 'Unknown';
+                  const gLabel = GENDER_CONFIG[gender]?.labelKey ? t(GENDER_CONFIG[gender].labelKey) : 'Unknown';
                   return (
                     <div key={s.student_id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0 ${avatarCls}`}>
@@ -227,7 +229,7 @@ const StudentAccessPanel = ({ selectedMaterial }) => {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900 truncate">{s.full_name ?? 'Unknown'}</p>
                         <p className="text-xs text-gray-400 truncate">
-                          {s.grade ? `Grade ${s.grade}` : ''}{s.grade && gLabel ? ' · ' : ''}{gLabel}{s.school_name ? ` · ${s.school_name}` : ''}
+                          {s.grade ? t('teacherPortal.gradeLabel', { grade: s.grade }) : ''}{s.grade && gLabel ? ' · ' : ''}{gLabel}{s.school_name ? ` · ${s.school_name}` : ''}
                         </p>
                       </div>
                       <div className="flex items-center gap-1 text-xs text-gray-400 flex-shrink-0">

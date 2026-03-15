@@ -1,19 +1,21 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileText, Image, Video, Upload, Link, Loader, Check, X, GraduationCap } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-const TYPE_OPTIONS = [
-  { value: 'pdf', label: 'PDF Document', icon: FileText, color: 'red' },
-  { value: 'image', label: 'Image', icon: Image, color: 'blue' },
-  { value: 'video', label: 'Video Link', icon: Video, color: 'teal' }
-];
-
 const MaterialUpload = ({ onUploaded, classes = [] }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const fileInputRef = useRef(null);
+
+  const TYPE_OPTIONS = [
+    { value: 'pdf', label: t('teacherPortal.typePdf'), icon: FileText, color: 'red' },
+    { value: 'image', label: t('teacherPortal.typeImage'), icon: Image, color: 'blue' },
+    { value: 'video', label: t('teacherPortal.typeVideo'), icon: Video, color: 'teal' }
+  ];
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -51,11 +53,11 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
     e.preventDefault();
     setError('');
 
-    if (!classId) { setError('Please select a class for this material.'); return; }
-    if (!title.trim()) { setError('Title is required.'); return; }
-    if (!type) { setError('Please select a material type.'); return; }
-    if ((type === 'pdf' || type === 'image') && !file) { setError('Please select a file to upload.'); return; }
-    if (type === 'video' && !videoUrl.trim()) { setError('Please enter a video URL.'); return; }
+    if (!classId) { setError(t('teacherPortal.errorSelectClass')); return; }
+    if (!title.trim()) { setError(t('teacherPortal.errorTitleRequired')); return; }
+    if (!type) { setError(t('teacherPortal.errorSelectType')); return; }
+    if ((type === 'pdf' || type === 'image') && !file) { setError(t('teacherPortal.errorSelectFile')); return; }
+    if (type === 'video' && !videoUrl.trim()) { setError(t('teacherPortal.errorEnterVideoUrl')); return; }
 
     const selectedClass = classes.find((c) => c.id === classId);
 
@@ -102,7 +104,7 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
         resetForm();
       }, 2000);
     } catch (err) {
-      setError(err.message || 'Upload failed. Please try again.');
+      setError(err.message || t('teacherPortal.errorUploadFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -116,7 +118,7 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
         <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center">
           <Upload className="w-5 h-5 text-green-600" />
         </div>
-        <h2 className="text-lg font-bold text-gray-900">Upload Material</h2>
+        <h2 className="text-lg font-bold text-gray-900">{t('teacherPortal.uploadMaterial')}</h2>
       </div>
 
       {error && (
@@ -125,14 +127,14 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
 
       {classes.length === 0 && (
         <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-          You need to create a class first before uploading materials.
+          {t('teacherPortal.needClassFirst')}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Class <span className="text-red-400">*</span>
+            {t('teacherPortal.class')} <span className="text-red-400">*</span>
           </label>
           <div className="relative">
             <GraduationCap size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -142,7 +144,7 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
               disabled={classes.length === 0}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm bg-white disabled:opacity-50"
             >
-              <option value="">Select a class</option>
+              <option value="">{t('teacherPortal.selectClass')}</option>
               {classes.map((c) => (
                 <option key={c.id} value={c.id}>{c.class_name}</option>
               ))}
@@ -152,31 +154,31 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Title <span className="text-red-400">*</span>
+            {t('teacherPortal.title')} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Introduction to Puberty - Lesson 1"
+            placeholder={t('teacherPortal.titlePlaceholder')}
             className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('teacherPortal.description')}</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
-            placeholder="Brief description of what this material covers"
+            placeholder={t('teacherPortal.descriptionPlaceholder')}
             className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm resize-none"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Material Type <span className="text-red-400">*</span>
+            {t('teacherPortal.materialType')} <span className="text-red-400">*</span>
           </label>
           <div className="grid grid-cols-3 gap-2">
             {TYPE_OPTIONS.map(({ value, label, icon: Icon, color }) => {
@@ -203,7 +205,7 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
 
         {(type === 'pdf' || type === 'image') && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">File</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('teacherPortal.file')}</label>
             <input
               ref={fileInputRef}
               type="file"
@@ -229,8 +231,8 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
                 className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-green-300 hover:bg-green-50 transition-all"
               >
                 <Upload size={22} className="text-gray-400" />
-                <p className="text-sm text-gray-600 font-medium">Click to select a file</p>
-                <p className="text-xs text-gray-400">Max 50 MB</p>
+                <p className="text-sm text-gray-600 font-medium">{t('teacherPortal.clickToSelect')}</p>
+                <p className="text-xs text-gray-400">{t('teacherPortal.maxFileSize')}</p>
               </div>
             )}
           </div>
@@ -238,18 +240,18 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
 
         {type === 'video' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Video URL</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('teacherPortal.videoUrl')}</label>
             <div className="relative">
               <Link size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="url"
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="https://www.youtube.com/watch?v=..."
+                placeholder={t('teacherPortal.videoUrlPlaceholder')}
                 className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
               />
             </div>
-            <p className="mt-1 text-xs text-gray-400">YouTube, Vimeo, or any direct video URL</p>
+            <p className="mt-1 text-xs text-gray-400">{t('teacherPortal.videoUrlHint')}</p>
           </div>
         )}
 
@@ -263,11 +265,11 @@ const MaterialUpload = ({ onUploaded, classes = [] }) => {
           }`}
         >
           {submitting ? (
-            <><Loader size={16} className="animate-spin" /> Uploading...</>
+            <><Loader size={16} className="animate-spin" /> {t('teacherPortal.uploading')}</>
           ) : success ? (
-            <><Check size={16} /> Uploaded!</>
+            <><Check size={16} /> {t('teacherPortal.uploaded')}</>
           ) : (
-            'Upload Material'
+            t('teacherPortal.uploadMaterialButton')
           )}
         </button>
       </form>

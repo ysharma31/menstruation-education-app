@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CirclePlus as PlusCircle, School, GraduationCap } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -7,6 +8,7 @@ const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
 
 const CreateClassForm = ({ onCreated }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [className, setClassName] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [grade, setGrade] = useState('');
@@ -16,7 +18,7 @@ const CreateClassForm = ({ onCreated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!className.trim()) return;
-    if (!grade) { setError('Please select a grade for this class.'); return; }
+    if (!grade) { setError(t('teacherPortal.errorSelectGrade')); return; }
     setLoading(true);
     setError('');
     try {
@@ -37,7 +39,7 @@ const CreateClassForm = ({ onCreated }) => {
       setGrade('');
       onCreated(data);
     } catch (err) {
-      setError(err.message || 'Failed to create class.');
+      setError(err.message || t('teacherPortal.errorCreateClass'));
     } finally {
       setLoading(false);
     }
@@ -49,7 +51,7 @@ const CreateClassForm = ({ onCreated }) => {
         <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center">
           <PlusCircle className="w-5 h-5 text-green-600" />
         </div>
-        <h2 className="text-lg font-bold text-gray-900">Create a New Class</h2>
+        <h2 className="text-lg font-bold text-gray-900">{t('teacherPortal.createClass')}</h2>
       </div>
 
       {error && (
@@ -59,21 +61,21 @@ const CreateClassForm = ({ onCreated }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Class Name <span className="text-red-400">*</span>
+            {t('teacherPortal.className')} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={className}
             onChange={(e) => setClassName(e.target.value)}
             required
-            placeholder="e.g. 7B Health, Section A, Morning Batch"
+            placeholder={t('teacherPortal.classNamePlaceholder')}
             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Grade <span className="text-red-400">*</span>
+            {t('teacherPortal.grade')} <span className="text-red-400">*</span>
           </label>
           <div className="relative">
             <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -82,9 +84,9 @@ const CreateClassForm = ({ onCreated }) => {
               onChange={(e) => setGrade(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm bg-white appearance-none"
             >
-              <option value="">Select a grade</option>
+              <option value="">{t('teacherPortal.selectGrade')}</option>
               {GRADES.map((g) => (
-                <option key={g} value={g}>Grade {g}</option>
+                <option key={g} value={g}>{t('teacherPortal.gradeLabel', { grade: g })}</option>
               ))}
             </select>
           </div>
@@ -92,7 +94,7 @@ const CreateClassForm = ({ onCreated }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            School Name <span className="text-gray-400 font-normal">(optional)</span>
+            {t('teacherPortal.schoolName')} <span className="text-gray-400 font-normal">{t('teacherPortal.schoolNameOptional')}</span>
           </label>
           <div className="relative">
             <School size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -100,7 +102,7 @@ const CreateClassForm = ({ onCreated }) => {
               type="text"
               value={schoolName}
               onChange={(e) => setSchoolName(e.target.value)}
-              placeholder="e.g. Delhi Public School"
+              placeholder={t('teacherPortal.schoolNamePlaceholder')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
             />
           </div>
@@ -111,7 +113,7 @@ const CreateClassForm = ({ onCreated }) => {
           disabled={loading || !className.trim() || !grade}
           className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold rounded-xl transition-colors text-sm"
         >
-          {loading ? 'Creating...' : 'Create Class'}
+          {loading ? t('teacherPortal.creating') : t('teacherPortal.createClassButton')}
         </button>
       </form>
     </div>

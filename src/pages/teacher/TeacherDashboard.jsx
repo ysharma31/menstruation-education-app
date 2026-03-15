@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { GraduationCap, BookOpen, ChartBar as BarChart2, Shield, Eye, Users } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,21 +10,22 @@ import MaterialUpload from './components/MaterialUpload';
 import MaterialList from './components/MaterialList';
 import StudentAccessPanel from './components/StudentAccessPanel';
 
-const PRIVACY_NOTICES = [
-  { icon: Shield, text: 'All statistics are anonymous and aggregated' },
-  { icon: Eye, text: 'You cannot see individual student activity' },
-  { icon: Users, text: 'Students can use the app without joining a class' }
-];
-
-const TABS = [
-  { id: 'classes', label: 'Classes', icon: GraduationCap },
-  { id: 'materials', label: 'Materials', icon: BookOpen },
-  { id: 'access', label: 'Student Access', icon: BarChart2 }
-];
-
 const TeacherDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const PRIVACY_NOTICES = [
+    { icon: Shield, text: t('teacherPortal.privacyNotice1') },
+    { icon: Eye, text: t('teacherPortal.privacyNotice2') },
+    { icon: Users, text: t('teacherPortal.privacyNotice3') }
+  ];
+
+  const TABS = [
+    { id: 'classes', label: t('teacherPortal.tabClasses'), icon: GraduationCap },
+    { id: 'materials', label: t('teacherPortal.tabMaterials'), icon: BookOpen },
+    { id: 'access', label: t('teacherPortal.tabStudentAccess'), icon: BarChart2 }
+  ];
 
   const [activeTab, setActiveTab] = useState('classes');
   const [classes, setClasses] = useState([]);
@@ -72,7 +74,7 @@ const TeacherDashboard = () => {
       <div className="flex items-center justify-center min-h-64">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-green-200 border-t-green-600 rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">Loading dashboard...</p>
+          <p className="text-sm text-gray-500">{t('teacherPortal.loadingDashboard')}</p>
         </div>
       </div>
     );
@@ -87,15 +89,15 @@ const TeacherDashboard = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name}` : ''}!
+              {t('teacherPortal.welcomeBack')}{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name}` : ''}!
             </h1>
-            <p className="text-gray-500 text-sm">Manage your classes and view anonymous engagement stats.</p>
+            <p className="text-gray-500 text-sm">{t('teacherPortal.manageClasses')}</p>
           </div>
         </div>
       </div>
 
       <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
-        <p className="text-xs font-bold uppercase tracking-wider text-green-700 mb-3">Privacy Notice</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-green-700 mb-3">{t('teacherPortal.privacyNoticeBadge')}</p>
         <div className="grid sm:grid-cols-3 gap-3">
           {PRIVACY_NOTICES.map(({ icon: Icon, text }) => (
             <div key={text} className="flex items-center gap-2.5">
@@ -107,7 +109,7 @@ const TeacherDashboard = () => {
           ))}
         </div>
         <p className="mt-3 text-xs text-green-700 border-t border-green-200 pt-3">
-          This dashboard complies with basic educational data protection principles. No personally identifiable student information is collected or displayed.
+          {t('teacherPortal.privacyFooter')}
         </p>
       </div>
 

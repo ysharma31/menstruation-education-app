@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   BookOpen, ArrowLeft, User, Mail, Lock, Eye, EyeOff, GraduationCap
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
-
-const GENDER_OPTIONS = [
-  { value: 'female', label: 'Female' },
-  { value: 'male', label: 'Male' },
-  { value: 'other', label: 'Other' },
-  { value: 'prefer_not_to_say', label: 'Prefer not to say' }
-];
 
 const SchoolIcon = ({ size = 16, className = '' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -23,6 +17,14 @@ const SchoolIcon = ({ size = 16, className = '' }) => (
 
 const StudentAuth = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const GENDER_OPTIONS = [
+    { value: 'female', label: t('studentPortal.genderFemale') },
+    { value: 'male', label: t('studentPortal.genderMale') },
+    { value: 'other', label: t('studentPortal.genderOther') },
+    { value: 'prefer_not_to_say', label: t('studentPortal.genderPreferNotToSay') }
+  ];
   const [tab, setTab] = useState('signin');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -57,13 +59,13 @@ const StudentAuth = () => {
       if (signInError) throw signInError;
       if (data.user?.user_metadata?.role === 'teacher') {
         await supabase.auth.signOut();
-        setError('This account is not a student account. Please use the Teacher Portal.');
+        setError(t('studentPortal.errorNotStudentAccount'));
         setLoading(false);
         return;
       }
       navigate('/student/dashboard');
     } catch (err) {
-      setError(err.message || 'Sign in failed.');
+      setError(err.message || t('studentPortal.errorSignInFailed'));
     } finally {
       setLoading(false);
     }
@@ -73,12 +75,12 @@ const StudentAuth = () => {
     e.preventDefault();
     setError('');
 
-    if (!fullName.trim()) { setError('Full name is required.'); return; }
-    if (!grade) { setError('Grade is required.'); return; }
-    if (!className.trim()) { setError('Class name is required.'); return; }
-    if (!gender) { setError('Please select a gender option.'); return; }
-    if (signupPassword.length < 6) { setError('Password must be at least 6 characters.'); return; }
-    if (signupPassword !== confirmPassword) { setError('Passwords do not match.'); return; }
+    if (!fullName.trim()) { setError(t('studentPortal.errorFullNameRequired')); return; }
+    if (!grade) { setError(t('studentPortal.errorGradeRequired')); return; }
+    if (!className.trim()) { setError(t('studentPortal.errorClassNameRequired')); return; }
+    if (!gender) { setError(t('studentPortal.errorGenderRequired')); return; }
+    if (signupPassword.length < 6) { setError(t('studentPortal.errorPasswordTooShort')); return; }
+    if (signupPassword !== confirmPassword) { setError(t('studentPortal.errorPasswordsNoMatch')); return; }
 
     setLoading(true);
     try {
@@ -113,7 +115,7 @@ const StudentAuth = () => {
       setTab('signin');
       setSignupSuccess(true);
     } catch (err) {
-      setError(err.message || 'Sign up failed.');
+      setError(err.message || t('studentPortal.errorSignUpFailed'));
     } finally {
       setLoading(false);
     }
@@ -124,7 +126,7 @@ const StudentAuth = () => {
       <div className="w-full max-w-md">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 mb-6 transition-colors">
           <ArrowLeft size={16} />
-          Back to home
+          {t('studentPortal.backToHome')}
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl border border-indigo-100 overflow-hidden">
@@ -132,21 +134,21 @@ const StudentAuth = () => {
             <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-4">
               <BookOpen className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Student Portal</h1>
-            <p className="text-indigo-200 text-sm mt-1">Access your learning materials</p>
+            <h1 className="text-2xl font-bold text-white">{t('studentPortal.title')}</h1>
+            <p className="text-indigo-200 text-sm mt-1">{t('studentPortal.subtitle')}</p>
           </div>
 
           <div className="p-6">
             <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
-              {['signin', 'signup'].map((t) => (
+              {['signin', 'signup'].map((tabVal) => (
                 <button
-                  key={t}
-                  onClick={() => switchTab(t)}
+                  key={tabVal}
+                  onClick={() => switchTab(tabVal)}
                   className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                    tab === t ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                    tab === tabVal ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
                   }`}
                 >
-                  {t === 'signin' ? 'Sign In' : 'Sign Up'}
+                  {tabVal === 'signin' ? t('studentPortal.signIn') : t('studentPortal.signUp')}
                 </button>
               ))}
             </div>
@@ -156,14 +158,14 @@ const StudentAuth = () => {
             )}
             {signupSuccess && (
               <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
-                Account created! You can now sign in.
+                {t('studentPortal.accountCreated')}
               </div>
             )}
 
             {tab === 'signin' && (
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.email')}</label>
                   <div className="relative">
                     <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -177,7 +179,7 @@ const StudentAuth = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.password')}</label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -185,7 +187,7 @@ const StudentAuth = () => {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Your password"
+                      placeholder={t('studentPortal.passwordPlaceholder')}
                       className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
                     />
                     <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -198,7 +200,7 @@ const StudentAuth = () => {
                   disabled={loading}
                   className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-semibold rounded-xl transition-colors text-sm"
                 >
-                  {loading ? 'Signing in...' : 'Sign In'}
+                  {loading ? t('studentPortal.signingIn') : t('studentPortal.signInButton')}
                 </button>
               </form>
             )}
@@ -206,35 +208,35 @@ const StudentAuth = () => {
             {tab === 'signup' && (
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.fullName')} <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Your full name"
+                      placeholder={t('studentPortal.fullNamePlaceholder')}
                       className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">School Name <span className="text-gray-400 font-normal">(optional)</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.schoolName')} <span className="text-gray-400 font-normal">{t('studentPortal.schoolNameOptional')}</span></label>
                   <div className="relative">
                     <SchoolIcon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
                       value={schoolName}
                       onChange={(e) => setSchoolName(e.target.value)}
-                      placeholder="Your school name"
+                      placeholder={t('studentPortal.schoolNamePlaceholder')}
                       className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Grade <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.grade')} <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <GraduationCap size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <select
@@ -242,29 +244,29 @@ const StudentAuth = () => {
                       onChange={(e) => setGrade(e.target.value)}
                       className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm bg-white appearance-none"
                     >
-                      <option value="">Select your grade</option>
-                      {GRADES.map((g) => <option key={g} value={g}>Grade {g}</option>)}
+                      <option value="">{t('studentPortal.gradeSelectPlaceholder')}</option>
+                      {GRADES.map((g) => <option key={g} value={g}>{t('studentPortal.gradeLabel', { grade: g })}</option>)}
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Class Name <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.className')} <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <BookOpen size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
                       value={className}
                       onChange={(e) => setClassName(e.target.value)}
-                      placeholder="e.g. 7B Health, Section A"
+                      placeholder={t('studentPortal.classNamePlaceholder')}
                       className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
                     />
                   </div>
-                  <p className="mt-1 text-xs text-gray-400">Enter the class name exactly as your teacher created it</p>
+                  <p className="mt-1 text-xs text-gray-400">{t('studentPortal.classNameHint')}</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Gender <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.gender')} <span className="text-red-400">*</span></label>
                   <div className="grid grid-cols-2 gap-2">
                     {GENDER_OPTIONS.map(({ value, label }) => (
                       <button
@@ -284,7 +286,7 @@ const StudentAuth = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.email')} <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -299,14 +301,14 @@ const StudentAuth = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Password <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.password')} <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
-                      placeholder="At least 6 characters"
+                      placeholder={t('studentPortal.passwordNewPlaceholder')}
                       className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
                     />
                     <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -316,14 +318,14 @@ const StudentAuth = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.confirmPassword')} <span className="text-red-400">*</span></label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type={showConfirm ? 'text' : 'password'}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repeat your password"
+                      placeholder={t('studentPortal.confirmPasswordPlaceholder')}
                       className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
                     />
                     <button type="button" onClick={() => setShowConfirm((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -337,16 +339,16 @@ const StudentAuth = () => {
                   disabled={loading}
                   className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-semibold rounded-xl transition-colors text-sm"
                 >
-                  {loading ? 'Creating account...' : 'Create Account'}
+                  {loading ? t('studentPortal.creatingAccount') : t('studentPortal.createAccountButton')}
                 </button>
               </form>
             )}
 
             <div className="mt-6 pt-4 border-t border-gray-100 text-center">
               <p className="text-sm text-gray-500">
-                Are you a teacher?{' '}
+                {t('studentPortal.areYouTeacher')}{' '}
                 <Link to="/teacher" className="text-indigo-500 hover:text-indigo-700 font-medium">
-                  Teacher Portal →
+                  {t('studentPortal.teacherPortalLink')}
                 </Link>
               </p>
             </div>
@@ -355,7 +357,7 @@ const StudentAuth = () => {
 
         <div className="mt-4 text-center">
           <Link to="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-            Back to the main app
+            {t('studentPortal.backToApp')}
           </Link>
         </div>
       </div>

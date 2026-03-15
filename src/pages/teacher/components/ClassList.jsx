@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Trash2, ChevronRight } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 
 const ClassList = ({ classes, onSelect, selectedId, onDeleted }) => {
   const [deleting, setDeleting] = useState(null);
+  const { t } = useTranslation();
 
   const handleDelete = async (cls) => {
-    if (!window.confirm(`Delete class "${cls.class_name}"? This cannot be undone.`)) return;
+    if (!window.confirm(t('teacherPortal.deleteClassConfirm', { name: cls.class_name }))) return;
     setDeleting(cls.id);
     try {
       await supabase.from('teacher_classes').delete().eq('id', cls.id);
@@ -21,7 +23,7 @@ const ClassList = ({ classes, onSelect, selectedId, onDeleted }) => {
   if (classes.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-6 text-center">
-        <p className="text-gray-500 text-sm">No classes yet. Create one to get started.</p>
+        <p className="text-gray-500 text-sm">{t('teacherPortal.noClassesYet')}</p>
       </div>
     );
   }
@@ -29,7 +31,7 @@ const ClassList = ({ classes, onSelect, selectedId, onDeleted }) => {
   return (
     <div className="bg-white rounded-2xl border border-green-100 shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100">
-        <h2 className="font-bold text-gray-900">Your Classes</h2>
+        <h2 className="font-bold text-gray-900">{t('teacherPortal.yourClasses')}</h2>
       </div>
       <ul>
         {classes.map((cls, i) => (

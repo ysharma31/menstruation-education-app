@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { GraduationCap, Mail, Lock, Eye, EyeOff, User, Shield, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const TeacherAuth = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [mode, setMode] = useState('signin');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,9 +23,9 @@ const TeacherAuth = () => {
     setSuccess('');
 
     if (mode === 'signup') {
-      if (!name.trim()) { setError('Please enter your name.'); return; }
-      if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
-      if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
+      if (!name.trim()) { setError(t('teacherPortal.errorEnterName')); return; }
+      if (password !== confirmPassword) { setError(t('teacherPortal.errorPasswordsNoMatch')); return; }
+      if (password.length < 6) { setError(t('teacherPortal.errorPasswordTooShort')); return; }
     }
 
     setLoading(true);
@@ -32,14 +34,14 @@ const TeacherAuth = () => {
         const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) {
           setError(signInError.message === 'Invalid login credentials'
-            ? 'Invalid email or password.'
+            ? t('teacherPortal.errorInvalidCredentials')
             : signInError.message);
           return;
         }
         const role = data.user?.user_metadata?.role;
         if (role && role !== 'teacher') {
           await supabase.auth.signOut();
-          setError('This account is not registered as a teacher. Please sign up as a teacher.');
+          setError(t('teacherPortal.errorNotTeacher'));
           return;
         }
         navigate('/teacher/dashboard');
@@ -53,11 +55,11 @@ const TeacherAuth = () => {
         });
         if (signUpError) {
           setError(signUpError.message.includes('already registered')
-            ? 'An account with this email already exists.'
+            ? t('teacherPortal.errorEmailExists')
             : signUpError.message);
           return;
         }
-        setSuccess('Account created! You can now sign in.');
+        setSuccess(t('teacherPortal.accountCreated'));
         setTimeout(() => {
           setMode('signin');
           setSuccess('');
@@ -67,7 +69,7 @@ const TeacherAuth = () => {
         }, 2000);
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError(t('teacherPortal.errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -81,9 +83,9 @@ const TeacherAuth = () => {
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-1">Teacher Dashboard</h1>
+            <h1 className="text-2xl font-bold text-white mb-1">{t('teacherPortal.title')}</h1>
             <p className="text-green-100 text-sm">
-              {mode === 'signin' ? 'Sign in to manage your classes' : 'Create your teacher account'}
+              {mode === 'signin' ? t('teacherPortal.signInSubtitle') : t('teacherPortal.registerSubtitle')}
             </p>
           </div>
 
@@ -95,7 +97,7 @@ const TeacherAuth = () => {
                   mode === 'signin' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Sign In
+                {t('teacherPortal.signIn')}
               </button>
               <button
                 onClick={() => { setMode('signup'); setError(''); setSuccess(''); }}
@@ -103,7 +105,7 @@ const TeacherAuth = () => {
                   mode === 'signup' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Register
+                {t('teacherPortal.register')}
               </button>
             </div>
 
@@ -117,7 +119,7 @@ const TeacherAuth = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'signup' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('teacherPortal.yourName')}</label>
                   <div className="relative">
                     <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -126,14 +128,14 @@ const TeacherAuth = () => {
                       onChange={(e) => setName(e.target.value)}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
-                      placeholder="Ms. Sharma"
+                      placeholder={t('teacherPortal.namePlaceholder')}
                     />
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('teacherPortal.emailAddress')}</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
@@ -142,13 +144,13 @@ const TeacherAuth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
-                    placeholder="teacher@school.edu"
+                    placeholder={t('teacherPortal.emailPlaceholder')}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('teacherPortal.password')}</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
@@ -157,7 +159,7 @@ const TeacherAuth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
-                    placeholder={mode === 'signup' ? 'At least 6 characters' : 'Your password'}
+                    placeholder={mode === 'signup' ? t('teacherPortal.passwordPlaceholder') : t('teacherPortal.passwordExisting')}
                   />
                   <button
                     type="button"
@@ -171,7 +173,7 @@ const TeacherAuth = () => {
 
               {mode === 'signup' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('teacherPortal.confirmPassword')}</label>
                   <div className="relative">
                     <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
@@ -180,7 +182,7 @@ const TeacherAuth = () => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
-                      placeholder="Repeat password"
+                      placeholder={t('teacherPortal.confirmPasswordPlaceholder')}
                     />
                   </div>
                 </div>
@@ -192,8 +194,8 @@ const TeacherAuth = () => {
                 className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold rounded-xl transition-colors text-sm mt-2"
               >
                 {loading
-                  ? (mode === 'signin' ? 'Signing in...' : 'Creating account...')
-                  : (mode === 'signin' ? 'Sign In' : 'Create Teacher Account')}
+                  ? (mode === 'signin' ? t('teacherPortal.signingIn') : t('teacherPortal.creatingAccount'))
+                  : (mode === 'signin' ? t('teacherPortal.signInButton') : t('teacherPortal.createAccountButton'))}
               </button>
             </form>
 
@@ -203,7 +205,7 @@ const TeacherAuth = () => {
                 className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
               >
                 <ArrowLeft size={14} />
-                Back to Home
+                {t('teacherPortal.backToHome')}
               </Link>
             </div>
 
@@ -211,7 +213,7 @@ const TeacherAuth = () => {
               <div className="flex items-start gap-2">
                 <Shield size={14} className="text-green-600 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-green-800 leading-relaxed">
-                  Teacher accounts are separate from student accounts. All student statistics shown in the dashboard are anonymous and aggregated — you will never see individual student data.
+                  {t('teacherPortal.privacyNote')}
                 </p>
               </div>
             </div>

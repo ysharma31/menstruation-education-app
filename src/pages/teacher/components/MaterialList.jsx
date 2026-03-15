@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileText, Image, Video, ExternalLink, Trash2 } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -14,6 +15,7 @@ const formatDate = (ts) =>
 
 const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, classes = [] }) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [classFilter, setClassFilter] = useState('');
@@ -35,7 +37,7 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, cl
   }, [user, refreshTrigger]);
 
   const handleDelete = async (material) => {
-    if (!window.confirm(`Delete "${material.title}"? This cannot be undone.`)) return;
+    if (!window.confirm(t('teacherPortal.deleteMaterialConfirm', { name: material.title }))) return;
     setDeleting(material.id);
     try {
       if (material.file_name) {
@@ -62,11 +64,11 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, cl
   }, {});
 
   const getClassName = (classId) => {
-    if (!classId) return 'No class assigned';
+    if (!classId) return t('teacherPortal.noClassAssigned');
     const found = classes.find((c) => c.id === classId);
     if (found) return found.class_name;
     const fromMaterial = materials.find((m) => m.class_id === classId);
-    return fromMaterial?.teacher_classes?.class_name ?? 'Unknown class';
+    return fromMaterial?.teacher_classes?.class_name ?? t('teacherPortal.unknownClass');
   };
 
   const sortedClassKeys = Object.keys(byClass).sort((a, b) => {
@@ -89,7 +91,7 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, cl
     <div className="bg-white rounded-2xl border border-green-100 shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <h2 className="font-bold text-gray-900">Your Materials</h2>
+          <h2 className="font-bold text-gray-900">{t('teacherPortal.yourMaterials')}</h2>
           <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{materials.length}</span>
         </div>
         <select
@@ -97,7 +99,7 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, cl
           onChange={(e) => setClassFilter(e.target.value)}
           className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-300 bg-white"
         >
-          <option value="">All Classes</option>
+          <option value="">{t('teacherPortal.allClasses')}</option>
           {classes.map((c) => (
             <option key={c.id} value={c.id}>{c.class_name}</option>
           ))}
@@ -107,7 +109,7 @@ const MaterialList = ({ refreshTrigger, onSelectMaterial, selectedMaterialId, cl
       {filtered.length === 0 ? (
         <div className="p-10 text-center">
           <Video className="w-10 h-10 text-gray-200 mx-auto mb-2" />
-          <p className="text-sm text-gray-400">No materials uploaded yet.</p>
+          <p className="text-sm text-gray-400">{t('teacherPortal.noMaterialsYet')}</p>
         </div>
       ) : (
         <div className="max-h-[520px] overflow-y-auto">
