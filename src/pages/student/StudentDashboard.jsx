@@ -185,16 +185,14 @@ const StudentDashboard = () => {
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
           <p className="text-sm text-amber-800">{t('studentPortal.gradeNotSet')}</p>
         </div>
-      ) : !profile?.class_name ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-          <p className="text-sm text-amber-800">{t('studentPortal.classNotSet')}</p>
-        </div>
       ) : (
         <>
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-2">
               <h2 className="font-bold text-gray-900">
-              {t('studentPortal.gradeMaterialsTitle', { grade: profile.grade, className: profile.class_name ?? '' })}
+              {profile.class_name
+                ? t('studentPortal.gradeMaterialsTitle', { grade: profile.grade, className: profile.class_name })
+                : t('studentPortal.gradeLabel', { grade: profile.grade })}
             </h2>
               <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5">{filteredMaterials.length}</span>
             </div>
@@ -220,7 +218,7 @@ const StudentDashboard = () => {
               <p className="text-sm text-gray-400 mt-1">
                 {filter !== 'All'
                   ? t('studentPortal.noMaterialsForFilter', { filter: filter.toLowerCase() })
-                  : t('studentPortal.noMaterialsFromTeacher', { grade: profile.grade, className: profile.class_name ?? '' })}
+                  : t('studentPortal.noMaterialsFromTeacher', { grade: profile.grade, className: profile.class_name ?? t('studentPortal.gradeLabel', { grade: profile.grade }) })}
               </p>
             </div>
           ) : (
