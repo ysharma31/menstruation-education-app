@@ -102,13 +102,12 @@ const StudentAuth = () => {
           grade: parseInt(grade),
           gender
         });
+        await supabase.auth.signOut();
       }
+      setFullName(''); setSchoolName(''); setGrade(''); setGender('');
+      setSignupEmail(''); setSignupPassword(''); setConfirmPassword('');
+      setTab('signin');
       setSignupSuccess(true);
-      setTimeout(() => {
-        switchTab('signin');
-        setFullName(''); setSchoolName(''); setGrade(''); setGender('');
-        setSignupEmail(''); setSignupPassword(''); setConfirmPassword('');
-      }, 2000);
     } catch (err) {
       setError(err.message || 'Sign up failed.');
     } finally {
