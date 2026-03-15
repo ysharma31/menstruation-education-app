@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  PlayCircle,
-  Clock,
-  ArrowLeft,
-  Star,
-  Download,
-  BookOpen,
-  X
-} from 'lucide-react';
+import { CirclePlay as PlayCircle, Clock, ArrowLeft, Star, Download, BookOpen, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VideoPlayer } from '../components/video';
 import { getVideoUrl } from '../config/videoUrls';
@@ -166,9 +158,15 @@ const AnimatedExplainer = () => {
                   <PlayCircle className="w-7 h-7 text-primary-600" />
                 </div>
               </div>
-              <div className="absolute top-3 right-3 gradient-primary text-white text-xs px-2.5 py-1 rounded-lg font-medium">
-                {t('animated.comingSoonBadge')}
-              </div>
+              {video.videoUrl ? (
+                <div className="absolute top-3 right-3 bg-green-600 text-white text-xs px-2.5 py-1 rounded-lg font-medium">
+                  {t('animated.watchNow')}
+                </div>
+              ) : (
+                <div className="absolute top-3 right-3 gradient-primary text-white text-xs px-2.5 py-1 rounded-lg font-medium">
+                  {t('animated.comingSoonBadge')}
+                </div>
+              )}
               <div className="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5">
                 <Clock size={12} />
                 {video.duration}
