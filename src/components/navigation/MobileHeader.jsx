@@ -1,19 +1,9 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Menu,
-  X,
-  Home,
-  User,
-  Users,
-  PlayCircle,
-  HelpCircle,
-  BookOpen,
-  MessageCircle,
-  Heart
-} from 'lucide-react';
+import { Menu, X, Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
+import SearchBar from '../ui/SearchBar';
 
 const MobileHeader = () => {
   const { t } = useTranslation();
@@ -60,6 +50,10 @@ const MobileHeader = () => {
               )}
             </button>
           </div>
+        </div>
+
+        <div className="px-4 py-2 bg-white border-b border-warm-200">
+          <SearchBar />
         </div>
       </header>
 

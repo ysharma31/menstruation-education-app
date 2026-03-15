@@ -14,7 +14,8 @@
     "error": "कुछ गड़बड़ हो गई",
     "success": "सफल!",
     "welcome": "स्वागत है",
-    "getStarted": "शुरू करें।"
+    "getStarted": "शुरू करें।",
+    "searchPlaceholder": "विषय, कीवर्ड खोजें..."
   },
   "navigation": {
     "home": "होम",

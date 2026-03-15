@@ -1,22 +1,12 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  HelpCircle,
-  Search,
-  ChevronDown,
-  ChevronUp,
-  ArrowLeft,
-  MessageCircle,
-  ThumbsUp,
-  ThumbsDown,
-  Share2,
-  ArrowUp,
-  X
-} from 'lucide-react';
+import { useSearch } from '../contexts/SearchContext';
+import { Circle as HelpCircle, Search, ChevronDown, ChevronUp, ArrowLeft, MessageCircle, ThumbsUp, ThumbsDown, Share2, ArrowUp, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const FAQ = () => {
   const { t } = useTranslation();
+  const { searchQuery: globalSearchQuery } = useSearch();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -105,14 +95,15 @@ const FAQ = () => {
   ], [t]);
 
   const filteredQuestions = useMemo(() => {
+    const combinedSearch = globalSearchQuery || debouncedSearch;
     return allQuestions.filter((q) => {
       const matchesCategory = activeCategory === 'all' || q.category === activeCategory;
-      const matchesSearch = debouncedSearch === '' ||
-        q.question.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        q.answer.toLowerCase().includes(debouncedSearch.toLowerCase());
+      const matchesSearch = combinedSearch === '' ||
+        q.question.toLowerCase().includes(combinedSearch.toLowerCase()) ||
+        q.answer.toLowerCase().includes(combinedSearch.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, debouncedSearch, allQuestions]);
+  }, [activeCategory, debouncedSearch, globalSearchQuery, allQuestions]);
 
   const toggleQuestion = (id) => {
     setOpenQuestions((prev) => {

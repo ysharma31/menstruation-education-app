@@ -11,27 +11,30 @@ import {
   Chat,
   UploadVideo
 } from './pages';
+import { SearchProvider } from './contexts/SearchContext';
 
 // Initialize i18n
 import './i18n';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="girls" element={<Girls />} />
-          <Route path="boys" element={<Boys />} />
-          <Route path="animated" element={<AnimatedExplainer />} />
-          <Route path="faq" element={<FAQ />} />
-          <Route path="parents" element={<ParentsGuide />} />
-          <Route path="ask" element={<AskQuestion />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="upload-video" element={<UploadVideo />} />
-        </Route>
-      </Routes>
-    </Router>
+    <SearchProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="girls" element={<Girls />} />
+            <Route path="boys" element={<Boys />} />
+            <Route path="animated" element={<AnimatedExplainer />} />
+            <Route path="faq" element={<FAQ />} />
+            <Route path="parents" element={<ParentsGuide />} />
+            <Route path="ask" element={<AskQuestion />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="upload-video" element={<UploadVideo />} />
+          </Route>
+        </Routes>
+      </Router>
+    </SearchProvider>
   );
 }
 

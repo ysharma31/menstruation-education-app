@@ -1,17 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Home,
-  User,
-  Users,
-  PlayCircle,
-  HelpCircle,
-  BookOpen,
-  MessageCircle,
-  Bot,
-  Heart
-} from 'lucide-react';
+import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
+import SearchBar from '../ui/SearchBar';
 
 const DesktopNavigation = () => {
   const { t } = useTranslation();
@@ -44,6 +35,10 @@ const DesktopNavigation = () => {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <SearchBar />
       </div>
 
       {/* Navigation Links */}

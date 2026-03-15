@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearch } from '../contexts/SearchContext';
 import { Users, BookOpen, Heart, CircleAlert as AlertCircle, CircleCheck as CheckCircle, Circle as XCircle, ChevronRight, ChevronDown, ArrowLeft, Award, Lightbulb, Activity, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Boys = () => {
   const { t } = useTranslation();
+  const { searchQuery } = useSearch();
   const [currentSection, setCurrentSection] = useState(0);
   const [expandedCard, setExpandedCard] = useState(null);
   const [quizAnswers, setQuizAnswers] = useState({});
@@ -76,6 +78,34 @@ const Boys = () => {
     setShowQuizResults(false);
   };
 
+  const filteredSections = useMemo(() => {
+    if (!searchQuery || !searchQuery.trim()) {
+      return sections.map((_, i) => i);
+    }
+
+    return sections
+      .map((section, index) => {
+        const sectionContent = [
+          section.title,
+          t(`boys.${section.id}.subtitle`) || '',
+          t(`boys.${section.id}.intro`) || '',
+        ].join(' ').toLowerCase();
+
+        if (sectionContent.includes(searchQuery.toLowerCase())) {
+          return { index, matches: true };
+        }
+        return { index, matches: false };
+      })
+      .filter(s => s.matches)
+      .map(s => s.index);
+  }, [searchQuery, sections, t]);
+
+  useEffect(() => {
+    if (filteredSections.length > 0 && !filteredSections.includes(currentSection)) {
+      setCurrentSection(filteredSections[0]);
+    }
+  }, [filteredSections, currentSection]);
+
   const progress = ((completedSections.length / sections.length) * 100).toFixed(0);
 
   return (
@@ -138,6 +168,9 @@ const Boys = () => {
                 const SectionIcon = section.icon;
                 const isCompleted = completedSections.includes(index);
                 const isCurrent = currentSection === index;
+                const isVisible = filteredSections.includes(index);
+
+                if (!isVisible && searchQuery) return null;
 
                 return (
                   <button

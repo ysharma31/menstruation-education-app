@@ -1,29 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Heart,
-  Calendar,
-  Sparkles,
-  Activity,
-  ShoppingBag,
-  ChevronRight,
-  CheckCircle,
-  ArrowLeft,
-  XCircle,
-  Info,
-  User,
-  Droplet,
-  Sun,
-  Wind,
-  Smile,
-  ChevronDown,
-  AlertCircle,
-  ChevronLeft
-} from 'lucide-react';
+import { useSearch } from '../contexts/SearchContext';
+import { Heart, Calendar, Sparkles, Activity, ShoppingBag, ChevronRight, CircleCheck as CheckCircle, ArrowLeft, Circle as XCircle, Info, User, Droplet, Sun, Wind, Smile, ChevronDown, CircleAlert as AlertCircle, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Girls = () => {
   const { t } = useTranslation();
+  const { searchQuery } = useSearch();
   const [currentSection, setCurrentSection] = useState(0);
   const [selectedBodyPart, setSelectedBodyPart] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -112,6 +95,41 @@ const Girls = () => {
     setCurrentMonth(newDate);
   };
 
+  const matchesSearch = (text) => {
+    if (!searchQuery || !searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    const searchText = String(text || '').toLowerCase();
+    return searchText.includes(query);
+  };
+
+  const filteredSections = useMemo(() => {
+    if (!searchQuery || !searchQuery.trim()) {
+      return sections.map((_, i) => i);
+    }
+
+    return sections
+      .map((section, index) => {
+        const sectionContent = [
+          section.title,
+          t(`girls.${section.id}.subtitle`) || '',
+          t(`girls.${section.id}.intro`) || '',
+        ].join(' ').toLowerCase();
+
+        if (sectionContent.includes(searchQuery.toLowerCase())) {
+          return { index, matches: true };
+        }
+        return { index, matches: false };
+      })
+      .filter(s => s.matches)
+      .map(s => s.index);
+  }, [searchQuery, sections, t]);
+
+  useEffect(() => {
+    if (filteredSections.length > 0 && !filteredSections.includes(currentSection)) {
+      setCurrentSection(filteredSections[0]);
+    }
+  }, [filteredSections, currentSection]);
+
   return (
     <div className="page-container animate-fade-in">
       <Link
@@ -161,6 +179,9 @@ const Girls = () => {
               {sections.map((section, index) => {
                 const SectionIcon = section.icon;
                 const isCurrent = currentSection === index;
+                const isVisible = filteredSections.includes(index);
+
+                if (!isVisible && searchQuery) return null;
 
                 return (
                   <button

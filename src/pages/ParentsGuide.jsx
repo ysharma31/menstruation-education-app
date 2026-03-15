@@ -1,20 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  BookOpen,
-  MessageSquare,
-  Heart,
-  Stethoscope,
-  FileText,
-  ChevronRight,
-  CheckCircle,
-  ArrowLeft,
-  Lightbulb
-} from 'lucide-react';
+import { useSearch } from '../contexts/SearchContext';
+import { BookOpen, MessageSquare, Heart, Stethoscope, FileText, ChevronRight, CircleCheck as CheckCircle, ArrowLeft, Lightbulb } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ParentsGuide = () => {
   const { t } = useTranslation();
+  const { searchQuery } = useSearch();
   const [activeTab, setActiveTab] = useState('talking');
 
   const topics = [
@@ -91,6 +83,23 @@ const ParentsGuide = () => {
 
   const currentContent = content[activeTab];
 
+  const filteredTopics = useMemo(() => {
+    if (!searchQuery || !searchQuery.trim()) {
+      return topics.map(t => t.id);
+    }
+
+    return topics.filter(topic => {
+      const topicContent = [
+        topic.label,
+        content[topic.id]?.title || '',
+        content[topic.id]?.text || '',
+        ...(content[topic.id]?.tips || []),
+      ].join(' ').toLowerCase();
+
+      return topicContent.includes(searchQuery.toLowerCase());
+    }).map(t => t.id);
+  }, [searchQuery, topics, content]);
+
   return (
     <div className="page-container animate-fade-in">
       {/* Back Link */}
@@ -133,20 +142,25 @@ const ParentsGuide = () => {
 
       <div className="mb-8 -mx-4 px-4 md:mx-0 md:px-0">
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          {topics.map((topic) => (
-            <button
-              key={topic.id}
-              onClick={() => setActiveTab(topic.id)}
-              className={`flex items-center gap-2 px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target ${
+          {topics.map((topic) => {
+            const isVisible = filteredTopics.includes(topic.id);
+            if (!isVisible && searchQuery) return null;
+
+            return (
+              <button
+                key={topic.id}
+                onClick={() => setActiveTab(topic.id)}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target ${
                 activeTab === topic.id
                   ? 'bg-gradient-to-r from-sage-500 to-sage-600 text-white shadow-lg'
                   : 'bg-white text-text-secondary hover:bg-sage-50 border border-warm-200'
               }`}
             >
-              <topic.icon size={18} />
-              <span className="font-medium text-sm">{topic.label}</span>
-            </button>
-          ))}
+                <topic.icon size={18} />
+                <span className="font-medium text-sm">{topic.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
