@@ -130,6 +130,7 @@ const StudentDashboard = () => {
     setProfileError('');
     const updates = {
       id: user.id,
+      full_name: profile?.full_name || user.user_metadata?.full_name || user.email,
       grade: parseInt(profileGrade),
       class_name: profileClassName.trim(),
       gender: profileGender,
