@@ -1,21 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  MessageCircle,
-  Send,
-  Mic,
-  MicOff,
-  Copy,
-  Share2,
-  Download,
-  Trash2,
-  Plus,
-  AlertCircle,
-  ArrowLeft,
-  Check
-} from 'lucide-react';
+import { MessageCircle, Send, Mic, MicOff, Copy, Share2, Download, Trash2, Plus, CircleAlert as AlertCircle, ArrowLeft, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import ShareModal from '../components/chat/ShareModal';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -31,6 +19,7 @@ const Chat = () => {
   const [error, setError] = useState(null);
   const [conversationId, setConversationId] = useState(null);
   const [showConfirmClear, setShowConfirmClear] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const [lastMessageTime, setLastMessageTime] = useState(0);
   const messagesEndRef = useRef(null);
@@ -232,25 +221,8 @@ const Chat = () => {
     URL.revokeObjectURL(url);
   };
 
-  const shareConversation = async () => {
-    const conversationText = messages
-      .map(msg => `${msg.role === 'user' ? t('chat.you') : t('chat.assistant')}: ${msg.content}`)
-      .join('\n\n');
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: t('chat.title'),
-          text: conversationText
-        });
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          copyMessage(conversationText, 'share');
-        }
-      }
-    } else {
-      copyMessage(conversationText, 'share');
-    }
+  const shareConversation = () => {
+    setShowShareModal(true);
   };
 
   const clearChat = async () => {
@@ -511,6 +483,15 @@ const Chat = () => {
           </div>
         </div>
       </div>
+
+      {showShareModal && (
+        <ShareModal
+          messages={messages}
+          onClose={() => setShowShareModal(false)}
+          youLabel={t('chat.you')}
+          assistantLabel={t('chat.assistant')}
+        />
+      )}
 
       {showConfirmClear && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
