@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History, BookOpen, Trash2, TriangleAlert as AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
@@ -115,6 +116,8 @@ const getDateStatus = (date, cycles) => {
 };
 
 const PeriodTracker = () => {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'hi' ? 'hi-IN' : 'en-US';
   const { user, isAppUser } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [cycles, setCycles] = useState([]);
@@ -130,11 +133,11 @@ const PeriodTracker = () => {
   const [journalSaving, setJournalSaving] = useState(false);
 
   const TABS = [
-    { id: 'calendar', label: 'Calendar', icon: Calendar },
-    { id: 'history', label: 'History', icon: History },
-    { id: 'medications', label: 'Medications', icon: Pill },
-    { id: 'analysis', label: 'Analysis', icon: BarChart2 },
-    { id: 'journal', label: 'Journal', icon: BookOpen },
+    { id: 'calendar', label: t('tracker.tabCalendar'), icon: Calendar },
+    { id: 'history', label: t('tracker.tabHistory'), icon: History },
+    { id: 'medications', label: t('tracker.tabMedications'), icon: Pill },
+    { id: 'analysis', label: t('tracker.tabAnalysis'), icon: BarChart2 },
+    { id: 'journal', label: t('tracker.tabJournal'), icon: BookOpen },
   ];
 
   useEffect(() => {
@@ -197,7 +200,7 @@ const PeriodTracker = () => {
       if (dateStr < awaitingEndFor.start_date) {
         setConflictDialog({
           type: 'new_start_before_ongoing',
-          message: `You have an ongoing period that started on ${new Date(awaitingEndFor.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. The date you selected is before that. Please select a date on or after the start date to mark the end.`,
+          message: t('tracker.conflictBeforeOngoing', { date: new Date(awaitingEndFor.start_date).toLocaleDateString(locale, { month: 'long', day: 'numeric' }) }),
           dismiss: () => setConflictDialog(null),
         });
         return;
@@ -222,7 +225,7 @@ const PeriodTracker = () => {
     if (containingCycle) {
       setConflictDialog({
         type: 'inside_existing',
-        message: `This date is already inside a recorded period (started ${new Date(containingCycle.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}). Do you want to end that period on this date instead?`,
+        message: t('tracker.conflictInsideExisting', { date: new Date(containingCycle.start_date).toLocaleDateString(locale, { month: 'long', day: 'numeric' }) }),
         onYes: async () => {
           setConflictDialog(null);
           await handleSetEndDate(dateStr, containingCycle);
@@ -236,7 +239,7 @@ const PeriodTracker = () => {
     if (ongoingCycle) {
       setConflictDialog({
         type: 'ongoing_exists',
-        message: `You have an ongoing period that started on ${new Date(ongoingCycle.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. What would you like to do?`,
+        message: t('tracker.conflictOngoingExists', { date: new Date(ongoingCycle.start_date).toLocaleDateString(locale, { month: 'long', day: 'numeric' }) }),
         onEndExisting: async () => {
           setConflictDialog(null);
           await handleSetEndDate(dateStr, ongoingCycle);
@@ -471,7 +474,7 @@ const PeriodTracker = () => {
   };
 
   const formatPredictedDate = (date) => {
-    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    return date.toLocaleDateString(locale, { month: 'long', day: 'numeric' });
   };
 
   const metrics = calculateMetrics();
@@ -501,29 +504,29 @@ const PeriodTracker = () => {
               {conflictDialog.type === 'inside_existing' && (
                 <>
                   <button onClick={conflictDialog.onYes} className="w-full px-4 py-2.5 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-xl transition-colors">
-                    Yes, end period here
+                    {t('tracker.endPeriodHere')}
                   </button>
                   <button onClick={conflictDialog.onNo} className="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
-                    No, cancel
+                    {t('tracker.cancelAction')}
                   </button>
                 </>
               )}
               {conflictDialog.type === 'ongoing_exists' && (
                 <>
                   <button onClick={conflictDialog.onEndExisting} className="w-full px-4 py-2.5 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-xl transition-colors">
-                    End existing period here
+                    {t('tracker.endExistingPeriod')}
                   </button>
                   <button onClick={conflictDialog.onStartNew} className="w-full px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-xl transition-colors">
-                    Start a new separate period
+                    {t('tracker.startNewSeparate')}
                   </button>
                   <button onClick={conflictDialog.onCancel} className="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
-                    Cancel
+                    {t('tracker.cancelAction')}
                   </button>
                 </>
               )}
               {conflictDialog.type === 'new_start_before_ongoing' && (
                 <button onClick={conflictDialog.dismiss} className="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
-                  OK
+                  {t('common.cancel')}
                 </button>
               )}
             </div>
@@ -559,9 +562,9 @@ const PeriodTracker = () => {
                 <div className="flex items-start gap-3">
                   <Info size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-blue-900">Now select the last day of your period</p>
+                    <p className="text-sm font-semibold text-blue-900">{t('tracker.awaitingEnd')}</p>
                     <p className="text-xs text-blue-700 mt-0.5">
-                      Started {new Date(awaitingEndFor.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. Click the date your period ended, or the same day for a 1-day period.
+                      {new Date(awaitingEndFor.start_date).toLocaleDateString(locale, { month: 'long', day: 'numeric' })}. {t('tracker.awaitingEndDesc')}
                     </p>
                   </div>
                 </div>
@@ -575,8 +578,8 @@ const PeriodTracker = () => {
           {!awaitingEndFor && (
             <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
               <p className="text-sm text-pink-700">
-                <span className="font-semibold">How to record:</span> Tap the first day of your period to start recording. Then tap the last day to mark it complete. You can record more than one period per month.
-                {isAppUser && <span> You can also tap any day to add a journal entry.</span>}
+                <span className="font-semibold">{t('tracker.howToRecord')}</span> {t('tracker.howToRecordDesc')}
+                {isAppUser && <span> {t('tracker.howToRecordJournal')}</span>}
               </p>
             </div>
           )}
@@ -595,7 +598,7 @@ const PeriodTracker = () => {
               </button>
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-gray-800 text-sm">
-                  {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  {currentMonth.toLocaleDateString(locale, { month: 'long', year: 'numeric' })}
                 </span>
                 {monthCycles.length >= 2 && (
                   <span className="text-xs font-medium text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
@@ -629,7 +632,15 @@ const PeriodTracker = () => {
 
             <div className="p-3">
               <div className="grid grid-cols-7 mb-1">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                {[
+                  t('tracker.daySun'),
+                  t('tracker.dayMon'),
+                  t('tracker.dayTue'),
+                  t('tracker.dayWed'),
+                  t('tracker.dayThu'),
+                  t('tracker.dayFri'),
+                  t('tracker.daySat'),
+                ].map((day, i) => (
                   <div key={i} className="text-center text-xs font-semibold text-gray-400 py-2">
                     {day}
                   </div>
@@ -695,27 +706,27 @@ const PeriodTracker = () => {
             <div className="px-4 pb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-5 h-5 rounded bg-pink-600" />
-                <span className="text-gray-500">Start / End</span>
+                <span className="text-gray-500">{t('tracker.legendStartEnd')}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-5 h-5 rounded bg-pink-200" />
-                <span className="text-gray-500">Period days</span>
+                <span className="text-gray-500">{t('tracker.legendPeriodDays')}</span>
               </div>
               {predictions && (
                 <>
                   <div className="flex items-center gap-1.5">
                     <div className="w-5 h-5 rounded border-2 border-dashed border-pink-400" />
-                    <span className="text-gray-500">Predicted period</span>
+                    <span className="text-gray-500">{t('tracker.legendPredicted')}</span>
                   </div>
                   {predictions.showOvulation && (
                     <>
                       <div className="flex items-center gap-1.5">
                         <div className="w-5 h-5 rounded bg-amber-50 border border-amber-200" />
-                        <span className="text-gray-500">Active cycle window</span>
+                        <span className="text-gray-500">{t('tracker.legendCycleWindow')}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <div className="w-2 h-2 rounded-full bg-amber-500" />
-                        <span className="text-gray-500">Estimated ovulation</span>
+                        <span className="text-gray-500">{t('tracker.legendOvulation')}</span>
                       </div>
                     </>
                   )}
@@ -724,7 +735,7 @@ const PeriodTracker = () => {
               {isAppUser && (
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-pink-400" />
-                  <span className="text-gray-500">Journal entry</span>
+                  <span className="text-gray-500">{t('tracker.legendJournal')}</span>
                 </div>
               )}
             </div>
@@ -733,35 +744,35 @@ const PeriodTracker = () => {
           {predictions && (
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <div className="px-4 pt-4 pb-2 border-b border-gray-100">
-                <p className="text-sm font-semibold text-gray-800">Cycle Pattern Estimates</p>
+                <p className="text-sm font-semibold text-gray-800">{t('tracker.cyclePatternsTitle')}</p>
                 <p className="text-xs text-gray-400 mt-0.5">
                   {predictions.isVariable
-                    ? 'Estimated — your cycles vary'
-                    : `Based on ${predictions.basedOnCycles} recorded ${predictions.basedOnCycles === 1 ? 'cycle' : 'cycles'}`
+                    ? t('tracker.estimatedVaries')
+                    : t('tracker.basedOnCycles_other', { count: predictions.basedOnCycles })
                   }
                 </p>
               </div>
               <div className="p-4 grid grid-cols-2 gap-3">
                 <div className="bg-pink-50 rounded-xl p-3">
-                  <p className="text-xs text-pink-500 font-medium mb-1">Next estimated period</p>
+                  <p className="text-xs text-pink-500 font-medium mb-1">{t('tracker.nextEstimatedPeriod')}</p>
                   <p className="text-sm font-semibold text-pink-900">
-                    Around {formatPredictedDate(predictions.nextPeriodStart)}
+                    {t('tracker.around')} {formatPredictedDate(predictions.nextPeriodStart)}
                   </p>
-                  <p className="text-xs text-pink-400 mt-0.5">±{predictions.uncertaintyDays} days</p>
+                  <p className="text-xs text-pink-400 mt-0.5">{t('tracker.uncertaintyDays', { days: predictions.uncertaintyDays })}</p>
                 </div>
                 {predictions.showOvulation ? (
                   <div className="bg-amber-50 rounded-xl p-3">
-                    <p className="text-xs text-amber-600 font-medium mb-1">Estimated ovulation</p>
+                    <p className="text-xs text-amber-600 font-medium mb-1">{t('tracker.estimatedOvulation')}</p>
                     <p className="text-sm font-semibold text-amber-900">
-                      Around {formatPredictedDate(predictions.ovulationDay)}
+                      {t('tracker.around')} {formatPredictedDate(predictions.ovulationDay)}
                     </p>
-                    <p className="text-xs text-amber-400 mt-0.5">±2 days</p>
+                    <p className="text-xs text-amber-400 mt-0.5">±2 {i18n.language === 'hi' ? 'दिन' : 'days'}</p>
                   </div>
                 ) : (
                   <div className="bg-gray-50 rounded-xl p-3">
-                    <p className="text-xs text-gray-500 font-medium mb-1">Ovulation timing</p>
+                    <p className="text-xs text-gray-500 font-medium mb-1">{t('tracker.ovulationTiming')}</p>
                     <p className="text-xs text-gray-500 leading-relaxed">
-                      Ovulation timing is harder to predict with irregular cycles. Consider speaking with a doctor for personalised guidance.
+                      {t('tracker.ovulationIrregular')}
                     </p>
                   </div>
                 )}
@@ -770,7 +781,7 @@ const PeriodTracker = () => {
                 <div className="flex items-start gap-2 bg-gray-50 rounded-lg p-3">
                   <Info size={13} className="text-gray-400 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-gray-500 leading-relaxed">
-                    These are estimates based on your personal cycle patterns. Cycles naturally vary from month to month. This is not a contraception or medical tool — always speak with a doctor for health advice.
+                    {t('tracker.irregularFooter')}
                   </p>
                 </div>
               </div>
@@ -784,8 +795,8 @@ const PeriodTracker = () => {
                   <Activity size={16} className="text-pink-500" />
                   <span className="text-xl font-bold text-gray-900">{metrics.lastPeriodLength ?? '-'}</span>
                 </div>
-                <p className="text-xs font-medium text-gray-600">Last Period</p>
-                <p className="text-xs text-gray-400">Avg: {metrics.avgPeriodLength ?? '-'} days</p>
+                <p className="text-xs font-medium text-gray-600">{t('tracker.lastPeriod')}</p>
+                <p className="text-xs text-gray-400">{t('tracker.avg')}: {metrics.avgPeriodLength ?? '-'} {i18n.language === 'hi' ? 'दिन' : 'days'}</p>
               </div>
 
               <div className="bg-white border border-gray-200 rounded-xl p-4">
@@ -793,8 +804,8 @@ const PeriodTracker = () => {
                   <Clock size={16} className="text-blue-500" />
                   <span className="text-xl font-bold text-gray-900">{metrics.lastCycleLength ?? '-'}</span>
                 </div>
-                <p className="text-xs font-medium text-gray-600">Last Cycle</p>
-                <p className="text-xs text-gray-400">Avg: {metrics.avgCycleLength ?? '-'} days</p>
+                <p className="text-xs font-medium text-gray-600">{t('tracker.lastCycle')}</p>
+                <p className="text-xs text-gray-400">{t('tracker.avg')}: {metrics.avgCycleLength ?? '-'} {i18n.language === 'hi' ? 'दिन' : 'days'}</p>
               </div>
 
               <div className="bg-white border border-gray-200 rounded-xl p-4">
@@ -812,9 +823,9 @@ const PeriodTracker = () => {
                     }
                   </span>
                 </div>
-                <p className="text-xs font-medium text-gray-600">Cycle Shift</p>
+                <p className="text-xs font-medium text-gray-600">{t('tracker.cycleShift')}</p>
                 <p className="text-xs text-gray-400">
-                  {metrics.secondLastCycleLength ? `Prev: ${metrics.secondLastCycleLength}d` : '2+ cycles needed'}
+                  {metrics.secondLastCycleLength ? `${t('tracker.prev')}: ${metrics.secondLastCycleLength}d` : t('tracker.prevCycleNeeded')}
                 </p>
               </div>
             </div>
@@ -825,7 +836,7 @@ const PeriodTracker = () => {
               <div className="flex items-start gap-3">
                 <Info size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-amber-700">
-                  Your data is saved locally. Sign in to keep your history safe across devices.
+                  {t('tracker.localDataWarning')}
                 </p>
               </div>
               <Link
@@ -833,20 +844,20 @@ const PeriodTracker = () => {
                 className="flex items-center gap-1.5 px-3 py-2 bg-pink-500 hover:bg-pink-600 text-white text-xs font-semibold rounded-lg transition-colors whitespace-nowrap"
               >
                 <LogIn size={13} />
-                Sign In
+                {t('tracker.signIn')}
               </Link>
             </div>
           )}
 
           {!isAppUser && cycles.length === 0 && (
             <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-5 text-center">
-              <p className="text-sm text-gray-500 mb-3">Sign in to save your data and unlock medication tracking and cycle analysis.</p>
+              <p className="text-sm text-gray-500 mb-3">{t('tracker.signInToSave')}</p>
               <Link
                 to="/auth"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 <LogIn size={15} />
-                Sign In or Create Account
+                {t('tracker.signInOrCreate')}
               </Link>
             </div>
           )}
@@ -871,14 +882,14 @@ const PeriodTracker = () => {
       {activeTab === 'journal' && !isAppUser && (
         <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
           <BookOpen size={28} className="text-gray-300 mx-auto mb-3" />
-          <p className="text-sm text-gray-600 font-medium mb-1">Sign in to see your period journal</p>
-          <p className="text-xs text-gray-400 mb-4">Track your mood, symptoms, and notes every day.</p>
+          <p className="text-sm text-gray-600 font-medium mb-1">{t('tracker.signInJournal')}</p>
+          <p className="text-xs text-gray-400 mb-4">{t('tracker.signInJournalDesc')}</p>
           <Link
             to="/auth"
             className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg transition-colors"
           >
             <LogIn size={15} />
-            Sign In or Create Account
+            {t('tracker.signInOrCreate')}
           </Link>
         </div>
       )}
@@ -887,7 +898,7 @@ const PeriodTracker = () => {
         <div className="flex items-start gap-2.5">
           <Info size={14} className="text-gray-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-gray-500 leading-relaxed">
-            <span className="font-semibold text-gray-600">Personal Learning Tool Only.</span> This tracker is for personal observation and pattern awareness. It is not a medical tool and does not provide medical advice or diagnoses. Always consult a qualified doctor or gynaecologist for any health concerns, irregular cycles, or questions about medications.
+            <span className="font-semibold text-gray-600">{t('tracker.personalToolDisclaimer')}</span> {t('tracker.personalToolDisclaimerDesc')}
           </p>
         </div>
       </div>
@@ -906,6 +917,9 @@ const PeriodTracker = () => {
 };
 
 const HistoryTab = ({ cycles }) => {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'hi' ? 'hi-IN' : 'en-US';
+
   const monthGroups = {};
   cycles.forEach(c => {
     const key = c.start_date.slice(0, 7);
@@ -916,7 +930,7 @@ const HistoryTab = ({ cycles }) => {
     return (
       <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
         <Calendar size={28} className="text-gray-300 mx-auto mb-3" />
-        <p className="text-sm text-gray-500">No cycles recorded yet. Use the Calendar tab to start tracking.</p>
+        <p className="text-sm text-gray-500">{t('tracker.noCyclesYet')}</p>
       </div>
     );
   }
@@ -942,30 +956,30 @@ const HistoryTab = ({ cycles }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-900">
-                  {new Date(cycle.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {new Date(cycle.start_date).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}
                   {cycle.end_date && (
-                    <span className="text-gray-400"> – {new Date(cycle.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                    <span className="text-gray-400"> – {new Date(cycle.end_date).toLocaleDateString(locale, { month: 'short', day: 'numeric' })}</span>
                   )}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {cycle.end_date ? `${cycle.period_length} day period` : 'In progress'}
-                  {cycle.cycle_length ? ` · ${cycle.cycle_length}d since last cycle` : ''}
+                  {cycle.end_date ? `${cycle.period_length} ${t('tracker.dayPeriod')}` : t('tracker.inProgress')}
+                  {cycle.cycle_length ? ` · ${cycle.cycle_length}${t('tracker.daysSinceLastCycle')}` : ''}
                 </p>
                 {(isShortCycle || isLongCycle || isSameMonth) && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {isShortCycle && (
                       <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-medium">
-                        Short cycle
+                        {t('tracker.shortCycleBadge')}
                       </span>
                     )}
                     {isLongCycle && (
                       <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-medium">
-                        Long cycle
+                        {t('tracker.longCycleBadge')}
                       </span>
                     )}
                     {isSameMonth && (
                       <span className="text-xs px-1.5 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 font-medium">
-                        Same month
+                        {t('tracker.sameMonthBadge')}
                       </span>
                     )}
                   </div>
