@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History, BookOpen, Trash2 } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History, BookOpen, Trash2, TriangleAlert as AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,6 +16,31 @@ const addDays = (date, days) => {
 
 const toDateStr = (date) => date.toISOString().split('T')[0];
 
+const stdDev = (values) => {
+  if (values.length < 2) return 0;
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+  return Math.sqrt(variance);
+};
+
+const median = (values) => {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+};
+
+const hasIrregularHistory = (cycles) => {
+  const completed = cycles.filter(c => c.end_date && c.cycle_length);
+  const hasShortCycle = completed.some(c => c.cycle_length < 21);
+  const monthGroups = {};
+  cycles.forEach(c => {
+    const key = c.start_date.slice(0, 7);
+    monthGroups[key] = (monthGroups[key] || 0) + 1;
+  });
+  const hasMultiInMonth = Object.values(monthGroups).some(v => v >= 2);
+  return hasShortCycle || hasMultiInMonth;
+};
+
 const calculatePredictions = (cycles) => {
   const completed = cycles
     .filter(c => c.end_date && c.period_length && c.start_date)
@@ -23,8 +48,7 @@ const calculatePredictions = (cycles) => {
 
   if (completed.length === 0) return null;
 
-  const recent = completed.slice(0, 3);
-
+  const recent = completed.slice(0, 6);
   const avgPeriodLength = Math.round(
     recent.reduce((sum, c) => sum + c.period_length, 0) / recent.length
   );
@@ -32,12 +56,15 @@ const calculatePredictions = (cycles) => {
   const withCycleLen = recent.filter(c => c.cycle_length && c.cycle_length > 0);
   if (withCycleLen.length === 0) return null;
 
-  const avgCycleLength = Math.round(
-    withCycleLen.reduce((sum, c) => sum + c.cycle_length, 0) / withCycleLen.length
-  );
+  const cycleLengths = withCycleLen.map(c => c.cycle_length);
+  const sd = stdDev(cycleLengths);
+  const isVariable = sd > 5;
+  const centralCycleLength = isVariable ? Math.round(median(cycleLengths)) : Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length);
+  const irregular = hasIrregularHistory(cycles);
+  const uncertaintyDays = irregular ? 7 : 3;
 
   const lastStart = new Date(completed[0].start_date);
-  const nextPeriodStart = addDays(lastStart, avgCycleLength);
+  const nextPeriodStart = addDays(lastStart, centralCycleLength);
   const nextPeriodEnd = addDays(nextPeriodStart, avgPeriodLength - 1);
   const ovulationDay = addDays(nextPeriodStart, -14);
   const fertileStart = addDays(ovulationDay, -5);
@@ -49,32 +76,54 @@ const calculatePredictions = (cycles) => {
     ovulationDay,
     fertileStart,
     fertileEnd,
-    avgCycleLength,
+    avgCycleLength: centralCycleLength,
     avgPeriodLength,
-    basedOnCycles: recent.length,
+    basedOnCycles: withCycleLen.length,
+    isVariable,
+    irregular,
+    uncertaintyDays,
+    showOvulation: !irregular,
   };
 };
 
 const getPredictionDateStatus = (date, predictions) => {
   if (!predictions) return null;
-  const { nextPeriodStart, nextPeriodEnd, ovulationDay, fertileStart, fertileEnd } = predictions;
+  const { nextPeriodStart, nextPeriodEnd, ovulationDay, fertileStart, fertileEnd, showOvulation } = predictions;
   const d = toDateStr(date);
   if (d === toDateStr(nextPeriodStart)) return 'pred-start';
   if (d === toDateStr(nextPeriodEnd)) return 'pred-end';
   if (date >= nextPeriodStart && date <= nextPeriodEnd) return 'pred-period';
-  if (d === toDateStr(ovulationDay)) return 'ovulation';
-  if (date >= fertileStart && date <= fertileEnd) return 'fertile';
+  if (showOvulation && d === toDateStr(ovulationDay)) return 'ovulation';
+  if (showOvulation && date >= fertileStart && date <= fertileEnd) return 'fertile';
   return null;
+};
+
+const getDateStatus = (date, cycles) => {
+  const dateStr = toDateStr(date);
+  let result = null;
+
+  for (const cycle of cycles) {
+    if (cycle.start_date === dateStr) return 'start';
+    if (cycle.end_date === dateStr) { result = 'end'; continue; }
+    if (cycle.start_date && cycle.end_date) {
+      const start = new Date(cycle.start_date);
+      const end = new Date(cycle.end_date);
+      if (date > start && date < end && result !== 'end') result = 'period';
+    }
+  }
+  return result;
 };
 
 const PeriodTracker = () => {
   const { user } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [cycles, setCycles] = useState([]);
-  const [currentCycle, setCurrentCycle] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectingEndDate, setSelectingEndDate] = useState(false);
   const [activeTab, setActiveTab] = useState('calendar');
+
+  const [awaitingEndFor, setAwaitingEndFor] = useState(null);
+
+  const [conflictDialog, setConflictDialog] = useState(null);
 
   const [journalEntries, setJournalEntries] = useState([]);
   const [journalModal, setJournalModal] = useState(null);
@@ -105,14 +154,10 @@ const PeriodTracker = () => {
         .order('start_date', { ascending: false });
 
       if (error) throw error;
-
       setCycles(data || []);
 
       const ongoing = (data || []).find(c => !c.end_date);
-      if (ongoing) {
-        setCurrentCycle(ongoing);
-        setSelectingEndDate(true);
-      }
+      if (ongoing) setAwaitingEndFor(ongoing);
     } catch (error) {
       console.error('Error loading cycles:', error);
     } finally {
@@ -134,34 +179,84 @@ const PeriodTracker = () => {
     }
   };
 
-  const getMonthCycle = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
+  const findCycleContainingDate = (dateStr) => {
     return cycles.find(c => {
-      const start = new Date(c.start_date);
-      return start.getFullYear() === year && start.getMonth() === month;
+      if (!c.end_date) return false;
+      return dateStr > c.start_date && dateStr < c.end_date;
     });
   };
 
   const handleCalendarDateClick = async (date) => {
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toDateStr(date);
 
-    if (currentCycle && !currentCycle.end_date) {
-      if (selectingEndDate) {
-        await handleSetEndDate(dateStr);
+    if (awaitingEndFor) {
+      if (dateStr === awaitingEndFor.start_date) {
+        await handleSetEndDate(dateStr, awaitingEndFor);
         return;
       }
-    } else if (!currentCycle) {
-      const existingMonthCycle = getMonthCycle(date);
-      if (!existingMonthCycle) {
-        await handleStartNewCycle(dateStr);
+      if (dateStr < awaitingEndFor.start_date) {
+        setConflictDialog({
+          type: 'new_start_before_ongoing',
+          message: `You have an ongoing period that started on ${new Date(awaitingEndFor.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. The date you selected is before that. Please select a date on or after the start date to mark the end.`,
+          dismiss: () => setConflictDialog(null),
+        });
         return;
       }
+      if (dateStr > awaitingEndFor.start_date) {
+        await handleSetEndDate(dateStr, awaitingEndFor);
+        return;
+      }
+      return;
     }
+
+    const exactMatch = cycles.find(c => c.start_date === dateStr);
+    if (exactMatch) {
+      if (user) {
+        const existing = journalEntries.find(e => e.entry_date === dateStr);
+        setJournalModal({ date: dateStr, existing: existing || null });
+      }
+      return;
+    }
+
+    const containingCycle = findCycleContainingDate(dateStr);
+    if (containingCycle) {
+      setConflictDialog({
+        type: 'inside_existing',
+        message: `This date is already inside a recorded period (started ${new Date(containingCycle.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}). Do you want to end that period on this date instead?`,
+        onYes: async () => {
+          setConflictDialog(null);
+          await handleSetEndDate(dateStr, containingCycle);
+        },
+        onNo: () => setConflictDialog(null),
+      });
+      return;
+    }
+
+    const ongoingCycle = cycles.find(c => !c.end_date);
+    if (ongoingCycle) {
+      setConflictDialog({
+        type: 'ongoing_exists',
+        message: `You have an ongoing period that started on ${new Date(ongoingCycle.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. What would you like to do?`,
+        onEndExisting: async () => {
+          setConflictDialog(null);
+          await handleSetEndDate(dateStr, ongoingCycle);
+        },
+        onStartNew: async () => {
+          setConflictDialog(null);
+          await handleStartNewCycle(dateStr);
+        },
+        onCancel: () => setConflictDialog(null),
+      });
+      return;
+    }
+
+    await handleStartNewCycle(dateStr);
 
     if (user) {
       const existing = journalEntries.find(e => e.entry_date === dateStr);
-      setJournalModal({ date: dateStr, existing: existing || null });
+      if (!awaitingEndFor) {
+        setJournalModal({ date: dateStr, existing: existing || null });
+      }
     }
   };
 
@@ -202,8 +297,11 @@ const PeriodTracker = () => {
   };
 
   const handleStartNewCycle = async (startDate) => {
-    const completedCycles = cycles.filter(c => c.end_date);
-    const previousCycle = completedCycles.length > 0 ? completedCycles[0] : null;
+    const sortedCompleted = cycles
+      .filter(c => c.end_date && c.start_date < startDate)
+      .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+
+    const previousCycle = sortedCompleted.length > 0 ? sortedCompleted[0] : null;
     let cycleLength = null;
 
     if (previousCycle?.start_date) {
@@ -230,84 +328,76 @@ const PeriodTracker = () => {
           .single();
 
         if (error) throw error;
-        setCurrentCycle(data);
-        setCycles([data, ...cycles]);
+        setCycles(prev => [data, ...prev].sort((a, b) => new Date(b.start_date) - new Date(a.start_date)));
+        setAwaitingEndFor(data);
       } catch (error) {
         console.error('Error creating cycle:', error);
         return;
       }
     } else {
       const localCycle = { ...newCycle, id: Date.now().toString() };
-      setCurrentCycle(localCycle);
-      setCycles([localCycle, ...cycles]);
+      setCycles(prev => [localCycle, ...prev].sort((a, b) => new Date(b.start_date) - new Date(a.start_date)));
+      setAwaitingEndFor(localCycle);
     }
-
-    setSelectingEndDate(true);
   };
 
-  const handleSetEndDate = async (endDate) => {
-    if (!currentCycle) return;
+  const handleSetEndDate = async (endDate, targetCycle) => {
+    if (!targetCycle) return;
 
-    const startDate = new Date(currentCycle.start_date);
+    const startDate = new Date(targetCycle.start_date);
     const end = new Date(endDate);
 
     if (end < startDate) return;
 
     const maxEnd = new Date(startDate);
-    maxEnd.setDate(maxEnd.getDate() + 6);
+    maxEnd.setDate(maxEnd.getDate() + 13);
     const clampedEnd = end > maxEnd ? maxEnd : end;
-    const clampedEndStr = clampedEnd.toISOString().split('T')[0];
+    const clampedEndStr = toDateStr(clampedEnd);
 
-    const periodLength = Math.floor((clampedEnd - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    const periodLength = Math.max(1, Math.floor((clampedEnd - startDate) / (1000 * 60 * 60 * 24)) + 1);
 
     if (user) {
       try {
         const { data, error } = await supabase
           .from('period_cycles')
           .update({ end_date: clampedEndStr, period_length: periodLength })
-          .eq('id', currentCycle.id)
+          .eq('id', targetCycle.id)
           .select()
           .single();
 
         if (error) throw error;
-        setCycles(cycles.map(c => c.id === data.id ? data : c));
-        setCurrentCycle(null);
+        setCycles(prev => prev.map(c => c.id === data.id ? data : c));
+        if (awaitingEndFor?.id === targetCycle.id) setAwaitingEndFor(null);
       } catch (error) {
         console.error('Error updating cycle:', error);
       }
     } else {
-      const updatedCycle = { ...currentCycle, end_date: clampedEndStr, period_length: periodLength };
-      setCycles(cycles.map(c => c.id === updatedCycle.id ? updatedCycle : c));
-      setCurrentCycle(null);
+      const updatedCycle = { ...targetCycle, end_date: clampedEndStr, period_length: periodLength };
+      setCycles(prev => prev.map(c => c.id === updatedCycle.id ? updatedCycle : c));
+      if (awaitingEndFor?.id === targetCycle.id) setAwaitingEndFor(null);
     }
-
-    setSelectingEndDate(false);
   };
 
-  const cancelCurrentCycle = async () => {
-    if (!currentCycle) return;
+  const cancelOngoingCycle = async () => {
+    if (!awaitingEndFor) return;
 
     if (user) {
       try {
-        await supabase.from('period_cycles').delete().eq('id', currentCycle.id);
-        setCycles(cycles.filter(c => c.id !== currentCycle.id));
+        await supabase.from('period_cycles').delete().eq('id', awaitingEndFor.id);
+        setCycles(prev => prev.filter(c => c.id !== awaitingEndFor.id));
       } catch (error) {
         console.error('Error deleting cycle:', error);
       }
     } else {
-      setCycles(cycles.filter(c => c.id !== currentCycle.id));
+      setCycles(prev => prev.filter(c => c.id !== awaitingEndFor.id));
     }
 
-    setCurrentCycle(null);
-    setSelectingEndDate(false);
+    setAwaitingEndFor(null);
   };
 
-  const clearMonthCycle = async () => {
-    const cycle = getMonthCycle(currentMonth);
-    if (!cycle) return;
-
-    if (currentCycle?.id === cycle.id) {
-      await cancelCurrentCycle();
+  const clearCycle = async (cycle) => {
+    if (awaitingEndFor?.id === cycle.id) {
+      await cancelOngoingCycle();
       return;
     }
 
@@ -319,8 +409,17 @@ const PeriodTracker = () => {
         console.error('Error clearing cycle:', error);
       }
     } else {
-      setCycles(cycles.filter(c => c.id !== cycle.id));
+      setCycles(prev => prev.filter(c => c.id !== cycle.id));
     }
+  };
+
+  const getMonthCycles = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    return cycles.filter(c => {
+      const start = new Date(c.start_date);
+      return start.getFullYear() === year && start.getMonth() === month;
+    });
   };
 
   const calculateMetrics = () => {
@@ -365,24 +464,9 @@ const PeriodTracker = () => {
     return days;
   };
 
-  const getDateStatus = (date) => {
-    const dateStr = date.toISOString().split('T')[0];
-
-    for (const cycle of cycles) {
-      if (cycle.start_date === dateStr) return 'start';
-      if (cycle.end_date === dateStr) return 'end';
-      if (cycle.start_date && cycle.end_date) {
-        const start = new Date(cycle.start_date);
-        const end = new Date(cycle.end_date);
-        if (date > start && date < end) return 'period';
-      }
-    }
-    return null;
-  };
-
   const hasJournalEntry = (date) => {
     if (!user) return false;
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toDateStr(date);
     return journalEntries.some(e => e.entry_date === dateStr);
   };
 
@@ -392,6 +476,7 @@ const PeriodTracker = () => {
 
   const metrics = calculateMetrics();
   const predictions = calculatePredictions(cycles);
+  const monthCycles = getMonthCycles(currentMonth);
 
   if (loading) {
     return (
@@ -403,6 +488,49 @@ const PeriodTracker = () => {
 
   return (
     <div className="space-y-5">
+      {conflictDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl p-5 max-w-sm w-full">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle size={18} className="text-amber-600" />
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">{conflictDialog.message}</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              {conflictDialog.type === 'inside_existing' && (
+                <>
+                  <button onClick={conflictDialog.onYes} className="w-full px-4 py-2.5 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-xl transition-colors">
+                    Yes, end period here
+                  </button>
+                  <button onClick={conflictDialog.onNo} className="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
+                    No, cancel
+                  </button>
+                </>
+              )}
+              {conflictDialog.type === 'ongoing_exists' && (
+                <>
+                  <button onClick={conflictDialog.onEndExisting} className="w-full px-4 py-2.5 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-xl transition-colors">
+                    End existing period here
+                  </button>
+                  <button onClick={conflictDialog.onStartNew} className="w-full px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-xl transition-colors">
+                    Start a new separate period
+                  </button>
+                  <button onClick={conflictDialog.onCancel} className="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
+                    Cancel
+                  </button>
+                </>
+              )}
+              {conflictDialog.type === 'new_start_before_ongoing' && (
+                <button onClick={conflictDialog.dismiss} className="w-full px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors">
+                  OK
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-1 bg-gray-100 p-1 rounded-xl overflow-x-auto">
         {TABS.map((tab) => {
           const Icon = tab.icon;
@@ -425,36 +553,30 @@ const PeriodTracker = () => {
 
       {activeTab === 'calendar' && (
         <div className="space-y-5">
-          {currentCycle && (
+          {awaitingEndFor && (
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
                   <Info size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-blue-900">
-                      {selectingEndDate ? 'Now select the last day of your period' : 'Period started'}
-                    </p>
+                    <p className="text-sm font-semibold text-blue-900">Now select the last day of your period</p>
                     <p className="text-xs text-blue-700 mt-0.5">
-                      Started {new Date(currentCycle.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.
-                      {selectingEndDate ? ' Click the date your period ended.' : ''}
+                      Started {new Date(awaitingEndFor.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}. Click the date your period ended, or the same day for a 1-day period.
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={cancelCurrentCycle}
-                  className="p-1.5 hover:bg-blue-100 rounded-lg transition-colors"
-                >
+                <button onClick={cancelOngoingCycle} className="p-1.5 hover:bg-blue-100 rounded-lg transition-colors">
                   <X size={16} className="text-blue-600" />
                 </button>
               </div>
             </div>
           )}
 
-          {!currentCycle && (
+          {!awaitingEndFor && (
             <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
               <p className="text-sm text-pink-700">
-                <span className="font-semibold">How to record:</span> Click the first day of your period to mark the start, then click the last day to mark the end.
-                {user && <span> You can also click any day to add a journal entry.</span>}
+                <span className="font-semibold">How to record:</span> Tap the first day of your period to start recording. Then tap the last day to mark it complete. You can record more than one period per month.
+                {user && <span> You can also tap any day to add a journal entry.</span>}
               </p>
             </div>
           )}
@@ -475,10 +597,18 @@ const PeriodTracker = () => {
                 <span className="font-semibold text-gray-800 text-sm">
                   {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
-                {getMonthCycle(currentMonth) && !currentCycle && (
+                {monthCycles.length >= 2 && (
+                  <span className="text-xs font-medium text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                    {monthCycles.length} periods this month
+                  </span>
+                )}
+                {monthCycles.length > 0 && !awaitingEndFor && (
                   <button
-                    onClick={clearMonthCycle}
-                    title="Clear this month's period"
+                    onClick={() => {
+                      const mostRecent = monthCycles.sort((a, b) => new Date(b.start_date) - new Date(a.start_date))[0];
+                      clearCycle(mostRecent);
+                    }}
+                    title="Clear most recent period this month"
                     className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <Trash2 size={14} className="text-red-400 hover:text-red-600" />
@@ -511,7 +641,7 @@ const PeriodTracker = () => {
                   if (!date) return <div key={`empty-${index}`} className="aspect-square" />;
 
                   const isToday = date.toDateString() === new Date().toDateString();
-                  const status = getDateStatus(date);
+                  const status = getDateStatus(date, cycles);
                   const predStatus = status ? null : getPredictionDateStatus(date, predictions);
                   const hasEntry = hasJournalEntry(date);
 
@@ -577,14 +707,18 @@ const PeriodTracker = () => {
                     <div className="w-5 h-5 rounded border-2 border-dashed border-pink-400" />
                     <span className="text-gray-500">Predicted period</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-5 h-5 rounded bg-amber-50 border border-amber-200" />
-                    <span className="text-gray-500">Active cycle window</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-amber-500" />
-                    <span className="text-gray-500">Estimated ovulation</span>
-                  </div>
+                  {predictions.showOvulation && (
+                    <>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 rounded bg-amber-50 border border-amber-200" />
+                        <span className="text-gray-500">Active cycle window</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full bg-amber-500" />
+                        <span className="text-gray-500">Estimated ovulation</span>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
               {user && (
@@ -600,7 +734,12 @@ const PeriodTracker = () => {
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <div className="px-4 pt-4 pb-2 border-b border-gray-100">
                 <p className="text-sm font-semibold text-gray-800">Cycle Pattern Estimates</p>
-                <p className="text-xs text-gray-400 mt-0.5">Based on {predictions.basedOnCycles} recorded {predictions.basedOnCycles === 1 ? 'cycle' : 'cycles'}</p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {predictions.isVariable
+                    ? 'Estimated — your cycles vary'
+                    : `Based on ${predictions.basedOnCycles} recorded ${predictions.basedOnCycles === 1 ? 'cycle' : 'cycles'}`
+                  }
+                </p>
               </div>
               <div className="p-4 grid grid-cols-2 gap-3">
                 <div className="bg-pink-50 rounded-xl p-3">
@@ -608,15 +747,24 @@ const PeriodTracker = () => {
                   <p className="text-sm font-semibold text-pink-900">
                     Around {formatPredictedDate(predictions.nextPeriodStart)}
                   </p>
-                  <p className="text-xs text-pink-400 mt-0.5">±3 days</p>
+                  <p className="text-xs text-pink-400 mt-0.5">±{predictions.uncertaintyDays} days</p>
                 </div>
-                <div className="bg-amber-50 rounded-xl p-3">
-                  <p className="text-xs text-amber-600 font-medium mb-1">Estimated ovulation</p>
-                  <p className="text-sm font-semibold text-amber-900">
-                    Around {formatPredictedDate(predictions.ovulationDay)}
-                  </p>
-                  <p className="text-xs text-amber-400 mt-0.5">±2 days</p>
-                </div>
+                {predictions.showOvulation ? (
+                  <div className="bg-amber-50 rounded-xl p-3">
+                    <p className="text-xs text-amber-600 font-medium mb-1">Estimated ovulation</p>
+                    <p className="text-sm font-semibold text-amber-900">
+                      Around {formatPredictedDate(predictions.ovulationDay)}
+                    </p>
+                    <p className="text-xs text-amber-400 mt-0.5">±2 days</p>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-xl p-3">
+                    <p className="text-xs text-gray-500 font-medium mb-1">Ovulation timing</p>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      Ovulation timing is harder to predict with irregular cycles. Consider speaking with a doctor for personalised guidance.
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="px-4 pb-4">
                 <div className="flex items-start gap-2 bg-gray-50 rounded-lg p-3">
@@ -706,46 +854,7 @@ const PeriodTracker = () => {
       )}
 
       {activeTab === 'history' && (
-        <div className="space-y-4">
-          {cycles.length === 0 ? (
-            <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
-              <Calendar size={28} className="text-gray-300 mx-auto mb-3" />
-              <p className="text-sm text-gray-500">No cycles recorded yet. Use the Calendar tab to start tracking.</p>
-            </div>
-          ) : (
-            <>
-              <div className="space-y-2">
-                {cycles.map((cycle, index) => (
-                  <div
-                    key={cycle.id}
-                    className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                        cycle.end_date ? 'bg-pink-100 text-pink-600' : 'bg-blue-100 text-blue-600'
-                      }`}>
-                        #{cycles.length - index}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {new Date(cycle.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          {cycle.end_date && (
-                            <span className="text-gray-400"> – {new Date(cycle.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                          )}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {cycle.end_date ? `${cycle.period_length} day period` : 'In progress'}
-                          {cycle.cycle_length ? ` · ${cycle.cycle_length}d since last cycle` : ''}
-                        </p>
-                      </div>
-                    </div>
-                    <div className={`w-2 h-2 rounded-full ${cycle.end_date ? 'bg-green-400' : 'bg-blue-400 animate-pulse'}`} />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+        <HistoryTab cycles={cycles} />
       )}
 
       {activeTab === 'medications' && <MedicationTracker />}
@@ -792,6 +901,81 @@ const PeriodTracker = () => {
           saving={journalSaving}
         />
       )}
+    </div>
+  );
+};
+
+const HistoryTab = ({ cycles }) => {
+  const monthGroups = {};
+  cycles.forEach(c => {
+    const key = c.start_date.slice(0, 7);
+    monthGroups[key] = (monthGroups[key] || 0) + 1;
+  });
+
+  if (cycles.length === 0) {
+    return (
+      <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
+        <Calendar size={28} className="text-gray-300 mx-auto mb-3" />
+        <p className="text-sm text-gray-500">No cycles recorded yet. Use the Calendar tab to start tracking.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {cycles.map((cycle, index) => {
+        const isShortCycle = cycle.cycle_length && cycle.cycle_length < 21;
+        const isLongCycle = cycle.cycle_length && cycle.cycle_length > 35;
+        const monthKey = cycle.start_date.slice(0, 7);
+        const isSameMonth = monthGroups[monthKey] >= 2;
+
+        return (
+          <div
+            key={cycle.id}
+            className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl"
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                cycle.end_date ? 'bg-pink-100 text-pink-600' : 'bg-blue-100 text-blue-600'
+              }`}>
+                #{cycles.length - index}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">
+                  {new Date(cycle.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {cycle.end_date && (
+                    <span className="text-gray-400"> – {new Date(cycle.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                  )}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {cycle.end_date ? `${cycle.period_length} day period` : 'In progress'}
+                  {cycle.cycle_length ? ` · ${cycle.cycle_length}d since last cycle` : ''}
+                </p>
+                {(isShortCycle || isLongCycle || isSameMonth) && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {isShortCycle && (
+                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-medium">
+                        Short cycle
+                      </span>
+                    )}
+                    {isLongCycle && (
+                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-medium">
+                        Long cycle
+                      </span>
+                    )}
+                    {isSameMonth && (
+                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 font-medium">
+                        Same month
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={`w-2 h-2 rounded-full ${cycle.end_date ? 'bg-green-400' : 'bg-blue-400 animate-pulse'}`} />
+          </div>
+        );
+      })}
     </div>
   );
 };

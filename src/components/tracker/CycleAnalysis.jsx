@@ -31,7 +31,6 @@ const buildJournalPatterns = (cycles, journalEntries) => {
   journalEntries.forEach(e => {
     if (e.mood) moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1;
   });
-  const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0];
 
   const prePeriodLowMood = { count: 0, total: 0 };
   completedCycles.forEach(cycle => {
@@ -97,8 +96,7 @@ const buildJournalPatterns = (cycles, journalEntries) => {
     });
   });
 
-  const topPeriodSymptom = Object.entries(symptomCycleDay)
-    .sort((a, b) => b[1] - a[1])[0];
+  const topPeriodSymptom = Object.entries(symptomCycleDay).sort((a, b) => b[1] - a[1])[0];
 
   if (topPeriodSymptom && topPeriodSymptom[1] >= 2) {
     patterns.push({
@@ -128,6 +126,42 @@ const PATTERN_STYLES = {
   teal: { card: 'bg-teal-50 border-teal-200', icon: 'bg-teal-100', text: 'text-teal-800', sub: 'text-teal-700' },
   pink: { card: 'bg-pink-50 border-pink-200', icon: 'bg-pink-100', text: 'text-pink-800', sub: 'text-pink-700' },
   blue: { card: 'bg-blue-50 border-blue-200', icon: 'bg-blue-100', text: 'text-blue-800', sub: 'text-blue-700' },
+};
+
+const buildIrregularIndicators = (cycles) => {
+  const indicators = [];
+  const completedCycles = cycles.filter(c => c.end_date && c.period_length);
+
+  const monthGroups = {};
+  cycles.forEach(c => {
+    const key = c.start_date.slice(0, 7);
+    if (!monthGroups[key]) monthGroups[key] = [];
+    monthGroups[key].push(c);
+  });
+
+  Object.entries(monthGroups).forEach(([monthKey, monthCycles]) => {
+    if (monthCycles.length >= 2) {
+      const monthLabel = new Date(monthKey + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      indicators.push({
+        text: `You recorded ${monthCycles.length} periods in ${monthLabel}. This can happen with irregular cycles and is worth mentioning to a doctor if it happens regularly.`,
+      });
+    }
+  });
+
+  completedCycles.forEach(c => {
+    if (c.cycle_length && c.cycle_length < 21 && c.cycle_length >= 15) {
+      indicators.push({
+        text: `One of your cycles was ${c.cycle_length} days, which is shorter than the typical range of 21–35 days. Occasional short cycles can be normal.`,
+      });
+    }
+    if (c.cycle_length && c.cycle_length > 35) {
+      indicators.push({
+        text: `One of your cycles was ${c.cycle_length} days, which is longer than the typical range of 21–35 days. Occasional long cycles can be normal.`,
+      });
+    }
+  });
+
+  return indicators;
 };
 
 const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
@@ -164,10 +198,21 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
   const buildAnalysis = () => {
     if (completedCycles.length < 2) return null;
 
+    const monthGroups = {};
+    cycles.forEach(c => {
+      const key = c.start_date.slice(0, 7);
+      monthGroups[key] = (monthGroups[key] || 0) + 1;
+    });
+    const sameMonthStartDates = new Set(
+      Object.entries(monthGroups)
+        .filter(([, count]) => count >= 2)
+        .flatMap(([monthKey]) =>
+          cycles.filter(c => c.start_date.startsWith(monthKey)).map(c => c.start_date)
+        )
+    );
+
     const cyclesWithMeds = completedCycles.map((cycle) => {
-      const activeMeds = medications.filter(med =>
-        isMedActiveOnDate(med, cycle.start_date)
-      );
+      const activeMeds = medications.filter(med => isMedActiveOnDate(med, cycle.start_date));
       return { ...cycle, activeMeds };
     });
 
@@ -182,21 +227,21 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
       const cycleDiff = current.cycle_length - previous.cycle_length;
       const periodDiff = current.period_length - previous.period_length;
 
-      const newMeds = current.activeMeds.filter(
-        m => !previous.activeMeds.find(pm => pm.id === m.id)
-      );
-      const stoppedMeds = previous.activeMeds.filter(
-        m => !current.activeMeds.find(cm => cm.id === m.id)
-      );
+      const newMeds = current.activeMeds.filter(m => !previous.activeMeds.find(pm => pm.id === m.id));
+      const stoppedMeds = previous.activeMeds.filter(m => !current.activeMeds.find(cm => cm.id === m.id));
 
-      const hasChange = Math.abs(cycleDiff) >= 3 || Math.abs(periodDiff) >= 2;
+      const isSameMonthCycle = sameMonthStartDates.has(current.start_date);
+      const cycleLengthChanged = !isSameMonthCycle && Math.abs(cycleDiff) >= 7;
+      const periodLengthChanged = Math.abs(periodDiff) >= 3;
+
+      const hasChange = cycleLengthChanged || periodLengthChanged;
       const hasMedChange = newMeds.length > 0 || stoppedMeds.length > 0;
 
       if (hasChange || hasMedChange) {
         cyclesWithMedChanges.push({
           cycle: current,
           previous,
-          cycleDiff,
+          cycleDiff: isSameMonthCycle ? null : cycleDiff,
           periodDiff,
           newMeds,
           stoppedMeds,
@@ -205,24 +250,35 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
       }
     }
 
-    const avgCycleLength = completedCycles
-      .filter(c => c.cycle_length)
-      .reduce((sum, c, _, arr) => sum + c.cycle_length / arr.length, 0);
+    const allCycleLengths = completedCycles.filter(c => c.cycle_length).map(c => c.cycle_length);
+    const validCycleLengths = allCycleLengths.filter(l => l >= 15);
+    const excludedCount = allCycleLengths.length - validCycleLengths.length;
+
+    const avgCycleLength = validCycleLengths.length > 0
+      ? Math.round(validCycleLengths.reduce((s, v) => s + v, 0) / validCycleLengths.length * 10) / 10
+      : null;
 
     const avgPeriodLength = completedCycles
       .reduce((sum, c, _, arr) => sum + c.period_length / arr.length, 0);
 
+    const shortestCycle = allCycleLengths.length > 0 ? Math.min(...allCycleLengths) : null;
+    const longestCycle = allCycleLengths.length > 0 ? Math.max(...allCycleLengths) : null;
+
     return {
       cyclesWithMedChanges,
-      avgCycleLength: Math.round(avgCycleLength * 10) / 10,
+      avgCycleLength,
       avgPeriodLength: Math.round(avgPeriodLength * 10) / 10,
       totalCycles: completedCycles.length,
-      recentCycles: cyclesWithMeds.slice(0, 6)
+      recentCycles: cyclesWithMeds.slice(0, 6),
+      excludedCount,
+      shortestCycle,
+      longestCycle,
     };
   };
 
   const analysis = buildAnalysis();
   const journalPatterns = buildJournalPatterns(cycles, journalEntries);
+  const irregularIndicators = buildIrregularIndicators(cycles);
 
   if (!user) {
     return (
@@ -260,7 +316,7 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{analysis.totalCycles}</p>
           <p className="text-xs text-gray-500 mt-1">Cycles Recorded</p>
@@ -268,10 +324,22 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
         <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{analysis.avgCycleLength || '-'}</p>
           <p className="text-xs text-gray-500 mt-1">Avg Cycle (days)</p>
+          {analysis.excludedCount > 0 && (
+            <p className="text-xs text-amber-500 mt-0.5">{analysis.excludedCount} very short excluded</p>
+          )}
         </div>
         <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{analysis.avgPeriodLength}</p>
           <p className="text-xs text-gray-500 mt-1">Avg Period (days)</p>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-xl p-4 text-center col-span-2 sm:col-span-1">
+          <p className="text-sm font-bold text-gray-900">
+            {analysis.shortestCycle !== null ? `${analysis.shortestCycle}d` : '-'}
+            {analysis.shortestCycle !== null && analysis.longestCycle !== null && analysis.shortestCycle !== analysis.longestCycle && (
+              <span className="text-gray-400"> – {analysis.longestCycle}d</span>
+            )}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">Cycle range</p>
         </div>
       </div>
 
@@ -287,9 +355,7 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
               const cycleDiff = prevCycle && cycle.cycle_length && prevCycle.cycle_length
                 ? cycle.cycle_length - prevCycle.cycle_length
                 : null;
-              const periodDiff = prevCycle
-                ? cycle.period_length - prevCycle.period_length
-                : null;
+              const periodDiff = prevCycle ? cycle.period_length - prevCycle.period_length : null;
 
               return (
                 <div key={cycle.id} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
@@ -330,6 +396,25 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {irregularIndicators.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+            <AlertCircle size={16} className="text-amber-500" />
+            Irregular Cycle Indicators
+          </h4>
+          {irregularIndicators.map((indicator, i) => (
+            <div key={i} className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <p className="text-sm text-amber-800 leading-relaxed">{indicator.text}</p>
+            </div>
+          ))}
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <p className="text-sm text-amber-700 leading-relaxed">
+              Irregular cycles are common and can have many causes. If you notice a pattern, speak with a doctor or trusted adult.
+            </p>
           </div>
         </div>
       )}
@@ -395,7 +480,7 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
                   </p>
 
                   <div className="flex flex-wrap gap-3 text-xs text-gray-600 mb-2">
-                    {obs.cycleDiff !== 0 && obs.cycle.cycle_length && (
+                    {obs.cycleDiff !== null && obs.cycleDiff !== 0 && obs.cycle.cycle_length && (
                       <span className="flex items-center gap-1">
                         {obs.cycleDiff > 0
                           ? <TrendingUp size={11} className="text-orange-500" />
