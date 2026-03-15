@@ -2,17 +2,22 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Hop as Home, User, Users, Bot, Circle as HelpCircle, LogIn } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { transliterateToDevanagari } from '../../utils/transliterate';
 
 const MobileNavigation = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const isHindi = i18n.language === 'hi';
+
+  const displayName = (name) =>
+    isHindi ? transliterateToDevanagari(name) : name;
 
   const navItems = [
     { path: '/', icon: Home, label: t('navigation.home') },
     { path: '/girls', icon: User, label: t('navigation.girls') },
     { path: '/boys', icon: Users, label: t('navigation.boys') },
     { path: '/chat', icon: Bot, label: t('navigation.chat') },
-    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? t('auth.greeting', { name: user.user_metadata?.full_name || user.email?.split('@')[0] }) : t('auth.signInNav') },
+    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? t('auth.greeting', { name: displayName(user.user_metadata?.full_name || user.email?.split('@')[0]) }) : t('auth.signInNav') },
   ];
 
   return (

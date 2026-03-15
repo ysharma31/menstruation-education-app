@@ -4,10 +4,15 @@ import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircl
 import LanguageToggle from '../ui/LanguageToggle';
 import SearchBar from '../ui/SearchBar';
 import { useAuth } from '../../contexts/AuthContext';
+import { transliterateToDevanagari } from '../../utils/transliterate';
 
 const DesktopNavigation = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, signOut } = useAuth();
+  const isHindi = i18n.language === 'hi';
+
+  const displayName = (name) =>
+    isHindi ? transliterateToDevanagari(name) : name;
 
   const navItems = [
     { path: '/', icon: Home, label: t('navigation.home') },
@@ -76,7 +81,7 @@ const DesktopNavigation = () => {
                 <User size={14} className="text-pink-600" />
               </div>
               <span className="text-xs text-pink-700 truncate">
-                {t('auth.greeting', { name: user.user_metadata?.full_name || user.email?.split('@')[0] })}
+                {t('auth.greeting', { name: displayName(user.user_metadata?.full_name || user.email?.split('@')[0]) })}
               </span>
             </div>
             <button
