@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Minus, CircleAlert as AlertCircle, Info, Pill, Activity, ChartBar as BarChart2, BookOpen } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, CircleAlert as AlertCircle, Info, Pill, Activity, ChartBar as BarChart2, BookOpen, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -225,9 +226,17 @@ const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
 
   if (!user) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-        <BarChart2 size={32} className="text-gray-300 mx-auto mb-3" />
-        <p className="text-sm text-gray-500">Sign in to view your cycle analysis and medication correlations.</p>
+      <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
+        <BarChart2 size={28} className="text-gray-300 mx-auto mb-3" />
+        <p className="text-sm text-gray-600 font-medium mb-1">Sign in to view your cycle analysis</p>
+        <p className="text-xs text-gray-400 mb-4">Discover patterns in your cycle and medication correlations.</p>
+        <Link
+          to="/auth"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <LogIn size={15} />
+          Sign In or Create Account
+        </Link>
       </div>
     );
   }

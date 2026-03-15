@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Pill, Plus, X, Calendar, ChevronDown, CreditCard as Edit2, Check, Trash2 } from 'lucide-react';
+import { Pill, Plus, X, Calendar, ChevronDown, CreditCard as Edit2, Check, Trash2, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -129,9 +130,17 @@ const MedicationTracker = () => {
 
   if (!user) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-        <Pill size={32} className="text-gray-300 mx-auto mb-3" />
-        <p className="text-sm text-gray-500">Sign in to track your medications and see how they affect your cycle.</p>
+      <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
+        <Pill size={28} className="text-gray-300 mx-auto mb-3" />
+        <p className="text-sm text-gray-600 font-medium mb-1">Sign in to track your medications</p>
+        <p className="text-xs text-gray-400 mb-4">See how medications affect your cycle over time.</p>
+        <Link
+          to="/auth"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <LogIn size={15} />
+          Sign In or Create Account
+        </Link>
       </div>
     );
   }
