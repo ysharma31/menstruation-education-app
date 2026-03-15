@@ -1,23 +1,18 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Home,
-  User,
-  Users,
-  Bot,
-  HelpCircle,
-  MessageCircle
-} from 'lucide-react';
+import { Hop as Home, User, Users, Bot, Circle as HelpCircle, LogIn } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const MobileNavigation = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const navItems = [
     { path: '/', icon: Home, label: t('navigation.home') },
     { path: '/girls', icon: User, label: t('navigation.girls') },
     { path: '/boys', icon: Users, label: t('navigation.boys') },
     { path: '/chat', icon: Bot, label: t('navigation.chat') },
-    { path: '/faq', icon: HelpCircle, label: t('navigation.faq') },
+    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? 'Account' : 'Sign In' },
   ];
 
   return (

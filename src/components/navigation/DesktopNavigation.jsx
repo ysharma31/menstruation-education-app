@@ -1,11 +1,13 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart } from 'lucide-react';
+import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
 import SearchBar from '../ui/SearchBar';
+import { useAuth } from '../../contexts/AuthContext';
 
 const DesktopNavigation = () => {
   const { t } = useTranslation();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { path: '/', icon: Home, label: t('navigation.home') },
@@ -65,8 +67,33 @@ const DesktopNavigation = () => {
         ))}
       </nav>
 
-      <div className="mt-auto pt-4 border-t border-warm-200">
+      <div className="mt-auto pt-4 border-t border-warm-200 space-y-3">
         <LanguageToggle />
+        {user ? (
+          <div className="flex items-center justify-between px-2 py-2 bg-pink-50 rounded-xl">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-full bg-pink-200 flex items-center justify-center flex-shrink-0">
+                <User size={14} className="text-pink-600" />
+              </div>
+              <span className="text-xs text-pink-700 truncate">{user.email}</span>
+            </div>
+            <button
+              onClick={signOut}
+              className="p-1.5 hover:bg-pink-100 rounded-lg transition-colors flex-shrink-0"
+              title="Sign out"
+            >
+              <LogOut size={14} className="text-pink-500" />
+            </button>
+          </div>
+        ) : (
+          <Link
+            to="/auth"
+            className="flex items-center gap-2 px-3 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl transition-colors text-sm font-medium"
+          >
+            <LogIn size={16} />
+            Sign In
+          </Link>
+        )}
       </div>
 
       {/* Footer Disclaimer */}
