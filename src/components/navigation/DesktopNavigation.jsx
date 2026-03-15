@@ -76,7 +76,7 @@ const DesktopNavigation = () => {
                 <User size={14} className="text-pink-600" />
               </div>
               <span className="text-xs text-pink-700 truncate">
-                {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                {t('auth.greeting', { name: user.user_metadata?.full_name || user.email?.split('@')[0] })}
               </span>
             </div>
             <button

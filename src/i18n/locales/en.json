@@ -640,7 +640,8 @@
     "errorEmailExists": "An account with this email already exists. Please sign in.",
     "errorGeneric": "Something went wrong. Please try again.",
     "signOut": "Sign out",
-    "signInNav": "Sign In"
+    "signInNav": "Sign In",
+    "greeting": "Hi, {{name}}"
   },
   "footer": {
     "privacy": "Privacy",
