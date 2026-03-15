@@ -8,6 +8,65 @@ import CycleAnalysis from './CycleAnalysis';
 import JournalEntryModal from './JournalEntryModal';
 import JournalTab from './JournalTab';
 
+const addDays = (date, days) => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const toDateStr = (date) => date.toISOString().split('T')[0];
+
+const calculatePredictions = (cycles) => {
+  const completed = cycles
+    .filter(c => c.end_date && c.period_length && c.start_date)
+    .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+
+  if (completed.length === 0) return null;
+
+  const recent = completed.slice(0, 3);
+
+  const avgPeriodLength = Math.round(
+    recent.reduce((sum, c) => sum + c.period_length, 0) / recent.length
+  );
+
+  const withCycleLen = recent.filter(c => c.cycle_length && c.cycle_length > 0);
+  if (withCycleLen.length === 0) return null;
+
+  const avgCycleLength = Math.round(
+    withCycleLen.reduce((sum, c) => sum + c.cycle_length, 0) / withCycleLen.length
+  );
+
+  const lastStart = new Date(completed[0].start_date);
+  const nextPeriodStart = addDays(lastStart, avgCycleLength);
+  const nextPeriodEnd = addDays(nextPeriodStart, avgPeriodLength - 1);
+  const ovulationDay = addDays(nextPeriodStart, -14);
+  const fertileStart = addDays(ovulationDay, -5);
+  const fertileEnd = addDays(ovulationDay, 1);
+
+  return {
+    nextPeriodStart,
+    nextPeriodEnd,
+    ovulationDay,
+    fertileStart,
+    fertileEnd,
+    avgCycleLength,
+    avgPeriodLength,
+    basedOnCycles: recent.length,
+  };
+};
+
+const getPredictionDateStatus = (date, predictions) => {
+  if (!predictions) return null;
+  const { nextPeriodStart, nextPeriodEnd, ovulationDay, fertileStart, fertileEnd } = predictions;
+  const d = toDateStr(date);
+  if (d === toDateStr(nextPeriodStart)) return 'pred-start';
+  if (d === toDateStr(nextPeriodEnd)) return 'pred-end';
+  if (date >= nextPeriodStart && date <= nextPeriodEnd) return 'pred-period';
+  if (d === toDateStr(ovulationDay)) return 'ovulation';
+  if (date >= fertileStart && date <= fertileEnd) return 'fertile';
+  return null;
+};
+
 const PeriodTracker = () => {
   const { user } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -91,24 +150,6 @@ const PeriodTracker = () => {
 
   const saveCyclesToLocalStorage = (updatedCycles) => {
     localStorage.setItem('periodCycles', JSON.stringify(updatedCycles));
-  };
-
-  const handleDateClick = async (date) => {
-    const dateStr = date.toISOString().split('T')[0];
-
-    if (user) {
-      const existing = journalEntries.find(e => e.entry_date === dateStr);
-      setJournalModal({ date: dateStr, existing: existing || null });
-      return;
-    }
-
-    if (currentCycle && !currentCycle.end_date) {
-      if (selectingEndDate) {
-        await handleSetEndDate(dateStr);
-      }
-    } else if (!currentCycle) {
-      await handleStartNewCycle(dateStr);
-    }
   };
 
   const getMonthCycle = (date) => {
@@ -371,7 +412,12 @@ const PeriodTracker = () => {
     return journalEntries.some(e => e.entry_date === dateStr);
   };
 
+  const formatPredictedDate = (date) => {
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  };
+
   const metrics = calculateMetrics();
+  const predictions = calculatePredictions(cycles);
 
   if (loading) {
     return (
@@ -492,8 +538,14 @@ const PeriodTracker = () => {
 
                   const isToday = date.toDateString() === new Date().toDateString();
                   const status = getDateStatus(date);
+                  const predStatus = status ? null : getPredictionDateStatus(date, predictions);
                   const hasEntry = hasJournalEntry(date);
-                  const isClickable = !currentCycle || selectingEndDate;
+
+                  const isOvulation = predStatus === 'ovulation';
+                  const isFertile = predStatus === 'fertile';
+                  const isPredStart = predStatus === 'pred-start';
+                  const isPredEnd = predStatus === 'pred-end';
+                  const isPredPeriod = predStatus === 'pred-period';
 
                   return (
                     <button
@@ -504,7 +556,10 @@ const PeriodTracker = () => {
                         ${status === 'end' ? 'bg-rose-500 text-white shadow-md' : ''}
                         ${status === 'period' ? 'bg-pink-200 text-pink-900' : ''}
                         ${!status && isToday ? 'bg-pink-100 text-pink-700 border-2 border-pink-400' : ''}
-                        ${!status && !isToday ? 'bg-gray-50 text-gray-700 hover:bg-pink-50 hover:text-pink-700' : ''}
+                        ${!status && !isToday && !predStatus ? 'bg-gray-50 text-gray-700 hover:bg-pink-50 hover:text-pink-700' : ''}
+                        ${(isPredStart || isPredEnd || isPredPeriod) ? 'border-2 border-dashed border-pink-400 text-pink-700' : ''}
+                        ${isFertile && !isToday ? 'bg-amber-50 text-amber-800' : ''}
+                        ${isOvulation && !isToday ? 'bg-amber-50 text-amber-800' : ''}
                       `}
                     >
                       {date.getDate()}
@@ -518,6 +573,9 @@ const PeriodTracker = () => {
                           <span className="text-[6px] text-white font-bold leading-none">E</span>
                         </div>
                       )}
+                      {isOvulation && (
+                        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                      )}
                       {hasEntry && !status && (
                         <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-pink-400 rounded-full" />
                       )}
@@ -530,19 +588,31 @@ const PeriodTracker = () => {
               </div>
             </div>
 
-            <div className="px-4 pb-4 flex flex-wrap items-center gap-4 text-xs">
+            <div className="px-4 pb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-5 h-5 rounded bg-pink-600" />
-                <span className="text-gray-500">Start</span>
+                <span className="text-gray-500">Start / End</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-5 h-5 rounded bg-pink-200" />
                 <span className="text-gray-500">Period days</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-5 h-5 rounded bg-rose-500" />
-                <span className="text-gray-500">End</span>
-              </div>
+              {predictions && (
+                <>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-5 rounded border-2 border-dashed border-pink-400" />
+                    <span className="text-gray-500">Predicted period</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-5 h-5 rounded bg-amber-50 border border-amber-200" />
+                    <span className="text-gray-500">Active cycle window</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-amber-500" />
+                    <span className="text-gray-500">Estimated ovulation</span>
+                  </div>
+                </>
+              )}
               {user && (
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-pink-400" />
@@ -551,6 +621,39 @@ const PeriodTracker = () => {
               )}
             </div>
           </div>
+
+          {predictions && (
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="px-4 pt-4 pb-2 border-b border-gray-100">
+                <p className="text-sm font-semibold text-gray-800">Cycle Pattern Estimates</p>
+                <p className="text-xs text-gray-400 mt-0.5">Based on {predictions.basedOnCycles} recorded {predictions.basedOnCycles === 1 ? 'cycle' : 'cycles'}</p>
+              </div>
+              <div className="p-4 grid grid-cols-2 gap-3">
+                <div className="bg-pink-50 rounded-xl p-3">
+                  <p className="text-xs text-pink-500 font-medium mb-1">Next estimated period</p>
+                  <p className="text-sm font-semibold text-pink-900">
+                    Around {formatPredictedDate(predictions.nextPeriodStart)}
+                  </p>
+                  <p className="text-xs text-pink-400 mt-0.5">±3 days</p>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3">
+                  <p className="text-xs text-amber-600 font-medium mb-1">Estimated ovulation</p>
+                  <p className="text-sm font-semibold text-amber-900">
+                    Around {formatPredictedDate(predictions.ovulationDay)}
+                  </p>
+                  <p className="text-xs text-amber-400 mt-0.5">±2 days</p>
+                </div>
+              </div>
+              <div className="px-4 pb-4">
+                <div className="flex items-start gap-2 bg-gray-50 rounded-lg p-3">
+                  <Info size={13} className="text-gray-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    These are estimates based on your personal cycle patterns. Cycles naturally vary from month to month. This is not a contraception or medical tool — always speak with a doctor for health advice.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {metrics && (
             <div className="grid grid-cols-3 gap-3">
