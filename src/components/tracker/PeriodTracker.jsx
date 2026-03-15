@@ -85,7 +85,7 @@ const PeriodTracker = () => {
     { id: 'history', label: 'History', icon: History },
     { id: 'medications', label: 'Medications', icon: Pill },
     { id: 'analysis', label: 'Analysis', icon: BarChart2 },
-    ...(user ? [{ id: 'journal', label: 'Journal', icon: BookOpen }] : []),
+    { id: 'journal', label: 'Journal', icon: BookOpen },
   ];
 
   useEffect(() => {
@@ -93,7 +93,6 @@ const PeriodTracker = () => {
       loadCyclesFromDatabase();
       loadJournalEntries();
     } else {
-      loadCyclesFromLocalStorage();
       setLoading(false);
     }
   }, [user]);
@@ -133,23 +132,6 @@ const PeriodTracker = () => {
     } catch (error) {
       console.error('Error loading journal entries:', error);
     }
-  };
-
-  const loadCyclesFromLocalStorage = () => {
-    const stored = localStorage.getItem('periodCycles');
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setCycles(parsed);
-      const ongoing = parsed.find(c => !c.end_date);
-      if (ongoing) {
-        setCurrentCycle(ongoing);
-        setSelectingEndDate(true);
-      }
-    }
-  };
-
-  const saveCyclesToLocalStorage = (updatedCycles) => {
-    localStorage.setItem('periodCycles', JSON.stringify(updatedCycles));
   };
 
   const getMonthCycle = (date) => {
@@ -257,9 +239,7 @@ const PeriodTracker = () => {
     } else {
       const localCycle = { ...newCycle, id: Date.now().toString() };
       setCurrentCycle(localCycle);
-      const updatedCycles = [localCycle, ...cycles];
-      setCycles(updatedCycles);
-      saveCyclesToLocalStorage(updatedCycles);
+      setCycles([localCycle, ...cycles]);
     }
 
     setSelectingEndDate(true);
@@ -297,9 +277,7 @@ const PeriodTracker = () => {
       }
     } else {
       const updatedCycle = { ...currentCycle, end_date: clampedEndStr, period_length: periodLength };
-      const updatedCycles = cycles.map(c => c.id === updatedCycle.id ? updatedCycle : c);
-      setCycles(updatedCycles);
-      saveCyclesToLocalStorage(updatedCycles);
+      setCycles(cycles.map(c => c.id === updatedCycle.id ? updatedCycle : c));
       setCurrentCycle(null);
     }
 
@@ -317,9 +295,7 @@ const PeriodTracker = () => {
         console.error('Error deleting cycle:', error);
       }
     } else {
-      const updatedCycles = cycles.filter(c => c.id !== currentCycle.id);
-      setCycles(updatedCycles);
-      saveCyclesToLocalStorage(updatedCycles);
+      setCycles(cycles.filter(c => c.id !== currentCycle.id));
     }
 
     setCurrentCycle(null);
@@ -343,9 +319,7 @@ const PeriodTracker = () => {
         console.error('Error clearing cycle:', error);
       }
     } else {
-      const updatedCycles = cycles.filter(c => c.id !== cycle.id);
-      setCycles(updatedCycles);
-      saveCyclesToLocalStorage(updatedCycles);
+      setCycles(cycles.filter(c => c.id !== cycle.id));
     }
   };
 
@@ -786,9 +760,9 @@ const PeriodTracker = () => {
       )}
 
       {activeTab === 'journal' && !user && (
-        <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-6 text-center">
+        <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-8 text-center">
           <BookOpen size={28} className="text-gray-300 mx-auto mb-3" />
-          <p className="text-sm text-gray-600 font-medium mb-1">Sign in to start your personal journal</p>
+          <p className="text-sm text-gray-600 font-medium mb-1">Sign in to see your period journal</p>
           <p className="text-xs text-gray-400 mb-4">Track your mood, symptoms, and notes every day.</p>
           <Link
             to="/auth"
