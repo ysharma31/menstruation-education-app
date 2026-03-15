@@ -82,7 +82,7 @@ const DesktopNavigation = () => {
             <button
               onClick={signOut}
               className="p-1.5 hover:bg-pink-100 rounded-lg transition-colors flex-shrink-0"
-              title="Sign out"
+              title={t('auth.signOut')}
             >
               <LogOut size={14} className="text-pink-500" />
             </button>
@@ -93,7 +93,7 @@ const DesktopNavigation = () => {
             className="flex items-center gap-2 px-3 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl transition-colors text-sm font-medium"
           >
             <LogIn size={16} />
-            Sign In
+            {t('auth.signInNav')}
           </Link>
         )}
       </div>

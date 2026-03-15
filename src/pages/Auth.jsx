@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { signIn, signUp } = useAuth();
 
   const [mode, setMode] = useState('signin');
@@ -24,15 +26,15 @@ const Auth = () => {
 
     if (mode === 'signup') {
       if (!name.trim()) {
-        setError('Please enter your name.');
+        setError(t('auth.errorEnterName'));
         return;
       }
       if (password !== confirmPassword) {
-        setError('Passwords do not match.');
+        setError(t('auth.errorPasswordsNoMatch'));
         return;
       }
       if (password.length < 6) {
-        setError('Password must be at least 6 characters.');
+        setError(t('auth.errorPasswordTooShort'));
         return;
       }
     }
@@ -44,7 +46,7 @@ const Auth = () => {
         const { error } = await signIn(email, password);
         if (error) {
           setError(error.message === 'Invalid login credentials'
-            ? 'Incorrect email or password. Please try again.'
+            ? t('auth.errorInvalidCredentials')
             : error.message
           );
         } else {
@@ -54,11 +56,11 @@ const Auth = () => {
         const { error } = await signUp(email, password, name.trim());
         if (error) {
           setError(error.message.includes('already registered')
-            ? 'An account with this email already exists. Please sign in.'
+            ? t('auth.errorEmailExists')
             : error.message
           );
         } else {
-          setSuccess('Account created! You can now sign in and your period data will be saved securely.');
+          setSuccess(t('auth.accountCreated'));
           setTimeout(() => {
             setMode('signin');
             setSuccess('');
@@ -68,7 +70,7 @@ const Auth = () => {
         }
       }
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError(t('auth.errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -82,7 +84,7 @@ const Auth = () => {
           className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 mb-6 transition-colors text-sm"
         >
           <ArrowLeft size={16} />
-          Back to Girls section
+          {t('auth.backToGirls')}
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
@@ -91,13 +93,10 @@ const Auth = () => {
               <Heart className="w-8 h-8 text-white fill-white" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-1">
-              {mode === 'signin' ? 'Welcome back' : 'Create your account'}
+              {mode === 'signin' ? t('auth.welcomeBack') : t('auth.createAccount')}
             </h1>
             <p className="text-pink-100 text-sm">
-              {mode === 'signin'
-                ? 'Sign in to access your period tracking history'
-                : 'Track your cycles privately and securely'
-              }
+              {mode === 'signin' ? t('auth.signInSubtitle') : t('auth.signUpSubtitle')}
             </p>
           </div>
 
@@ -111,7 +110,7 @@ const Auth = () => {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Sign In
+                {t('auth.signIn')}
               </button>
               <button
                 onClick={() => { setMode('signup'); setError(''); setSuccess(''); }}
@@ -121,7 +120,7 @@ const Auth = () => {
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Sign Up
+                {t('auth.signUp')}
               </button>
             </div>
 
@@ -141,7 +140,7 @@ const Auth = () => {
               {mode === 'signup' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Your name
+                    {t('auth.yourName')}
                   </label>
                   <div className="relative">
                     <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -151,7 +150,7 @@ const Auth = () => {
                       onChange={(e) => setName(e.target.value)}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                      placeholder="e.g., Priya"
+                      placeholder={t('auth.namePlaceholder')}
                     />
                   </div>
                 </div>
@@ -159,7 +158,7 @@ const Auth = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email address
+                  {t('auth.emailAddress')}
                 </label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -176,7 +175,7 @@ const Auth = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
+                  {t('auth.password')}
                 </label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -186,7 +185,7 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                    placeholder={mode === 'signup' ? 'At least 6 characters' : 'Your password'}
+                    placeholder={mode === 'signup' ? t('auth.passwordPlaceholder') : t('auth.passwordExisting')}
                   />
                   <button
                     type="button"
@@ -201,7 +200,7 @@ const Auth = () => {
               {mode === 'signup' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm password
+                    {t('auth.confirmPassword')}
                   </label>
                   <div className="relative">
                     <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -211,7 +210,7 @@ const Auth = () => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                      placeholder="Repeat your password"
+                      placeholder={t('auth.confirmPasswordPlaceholder')}
                     />
                   </div>
                 </div>
@@ -223,8 +222,8 @@ const Auth = () => {
                 className="w-full py-3 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white font-semibold rounded-xl transition-colors shadow-sm text-sm mt-2"
               >
                 {loading
-                  ? (mode === 'signin' ? 'Signing in...' : 'Creating account...')
-                  : (mode === 'signin' ? 'Sign In' : 'Create Account')
+                  ? (mode === 'signin' ? t('auth.signingIn') : t('auth.creatingAccount'))
+                  : (mode === 'signin' ? t('auth.signIn') : t('auth.createAccountButton'))
                 }
               </button>
             </form>
@@ -233,7 +232,7 @@ const Auth = () => {
               <div className="flex items-start gap-2">
                 <User size={14} className="text-gray-400 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-gray-500 leading-relaxed">
-                  Your data is stored privately. We never share your personal health information with anyone. Your period history is only visible to you.
+                  {t('auth.privacyNote')}
                 </p>
               </div>
             </div>
