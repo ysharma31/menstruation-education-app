@@ -16,6 +16,9 @@ import {
 } from './pages';
 import TeacherAuth from './pages/teacher/TeacherAuth';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import StudentLayout from './components/student/StudentLayout';
+import StudentAuth from './pages/student/StudentAuth';
+import StudentDashboard from './pages/student/StudentDashboard';
 import { SearchProvider } from './contexts/SearchContext';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -44,6 +47,10 @@ function App() {
             <Route path="/teacher" element={<TeacherLayout />}>
               <Route index element={<TeacherAuth />} />
               <Route path="dashboard" element={<TeacherDashboard />} />
+            </Route>
+            <Route path="/student" element={<StudentLayout />}>
+              <Route index element={<StudentAuth />} />
+              <Route path="dashboard" element={<StudentDashboard />} />
             </Route>
           </Routes>
         </Router>

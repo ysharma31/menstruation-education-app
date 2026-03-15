@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Shield, Eye, Users } from 'lucide-react';
+import { GraduationCap, BookOpen, ChartBar as BarChart2, Shield, Eye, Users } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateClassForm from './components/CreateClassForm';
-import StatsPanel from './components/StatsPanel';
 import ClassList from './components/ClassList';
+import MaterialUpload from './components/MaterialUpload';
+import MaterialList from './components/MaterialList';
+import StudentAccessPanel from './components/StudentAccessPanel';
 
 const PRIVACY_NOTICES = [
   { icon: Shield, text: 'All statistics are anonymous and aggregated' },
@@ -13,13 +15,22 @@ const PRIVACY_NOTICES = [
   { icon: Users, text: 'Students can use the app without joining a class' }
 ];
 
+const TABS = [
+  { id: 'classes', label: 'Classes', icon: GraduationCap },
+  { id: 'materials', label: 'Materials', icon: BookOpen },
+  { id: 'access', label: 'Student Access', icon: BarChart2 }
+];
+
 const TeacherDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
+  const [activeTab, setActiveTab] = useState('classes');
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [loadingClasses, setLoadingClasses] = useState(true);
+  const [materialRefreshKey, setMaterialRefreshKey] = useState(0);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -100,8 +111,25 @@ const TeacherDashboard = () => {
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <div className="space-y-5">
+      <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
+        {TABS.map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              activeTab === id
+                ? 'bg-white shadow-sm text-gray-900'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Icon size={16} />
+            <span className="hidden sm:inline">{label}</span>
+          </button>
+        ))}
+      </div>
+
+      {activeTab === 'classes' && (
+        <div className="grid lg:grid-cols-2 gap-6">
           <CreateClassForm onCreated={handleClassCreated} />
           <ClassList
             classes={classes}
@@ -110,26 +138,32 @@ const TeacherDashboard = () => {
             onDeleted={handleClassDeleted}
           />
         </div>
+      )}
 
-        <div className="space-y-5">
-          {selectedClass ? (
-            <>
-              <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-1">{selectedClass.class_name}</h2>
-                {selectedClass.school_name && (
-                  <p className="text-sm text-gray-500">{selectedClass.school_name}</p>
-                )}
-              </div>
-              <StatsPanel />
-            </>
-          ) : (
-            <div className="bg-white rounded-2xl border border-dashed border-green-200 p-10 text-center">
-              <GraduationCap className="w-10 h-10 text-green-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">Create a class to see stats.</p>
-            </div>
-          )}
+      {activeTab === 'materials' && (
+        <div className="grid lg:grid-cols-2 gap-6">
+          <MaterialUpload onUploaded={() => setMaterialRefreshKey((k) => k + 1)} />
+          <MaterialList
+            refreshTrigger={materialRefreshKey}
+            onSelectMaterial={(material) => {
+              setSelectedMaterial(material);
+              setActiveTab('access');
+            }}
+            selectedMaterialId={selectedMaterial?.id}
+          />
         </div>
-      </div>
+      )}
+
+      {activeTab === 'access' && (
+        <div className="grid lg:grid-cols-2 gap-6">
+          <MaterialList
+            refreshTrigger={materialRefreshKey}
+            onSelectMaterial={(material) => setSelectedMaterial(material)}
+            selectedMaterialId={selectedMaterial?.id}
+          />
+          <StudentAccessPanel selectedMaterial={selectedMaterial} />
+        </div>
+      )}
     </div>
   );
 };
