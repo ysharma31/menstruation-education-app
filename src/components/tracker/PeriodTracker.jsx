@@ -31,8 +31,21 @@ const median = (values) => {
 };
 
 const hasIrregularHistory = (cycles) => {
-  const completed = cycles.filter(c => c.end_date && c.cycle_length);
-  const hasShortCycle = completed.some(c => c.cycle_length < 21);
+  const sorted = [...cycles]
+    .filter(c => c.end_date && c.start_date)
+    .sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+
+  let hasShortCycle = false;
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const curr = new Date(sorted[i].start_date);
+    const prev = new Date(sorted[i + 1].start_date);
+    const diff = Math.floor((curr - prev) / (1000 * 60 * 60 * 24));
+    if (diff > 0 && diff < 21) { hasShortCycle = true; break; }
+  }
+  if (!hasShortCycle) {
+    hasShortCycle = sorted.some(c => c.cycle_length && c.cycle_length < 21);
+  }
+
   const monthGroups = {};
   cycles.forEach(c => {
     const key = c.start_date.slice(0, 7);
@@ -54,10 +67,17 @@ const calculatePredictions = (cycles) => {
     recent.reduce((sum, c) => sum + c.period_length, 0) / recent.length
   );
 
-  const withCycleLen = recent.filter(c => c.cycle_length && c.cycle_length > 0);
-  if (withCycleLen.length === 0) return null;
+  const derivedCycleLengths = [];
+  for (let i = 0; i < recent.length - 1; i++) {
+    const curr = new Date(recent[i].start_date);
+    const prev = new Date(recent[i + 1].start_date);
+    const diff = Math.floor((curr - prev) / (1000 * 60 * 60 * 24));
+    if (diff > 0) derivedCycleLengths.push(diff);
+  }
 
-  const cycleLengths = withCycleLen.map(c => c.cycle_length);
+  const withCycleLen = recent.filter(c => c.cycle_length && c.cycle_length > 0);
+  const cycleLengths = derivedCycleLengths.length > 0 ? derivedCycleLengths : withCycleLen.map(c => c.cycle_length);
+  if (cycleLengths.length === 0) return null;
   const sd = stdDev(cycleLengths);
   const isVariable = sd > 5;
   const centralCycleLength = isVariable ? Math.round(median(cycleLengths)) : Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length);
@@ -664,7 +684,7 @@ const PeriodTracker = () => {
 
                   return (
                     <button
-                      key={date.toDateString()}
+                      key={`day-${index}`}
                       onClick={() => handleCalendarDateClick(date)}
                       className={`aspect-square rounded-xl text-sm font-medium transition-all duration-200 relative
                         ${status === 'start' ? 'bg-pink-600 text-white shadow-md ring-2 ring-pink-300' : ''}
