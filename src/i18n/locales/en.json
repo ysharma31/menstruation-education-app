@@ -1131,6 +1131,7 @@
     "errorPasswordsNoMatch": "Passwords do not match.",
     "errorNotStudentAccount": "This account is not a student account. Please use the Teacher Portal.",
     "errorSignInFailed": "Sign in failed.",
+    "errorAlreadyRegistered": "An account with this email already exists. Please sign in instead — you can complete your student profile after signing in.",
     "errorSignUpFailed": "Sign up failed.",
     "backToHome": "Back to home",
     "welcome": "Welcome, {{name}}!",

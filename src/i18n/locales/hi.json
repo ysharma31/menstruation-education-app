@@ -1131,6 +1131,7 @@
     "errorPasswordsNoMatch": "पासवर्ड मेल नहीं खाते।",
     "errorNotStudentAccount": "यह छात्र खाता नहीं है। कृपया शिक्षक पोर्टल का उपयोग करें।",
     "errorSignInFailed": "साइन इन विफल।",
+    "errorAlreadyRegistered": "इस ईमेल से पहले से एक खाता बना हुआ है। कृपया साइन इन करें — साइन इन के बाद आप अपनी छात्र प्रोफ़ाइल पूरी कर सकती हैं।",
     "errorSignUpFailed": "साइन अप विफल।",
     "backToHome": "होम पर वापस जाएं",
     "welcome": "स्वागत है, {{name}}!",

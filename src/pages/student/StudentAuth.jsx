@@ -116,7 +116,11 @@ const StudentAuth = () => {
       setTab('signin');
       setSignupSuccess(true);
     } catch (err) {
-      setError(err.message || t('studentPortal.errorSignUpFailed'));
+      if (err.message?.toLowerCase().includes('already registered') || err.message?.toLowerCase().includes('already exists')) {
+        setError(t('studentPortal.errorAlreadyRegistered'));
+      } else {
+        setError(err.message || t('studentPortal.errorSignUpFailed'));
+      }
     } finally {
       setLoading(false);
     }
