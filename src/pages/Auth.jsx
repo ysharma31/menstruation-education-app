@@ -1,26 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User, GraduationCap, CalendarCheck } from 'lucide-react';
+import { Heart, Mail, Lock, Eye, EyeOff, ArrowLeft, User, CalendarCheck } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
-
-const getPendingCode = () =>
-  localStorage.getItem('pendingClassCode') || sessionStorage.getItem('pendingClassCode');
-
-const clearPendingCode = () => {
-  localStorage.removeItem('pendingClassCode');
-  sessionStorage.removeItem('pendingClassCode');
-};
 
 const Auth = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { signIn, signUp } = useAuth();
 
-  const pendingCode = getPendingCode();
-
-  const [mode, setMode] = useState(pendingCode ? 'signup' : 'signin');
+  const [mode, setMode] = useState('signin');
   const [name, setName] = useState('');
   const [nameHi, setNameHi] = useState('');
   const [email, setEmail] = useState('');
@@ -30,37 +19,6 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [joinToast, setJoinToast] = useState('');
-
-  useEffect(() => {
-    if (joinToast) {
-      const timer = setTimeout(() => setJoinToast(''), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [joinToast]);
-
-  const attemptEnrollAfterAuth = async (userId) => {
-    const code = getPendingCode();
-    if (!code) return null;
-    try {
-      const { data: cls } = await supabase
-        .from('teacher_classes')
-        .select('id, class_name')
-        .eq('class_code', code)
-        .eq('is_active', true)
-        .maybeSingle();
-      if (!cls) { clearPendingCode(); return null; }
-      const { error: enrollErr } = await supabase
-        .from('class_enrollments')
-        .insert({ class_id: cls.id, student_id: userId });
-      if (enrollErr && enrollErr.code !== '23505') { clearPendingCode(); return null; }
-      clearPendingCode();
-      return cls.class_name;
-    } catch {
-      clearPendingCode();
-      return null;
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,14 +47,10 @@ const Auth = () => {
             navigate('/teacher');
             return;
           }
-          const className = await attemptEnrollAfterAuth(data.user.id);
-          if (className) {
-            setJoinToast(`You have joined "${className}"!`);
-          }
           navigate('/');
         }
       } else {
-        const { data, error } = await signUp(email, password, name.trim(), nameHi.trim());
+        const { error } = await signUp(email, password, name.trim(), nameHi.trim());
         if (error) {
           setError(error.message.includes('already registered')
             ? t('auth.errorEmailExists')
@@ -121,12 +75,6 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 flex items-center justify-center p-4">
-      {joinToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-5 py-3 rounded-2xl shadow-lg text-sm font-medium">
-          {joinToast}
-        </div>
-      )}
-
       <div className="w-full max-w-md">
         <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 mb-6 transition-colors text-sm">
           <ArrowLeft size={16} />
@@ -147,26 +95,13 @@ const Auth = () => {
           </div>
 
           <div className="p-8">
-            {!pendingCode && (
-              <div className="mb-5 pl-4 border-l-4 border-pink-300 bg-pink-50 rounded-r-xl py-3 pr-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <CalendarCheck size={14} className="text-pink-600 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-pink-800">Period & Cycle Tracker</p>
-                </div>
-                <p className="text-xs text-pink-700">Sign in to log your periods, track your cycle, and view your history — all stored privately.</p>
+            <div className="mb-5 pl-4 border-l-4 border-pink-300 bg-pink-50 rounded-r-xl py-3 pr-3">
+              <div className="flex items-center gap-2 mb-1">
+                <CalendarCheck size={14} className="text-pink-600 flex-shrink-0" />
+                <p className="text-sm font-semibold text-pink-800">Period & Cycle Tracker</p>
               </div>
-            )}
-
-            {pendingCode && (
-              <div className="mb-5 pl-4 border-l-4 border-green-400 bg-green-50 rounded-r-xl py-3 pr-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <GraduationCap size={14} className="text-green-700 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-green-800">You are joining a class.</p>
-                </div>
-                <p className="text-xs text-green-700 mb-1">Create an account or sign in to complete joining.</p>
-                <p className="text-xs font-mono font-bold text-green-700 tracking-widest">{pendingCode}</p>
-              </div>
-            )}
+              <p className="text-xs text-pink-700">Sign in to log your periods, track your cycle, and view your history — all stored privately.</p>
+            </div>
 
             <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
               <button
