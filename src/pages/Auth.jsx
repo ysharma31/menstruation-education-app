@@ -8,6 +8,7 @@ const Auth = () => {
   const { signIn, signUp } = useAuth();
 
   const [mode, setMode] = useState('signin');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,6 +23,10 @@ const Auth = () => {
     setSuccess('');
 
     if (mode === 'signup') {
+      if (!name.trim()) {
+        setError('Please enter your name.');
+        return;
+      }
       if (password !== confirmPassword) {
         setError('Passwords do not match.');
         return;
@@ -46,7 +51,7 @@ const Auth = () => {
           navigate('/girls');
         }
       } else {
-        const { error } = await signUp(email, password);
+        const { error } = await signUp(email, password, name.trim());
         if (error) {
           setError(error.message.includes('already registered')
             ? 'An account with this email already exists. Please sign in.'
@@ -99,7 +104,7 @@ const Auth = () => {
           <div className="p-8">
             <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
               <button
-                onClick={() => { setMode('signin'); setError(''); setSuccess(''); }}
+                onClick={() => { setMode('signin'); setError(''); setSuccess(''); setName(''); }}
                 className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
                   mode === 'signin'
                     ? 'bg-white text-gray-900 shadow-sm'
@@ -133,6 +138,25 @@ const Auth = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === 'signup' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your name
+                  </label>
+                  <div className="relative">
+                    <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
+                      placeholder="e.g., Priya"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email address

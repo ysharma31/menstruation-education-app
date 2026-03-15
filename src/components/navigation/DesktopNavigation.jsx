@@ -75,7 +75,9 @@ const DesktopNavigation = () => {
               <div className="w-7 h-7 rounded-full bg-pink-200 flex items-center justify-center flex-shrink-0">
                 <User size={14} className="text-pink-600" />
               </div>
-              <span className="text-xs text-pink-700 truncate">{user.email}</span>
+              <span className="text-xs text-pink-700 truncate">
+                {user.user_metadata?.full_name || user.email?.split('@')[0]}
+              </span>
             </div>
             <button
               onClick={signOut}
