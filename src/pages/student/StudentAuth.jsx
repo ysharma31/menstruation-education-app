@@ -227,7 +227,7 @@ const StudentAuth = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.schoolName')} <span className="text-gray-400 font-normal">{t('studentPortal.schoolNameOptional')}</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('studentPortal.schoolName')}</label>
                   <div className="relative">
                     <SchoolIcon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                     <select

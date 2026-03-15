@@ -144,7 +144,7 @@ const TeacherAuth = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">School Name <span className="text-gray-400 font-normal">(optional)</span></label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">School Name</label>
                     <div className="relative">
                       <SchoolIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                       <select
