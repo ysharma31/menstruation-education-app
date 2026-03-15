@@ -11,6 +11,7 @@ const Auth = () => {
 
   const [mode, setMode] = useState('signin');
   const [name, setName] = useState('');
+  const [nameHi, setNameHi] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,7 +54,7 @@ const Auth = () => {
           navigate('/girls');
         }
       } else {
-        const { error } = await signUp(email, password, name.trim());
+        const { error } = await signUp(email, password, name.trim(), nameHi.trim());
         if (error) {
           setError(error.message.includes('already registered')
             ? t('auth.errorEmailExists')
@@ -138,22 +139,40 @@ const Auth = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'signup' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('auth.yourName')}
-                  </label>
-                  <div className="relative">
-                    <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
-                      placeholder={t('auth.namePlaceholder')}
-                    />
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('auth.yourName')}
+                    </label>
+                    <div className="relative">
+                      <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
+                        placeholder={t('auth.namePlaceholder')}
+                      />
+                    </div>
                   </div>
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('auth.yourNameHi')}
+                    </label>
+                    <div className="relative">
+                      <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        value={nameHi}
+                        onChange={(e) => setNameHi(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 text-sm transition-colors"
+                        placeholder={t('auth.nameHiPlaceholder')}
+                        dir="auto"
+                      />
+                    </div>
+                  </div>
+                </>
               )}
 
               <div>
