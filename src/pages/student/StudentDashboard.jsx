@@ -61,6 +61,7 @@ const StudentDashboard = () => {
           id: user.id,
           full_name: user.user_metadata.full_name,
           grade: user.user_metadata.grade ? parseInt(user.user_metadata.grade) : null,
+          class_name: user.user_metadata.class_name ?? null,
           gender: user.user_metadata.gender ?? null,
           school_name: user.user_metadata.school_name ?? null
         };
@@ -72,6 +73,7 @@ const StudentDashboard = () => {
         resolvedProfile = {
           full_name: user.user_metadata?.full_name,
           grade: user.user_metadata?.grade ? parseInt(user.user_metadata.grade) : null,
+          class_name: user.user_metadata?.class_name ?? null,
           gender: user.user_metadata?.gender ?? null,
           school_name: user.user_metadata?.school_name ?? null
         };
@@ -82,11 +84,16 @@ const StudentDashboard = () => {
       if (resolvedProfile.grade) resolvedProfile.grade = parseInt(resolvedProfile.grade);
 
       if (resolvedProfile.grade) {
-        const { data: mats } = await supabase
+        let query = supabase
           .from('course_materials')
           .select('*')
-          .eq('grade', resolvedProfile.grade)
-          .order('created_at', { ascending: false });
+          .eq('grade', resolvedProfile.grade);
+
+        if (resolvedProfile.class_name) {
+          query = query.eq('class_name', resolvedProfile.class_name);
+        }
+
+        const { data: mats } = await query.order('created_at', { ascending: false });
         setMaterials(mats ?? []);
 
         const { data: accessData } = await supabase
@@ -146,6 +153,12 @@ const StudentDashboard = () => {
                   Grade {profile.grade}
                 </span>
               )}
+              {profile?.class_name && (
+                <span className="flex items-center gap-1 text-xs text-indigo-100 bg-white/10 rounded-full px-2.5 py-0.5">
+                  <BookOpen size={12} />
+                  {profile.class_name}
+                </span>
+              )}
               {profile?.school_name && (
                 <span className="flex items-center gap-1 text-xs text-indigo-100 bg-white/10 rounded-full px-2.5 py-0.5">
                   <SchoolIcon size={12} />
@@ -165,11 +178,17 @@ const StudentDashboard = () => {
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
           <p className="text-sm text-amber-800">Your grade is not set on your profile. Please contact support.</p>
         </div>
+      ) : !profile?.class_name ? (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+          <p className="text-sm text-amber-800">Your class name is not set on your profile. Please contact support or re-register.</p>
+        </div>
       ) : (
         <>
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <h2 className="font-bold text-gray-900">Grade {profile.grade} Materials</h2>
+              <h2 className="font-bold text-gray-900">
+              Grade {profile.grade}{profile?.class_name ? ` · ${profile.class_name}` : ''} Materials
+            </h2>
               <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5">{filteredMaterials.length}</span>
             </div>
             <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
@@ -194,7 +213,7 @@ const StudentDashboard = () => {
               <p className="text-sm text-gray-400 mt-1">
                 {filter !== 'All'
                   ? `No ${filter.toLowerCase()} materials available.`
-                  : `Your teacher hasn't uploaded materials for Grade ${profile.grade} yet.`}
+                  : `Your teacher hasn't uploaded materials for Grade ${profile.grade}${profile?.class_name ? ` · ${profile.class_name}` : ''} yet.`}
               </p>
             </div>
           ) : (

@@ -34,6 +34,7 @@ const StudentAuth = () => {
   const [fullName, setFullName] = useState('');
   const [schoolName, setSchoolName] = useState('');
   const [grade, setGrade] = useState('');
+  const [className, setClassName] = useState('');
   const [gender, setGender] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
@@ -74,6 +75,7 @@ const StudentAuth = () => {
 
     if (!fullName.trim()) { setError('Full name is required.'); return; }
     if (!grade) { setError('Grade is required.'); return; }
+    if (!className.trim()) { setError('Class name is required.'); return; }
     if (!gender) { setError('Please select a gender option.'); return; }
     if (signupPassword.length < 6) { setError('Password must be at least 6 characters.'); return; }
     if (signupPassword !== confirmPassword) { setError('Passwords do not match.'); return; }
@@ -88,6 +90,7 @@ const StudentAuth = () => {
             full_name: fullName.trim(),
             role: 'student',
             grade: parseInt(grade),
+            class_name: className.trim(),
             gender,
             school_name: schoolName.trim() || null
           }
@@ -100,11 +103,12 @@ const StudentAuth = () => {
           full_name: fullName.trim(),
           school_name: schoolName.trim() || null,
           grade: parseInt(grade),
+          class_name: className.trim(),
           gender
         });
         await supabase.auth.signOut();
       }
-      setFullName(''); setSchoolName(''); setGrade(''); setGender('');
+      setFullName(''); setSchoolName(''); setGrade(''); setClassName(''); setGender('');
       setSignupEmail(''); setSignupPassword(''); setConfirmPassword('');
       setTab('signin');
       setSignupSuccess(true);
@@ -242,6 +246,21 @@ const StudentAuth = () => {
                       {GRADES.map((g) => <option key={g} value={g}>Grade {g}</option>)}
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Class Name <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <BookOpen size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={className}
+                      onChange={(e) => setClassName(e.target.value)}
+                      placeholder="e.g. 7B Health, Section A"
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-gray-400">Enter the class name exactly as your teacher created it</p>
                 </div>
 
                 <div>

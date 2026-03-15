@@ -1,18 +1,22 @@
 import { useState } from 'react';
-import { CirclePlus as PlusCircle, School } from 'lucide-react';
+import { CirclePlus as PlusCircle, School, GraduationCap } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useAuth } from '../../../contexts/AuthContext';
+
+const GRADES = Array.from({ length: 9 }, (_, i) => i + 4);
 
 const CreateClassForm = ({ onCreated }) => {
   const { user } = useAuth();
   const [className, setClassName] = useState('');
   const [schoolName, setSchoolName] = useState('');
+  const [grade, setGrade] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!className.trim()) return;
+    if (!grade) { setError('Please select a grade for this class.'); return; }
     setLoading(true);
     setError('');
     try {
@@ -21,7 +25,8 @@ const CreateClassForm = ({ onCreated }) => {
         .insert({
           teacher_id: user.id,
           class_name: className.trim(),
-          school_name: schoolName.trim() || null
+          school_name: schoolName.trim() || null,
+          grade: parseInt(grade)
         })
         .select()
         .single();
@@ -29,6 +34,7 @@ const CreateClassForm = ({ onCreated }) => {
       if (insertError) throw insertError;
       setClassName('');
       setSchoolName('');
+      setGrade('');
       onCreated(data);
     } catch (err) {
       setError(err.message || 'Failed to create class.');
@@ -60,9 +66,28 @@ const CreateClassForm = ({ onCreated }) => {
             value={className}
             onChange={(e) => setClassName(e.target.value)}
             required
-            placeholder="e.g. Grade 7B Health"
+            placeholder="e.g. 7B Health, Section A, Morning Batch"
             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Grade <span className="text-red-400">*</span>
+          </label>
+          <div className="relative">
+            <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <select
+              value={grade}
+              onChange={(e) => setGrade(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-sm bg-white appearance-none"
+            >
+              <option value="">Select a grade</option>
+              {GRADES.map((g) => (
+                <option key={g} value={g}>Grade {g}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div>
@@ -83,7 +108,7 @@ const CreateClassForm = ({ onCreated }) => {
 
         <button
           type="submit"
-          disabled={loading || !className.trim()}
+          disabled={loading || !className.trim() || !grade}
           className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold rounded-xl transition-colors text-sm"
         >
           {loading ? 'Creating...' : 'Create Class'}
