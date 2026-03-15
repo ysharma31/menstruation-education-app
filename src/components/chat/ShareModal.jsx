@@ -14,14 +14,14 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
   const handleEmailShare = () => {
     const subject = encodeURIComponent('Period Education – Chat Conversation');
     const body = encodeURIComponent(buildText());
-    window.open(`mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`);
+    window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
   };
 
   const handleSmsShare = () => {
     const body = encodeURIComponent(buildText());
     const number = phone.replace(/\D/g, '');
     const sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
-    window.open(`sms:${number}${sep}body=${body}`);
+    window.location.href = `sms:${number}${sep}body=${body}`;
   };
 
   const handleCopy = async () => {
@@ -40,6 +40,7 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-gray-900">Share Conversation</h3>
           <button
+            type="button"
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Close"
@@ -63,6 +64,7 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
                 className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
               />
               <button
+                type="button"
                 onClick={handleEmailShare}
                 disabled={!email.trim()}
                 className="px-4 py-2 bg-red-400 text-white rounded-lg text-sm font-medium hover:bg-red-500 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors"
@@ -87,6 +89,7 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
                 className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
               />
               <button
+                type="button"
                 onClick={handleSmsShare}
                 disabled={!phone.trim()}
                 className="px-4 py-2 bg-red-400 text-white rounded-lg text-sm font-medium hover:bg-red-500 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors"
@@ -99,6 +102,7 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
 
           <div className="border-t border-gray-100 pt-4">
             <button
+              type="button"
               onClick={handleCopy}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
             >
