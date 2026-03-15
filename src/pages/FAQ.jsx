@@ -243,7 +243,7 @@ const FAQ = () => {
               onClick={() => setActiveCategory(cat.id)}
               className={`px-5 py-3 rounded-xl whitespace-nowrap transition-all duration-300 touch-target font-medium text-sm ${
                 activeCategory === cat.id
-                  ? 'gradient-secondary text-white shadow-blue'
+                  ? 'bg-blue-700 text-white shadow-md'
                   : 'bg-white text-text-secondary hover:bg-secondary-50 border border-warm-200'
               }`}
             >
