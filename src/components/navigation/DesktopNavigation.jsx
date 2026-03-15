@@ -76,6 +76,13 @@ const DesktopNavigation = () => {
       </nav>
 
       <div className="mt-auto pt-4 border-t border-warm-200 space-y-3">
+        <Link
+          to="/teacher"
+          className="flex items-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-colors text-xs font-medium"
+        >
+          <GraduationCap size={14} />
+          Teacher / School Portal
+        </Link>
         <LanguageToggle />
         {user ? (
           <div className="flex items-center justify-between px-2 py-2 bg-pink-50 rounded-xl">
@@ -118,14 +125,6 @@ const DesktopNavigation = () => {
           {t('footer.disclaimer')}
         </p>
       </div>
-
-      <Link
-        to="/teacher"
-        className="mt-3 flex items-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl transition-colors text-xs font-medium"
-      >
-        <GraduationCap size={14} />
-        Teacher / School Portal
-      </Link>
     </aside>
   );
 };
