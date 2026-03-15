@@ -1,4 +1,4 @@
-import { Users, TrendingUp, BookOpen, MessageCircle, Circle as HelpCircle, User } from 'lucide-react';
+import { TrendingUp, BookOpen, MessageCircle, Circle as HelpCircle, User, Users } from 'lucide-react';
 
 const SECTIONS = [
   { key: 'girls', label: 'Girls Section', icon: User, color: 'bg-pink-100 text-pink-600' },
@@ -39,7 +39,7 @@ const MOCK_WEEKLY = [
   { label: 'Sun', value: 5 }
 ];
 
-const StatsPanel = ({ enrollmentCount }) => {
+const StatsPanel = () => {
   const weeklyMax = Math.max(...MOCK_WEEKLY.map((d) => d.value));
 
   const faqData = FAQ_CATEGORIES.map((c, i) => ({
@@ -58,17 +58,6 @@ const StatsPanel = ({ enrollmentCount }) => {
           <div>
             <h3 className="font-bold text-gray-900">Class Overview</h3>
             <p className="text-xs text-gray-500">All data is anonymous and aggregated</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-green-50 rounded-xl p-4 text-center">
-            <p className="text-3xl font-black text-green-700">{enrollmentCount}</p>
-            <p className="text-xs text-gray-600 mt-1">Students Enrolled</p>
-          </div>
-          <div className="bg-blue-50 rounded-xl p-4 text-center">
-            <p className="text-3xl font-black text-blue-700">{Math.floor(enrollmentCount * 0.7)}</p>
-            <p className="text-xs text-gray-600 mt-1">Active This Week</p>
           </div>
         </div>
 

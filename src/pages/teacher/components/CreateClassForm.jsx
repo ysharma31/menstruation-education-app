@@ -86,7 +86,7 @@ const CreateClassForm = ({ onCreated }) => {
           disabled={loading || !className.trim()}
           className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-semibold rounded-xl transition-colors text-sm"
         >
-          {loading ? 'Creating...' : 'Create Class & Get Code'}
+          {loading ? 'Creating...' : 'Create Class'}
         </button>
       </form>
     </div>

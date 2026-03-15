@@ -1,28 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Trash2, Users, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Trash2, ChevronRight } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 
 const ClassList = ({ classes, onSelect, selectedId, onDeleted }) => {
-  const [enrollmentCounts, setEnrollmentCounts] = useState({});
   const [deleting, setDeleting] = useState(null);
-
-  useEffect(() => {
-    if (classes.length === 0) return;
-    const fetchCounts = async () => {
-      const counts = {};
-      await Promise.all(
-        classes.map(async (cls) => {
-          const { count } = await supabase
-            .from('class_enrollments')
-            .select('*', { count: 'exact', head: true })
-            .eq('class_id', cls.id);
-          counts[cls.id] = count ?? 0;
-        })
-      );
-      setEnrollmentCounts(counts);
-    };
-    fetchCounts();
-  }, [classes]);
 
   const handleDelete = async (cls) => {
     if (!window.confirm(`Delete class "${cls.class_name}"? This cannot be undone.`)) return;
@@ -64,15 +45,6 @@ const ClassList = ({ classes, onSelect, selectedId, onDeleted }) => {
               {cls.school_name && (
                 <p className="text-xs text-gray-500 truncate">{cls.school_name}</p>
               )}
-              <div className="flex items-center gap-3 mt-1">
-                <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-                  <Users size={11} />
-                  {enrollmentCounts[cls.id] ?? '...'} students
-                </span>
-                <span className="text-xs font-mono bg-green-100 text-green-700 px-2 py-0.5 rounded-md">
-                  {cls.class_code}
-                </span>
-              </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button

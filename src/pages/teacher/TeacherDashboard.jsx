@@ -4,7 +4,6 @@ import { GraduationCap, Shield, Eye, Users } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateClassForm from './components/CreateClassForm';
-import SharePanel from './components/SharePanel';
 import StatsPanel from './components/StatsPanel';
 import ClassList from './components/ClassList';
 
@@ -21,7 +20,6 @@ const TeacherDashboard = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [loadingClasses, setLoadingClasses] = useState(true);
-  const [enrollmentCount, setEnrollmentCount] = useState(0);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -44,18 +42,6 @@ const TeacherDashboard = () => {
     };
     fetchClasses();
   }, [user]);
-
-  useEffect(() => {
-    if (!selectedClass) { setEnrollmentCount(0); return; }
-    const fetchCount = async () => {
-      const { count } = await supabase
-        .from('class_enrollments')
-        .select('*', { count: 'exact', head: true })
-        .eq('class_id', selectedClass.id);
-      setEnrollmentCount(count ?? 0);
-    };
-    fetchCount();
-  }, [selectedClass]);
 
   const handleClassCreated = (newClass) => {
     setClasses((prev) => [newClass, ...prev]);
@@ -110,7 +96,7 @@ const TeacherDashboard = () => {
           ))}
         </div>
         <p className="mt-3 text-xs text-green-700 border-t border-green-200 pt-3">
-          This dashboard complies with basic educational data protection principles. No personally identifiable student information is collected or displayed. Students joining a class only creates an anonymous enrollment record.
+          This dashboard complies with basic educational data protection principles. No personally identifiable student information is collected or displayed.
         </p>
       </div>
 
@@ -128,21 +114,18 @@ const TeacherDashboard = () => {
         <div className="space-y-5">
           {selectedClass ? (
             <>
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-lg font-bold text-gray-900">{selectedClass.class_name}</h2>
-                  {selectedClass.school_name && (
-                    <span className="text-sm text-gray-500">{selectedClass.school_name}</span>
-                  )}
-                </div>
-                <SharePanel classCode={selectedClass.class_code} />
+              <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-1">{selectedClass.class_name}</h2>
+                {selectedClass.school_name && (
+                  <p className="text-sm text-gray-500">{selectedClass.school_name}</p>
+                )}
               </div>
-              <StatsPanel enrollmentCount={enrollmentCount} />
+              <StatsPanel />
             </>
           ) : (
             <div className="bg-white rounded-2xl border border-dashed border-green-200 p-10 text-center">
               <GraduationCap className="w-10 h-10 text-green-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">Create a class to see the share panel and stats.</p>
+              <p className="text-gray-500 text-sm">Create a class to see stats.</p>
             </div>
           )}
         </div>
