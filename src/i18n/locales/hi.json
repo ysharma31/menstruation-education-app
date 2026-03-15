@@ -17,6 +17,13 @@
     "getStarted": "शुरू करें।",
     "searchPlaceholder": "विषय, कीवर्ड खोजें..."
   },
+  "search": {
+    "noResults": "कोई परिणाम नहीं मिला",
+    "tryDifferent": "अलग कीवर्ड आज़माएं या नीचे दिए गए अनुभाग देखें",
+    "resultsFor": "खोज परिणाम",
+    "result": "परिणाम",
+    "results": "परिणाम"
+  },
   "navigation": {
     "home": "होम",
     "boys": "लड़कों के लिए",

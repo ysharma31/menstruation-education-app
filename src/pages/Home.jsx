@@ -1,19 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  User,
-  Users,
-  PlayCircle,
-  HelpCircle,
-  BookOpen,
-  MessageCircle,
-  Heart,
-  Sparkles,
-  ArrowRight
-} from 'lucide-react';
+import { useMemo } from 'react';
+import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { useSearch } from '../contexts/SearchContext';
+import SearchResults from '../components/search/SearchResults';
+import { searchGlobalContent } from '../utils/contentIndex';
 
 const Home = () => {
   const { t } = useTranslation();
+  const { searchQuery } = useSearch();
 
   const sections = [
     {
@@ -78,6 +73,12 @@ const Home = () => {
     }
   ];
 
+  const searchResults = useMemo(() => {
+    return searchGlobalContent(searchQuery, t);
+  }, [searchQuery, t]);
+
+  const showSearchResults = searchQuery && searchQuery.trim() !== '';
+
   return (
     <div className="page-container animate-fade-in">
       <section className="mb-12">
@@ -121,17 +122,22 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="mb-12">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            {t('home.chooseSection')}
-          </h2>
-          <p className="text-gray-500">
-            Explore resources designed just for you
-          </p>
-        </div>
+      {showSearchResults ? (
+        <section className="mb-12">
+          <SearchResults results={searchResults} query={searchQuery} />
+        </section>
+      ) : (
+        <section className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              {t('home.chooseSection')}
+            </h2>
+            <p className="text-gray-500">
+              Explore resources designed just for you
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sections.map((section) => (
             <Link
               key={section.path}
@@ -159,6 +165,31 @@ const Home = () => {
               </div>
             </Link>
           ))}
+        </div>
+        </section>
+      )}
+
+      <section className="mb-8">
+        <div className="card bg-pink-50 border-pink-100">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-pink-500 flex items-center justify-center shadow-sm">
+              <Heart className="w-7 h-7 text-white" />
+            </div>
+
+            <div className="text-center md:text-left flex-1">
+              <h3 className="font-bold text-lg text-gray-900 mb-1">
+                {t('home.forEveryone')}
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                {t('home.description')}
+              </p>
+            </div>
+
+            <Link to="/faq" className="btn-outline flex-shrink-0">
+              <HelpCircle className="w-5 h-5 mr-2" />
+              Browse FAQ
+            </Link>
+          </div>
         </div>
       </section>
 

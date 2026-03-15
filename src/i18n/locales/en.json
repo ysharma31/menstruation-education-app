@@ -17,6 +17,13 @@
     "getStarted": "Get Started.",
     "searchPlaceholder": "Search for topics, keywords..."
   },
+  "search": {
+    "noResults": "No results found",
+    "tryDifferent": "Try different keywords or browse our sections below",
+    "resultsFor": "Search results for",
+    "result": "result",
+    "results": "results"
+  },
   "navigation": {
     "home": "Home",
     "boys": "For Boys",
