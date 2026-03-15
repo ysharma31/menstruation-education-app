@@ -21,7 +21,7 @@ const AnimatedExplainer = () => {
       videoUrl: getVideoUrl('intro'),
       thumbnailUrl: null,
       transcript: t('animated.transcripts.intro'),
-      guideUrl: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/guides/introduction-to-puberty-guide.pdf`
+      guideUrl: '/introduction-to-puberty-guide.pdf'
     },
     {
       id: 'cycle',
@@ -338,9 +338,7 @@ const AnimatedExplainer = () => {
                   {selectedVideo.guideUrl ? (
                     <a
                       href={selectedVideo.guideUrl}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      download="introduction-to-puberty-guide.pdf"
                       className="w-full btn-outline flex items-center justify-center gap-2"
                     >
                       <Download size={18} />
