@@ -111,6 +111,15 @@ const PeriodTracker = () => {
     }
   };
 
+  const getMonthCycle = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    return cycles.find(c => {
+      const start = new Date(c.start_date);
+      return start.getFullYear() === year && start.getMonth() === month;
+    });
+  };
+
   const handleCalendarDateClick = async (date) => {
     const dateStr = date.toISOString().split('T')[0];
 
@@ -120,8 +129,11 @@ const PeriodTracker = () => {
         return;
       }
     } else if (!currentCycle) {
-      await handleStartNewCycle(dateStr);
-      return;
+      const existingMonthCycle = getMonthCycle(date);
+      if (!existingMonthCycle) {
+        await handleStartNewCycle(dateStr);
+        return;
+      }
     }
 
     if (user) {
