@@ -1,6 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut, GraduationCap } from 'lucide-react';
+import { Hop as Home, User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Bot, Heart, LogIn, LogOut, GraduationCap, CalendarCheck } from 'lucide-react';
 import LanguageToggle from '../ui/LanguageToggle';
 import SearchBar from '../ui/SearchBar';
 import { useAuth } from '../../contexts/AuthContext';
@@ -98,10 +98,16 @@ const DesktopNavigation = () => {
         ) : (
           <Link
             to="/auth"
-            className="flex items-center gap-2 px-3 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl transition-colors text-sm font-medium"
+            className="flex items-center gap-3 px-3 py-2 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-xl transition-colors"
           >
-            <LogIn size={16} />
-            {t('auth.signInNav')}
+            <div className="w-7 h-7 rounded-full bg-pink-200 flex items-center justify-center flex-shrink-0">
+              <CalendarCheck size={14} className="text-pink-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-pink-700 leading-tight">{t('auth.signInNav')}</p>
+              <p className="text-xs text-pink-500 leading-tight truncate">{t('auth.signInNavHint')}</p>
+            </div>
+            <LogIn size={14} className="text-pink-400 flex-shrink-0 ml-auto" />
           </Link>
         )}
       </div>

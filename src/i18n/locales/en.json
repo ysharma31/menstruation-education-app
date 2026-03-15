@@ -643,6 +643,8 @@
     "errorGeneric": "Something went wrong. Please try again.",
     "signOut": "Sign out",
     "signInNav": "Sign In",
+    "signInNavHint": "Track your period & cycle",
+    "signInNavTracker": "My Tracker",
     "greeting": "Hi, {{name}}"
   },
   "anatomy": {

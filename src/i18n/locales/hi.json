@@ -643,6 +643,8 @@
     "errorGeneric": "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।",
     "signOut": "साइन आउट करें",
     "signInNav": "साइन इन करें",
+    "signInNavHint": "पीरियड और साइकिल ट्रैक करें",
+    "signInNavTracker": "मेरा ट्रैकर",
     "greeting": "नमस्ते, {{name}}"
   },
   "anatomy": {

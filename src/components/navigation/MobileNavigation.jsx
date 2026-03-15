@@ -20,7 +20,7 @@ const MobileNavigation = () => {
     { path: '/girls', icon: User, label: t('navigation.girls') },
     { path: '/boys', icon: Users, label: t('navigation.boys') },
     { path: '/chat', icon: Bot, label: t('navigation.chat') },
-    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? t('auth.greeting', { name: displayName() }) : t('auth.signInNav') },
+    { path: user ? '/girls' : '/auth', icon: user ? User : LogIn, label: user ? t('auth.greeting', { name: displayName() }) : t('auth.signInNavTracker') },
   ];
 
   return (
