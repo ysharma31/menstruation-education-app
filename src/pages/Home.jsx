@@ -192,30 +192,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <section className="mb-8">
-        <div className="card bg-pink-50 border-pink-100">
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-pink-500 flex items-center justify-center shadow-sm">
-              <Heart className="w-7 h-7 text-white" />
-            </div>
-
-            <div className="text-center md:text-left flex-1">
-              <h3 className="font-bold text-lg text-gray-900 mb-1">
-                {t('home.forEveryone')}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {t('home.description')}
-              </p>
-            </div>
-
-            <Link to="/faq" className="btn-outline flex-shrink-0">
-              <HelpCircle className="w-5 h-5 mr-2" />
-              Browse FAQ
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
