@@ -645,6 +645,98 @@
     "signInNav": "Sign In",
     "greeting": "Hi, {{name}}"
   },
+  "anatomy": {
+    "title": "Interactive Anatomy Explorer",
+    "subtitle": "Tap any organ to learn what it does and how it changes through your cycle.",
+    "phaseMode": "Phase mode",
+    "phaseOff": "Turn off",
+    "tapPrompt": "Tap an organ in the diagram — or select one below — to see what it does.",
+    "duringPhases": "During each phase:",
+    "whatHappening": "What's happening",
+    "svgAriaLabel": "Illustrated diagram of the female reproductive system",
+    "svgLabel": "Reproductive System",
+    "educationalNote": "This diagram is educational and simplified. It is not a medical reference.",
+    "phases": {
+      "menstrual": "Menstrual",
+      "follicular": "Follicular",
+      "ovulation": "Ovulation",
+      "luteal": "Luteal"
+    },
+    "phaseOverview": {
+      "menstrual": "The uterus sheds its lining. This is your period — usually days 1–5. Hormone levels are low. You may feel cramping as the uterus contracts.",
+      "follicular": "After your period, oestrogen rises and the uterine lining starts rebuilding. In the ovaries, several follicles begin growing — one will become dominant.",
+      "ovulation": "A surge of LH hormone triggers the dominant follicle to release a mature egg. The egg travels toward the fallopian tube. This usually happens around day 14.",
+      "luteal": "After ovulation, the follicle becomes the corpus luteum and releases progesterone. The uterine lining thickens further, ready in case a fertilised egg arrives."
+    },
+    "organs": {
+      "uterus": {
+        "name": "Uterus",
+        "shortLabel": "Uterus",
+        "what": "A pear-shaped muscular organ in your lower abdomen. Its inner lining (the endometrium) builds up and sheds each month. If pregnancy happens, a fertilised egg implants here.",
+        "phases": {
+          "menstrual": "The lining sheds as your period — this is what the bleeding is. The uterus contracts gently to push the lining out.",
+          "follicular": "The lining starts to regrow and thicken, nourished by rising oestrogen levels.",
+          "ovulation": "The lining continues to build. The uterus is in a welcoming, receptive state.",
+          "luteal": "Progesterone makes the lining thick and spongy — ideal for a fertilised egg. If pregnancy doesn't happen, the lining will shed again."
+        }
+      },
+      "leftOvary": {
+        "name": "Left Ovary",
+        "shortLabel": "L. Ovary",
+        "what": "One of two almond-shaped organs that store eggs (ova) and produce hormones like oestrogen and progesterone. You are born with all the eggs you will ever have.",
+        "phases": {
+          "menstrual": "Resting. Hormone levels are at their lowest.",
+          "follicular": "Several follicles (tiny fluid-filled sacs each containing an egg) begin to grow here or in the right ovary.",
+          "ovulation": "If the dominant follicle developed here, it releases an egg this phase.",
+          "luteal": "If ovulation occurred here, the empty follicle becomes the corpus luteum, producing progesterone."
+        }
+      },
+      "rightOvary": {
+        "name": "Right Ovary",
+        "shortLabel": "R. Ovary",
+        "what": "One of two almond-shaped organs that store eggs (ova) and produce hormones like oestrogen and progesterone. You are born with all the eggs you will ever have.",
+        "phases": {
+          "menstrual": "Resting. Hormone levels are at their lowest.",
+          "follicular": "One follicle becomes dominant and grows rapidly, producing increasing oestrogen.",
+          "ovulation": "The dominant follicle releases a mature egg — ovulation! The egg is swept into the nearby fallopian tube.",
+          "luteal": "The empty follicle transforms into the corpus luteum, which produces progesterone until the next period begins."
+        }
+      },
+      "fallopianTubes": {
+        "name": "Fallopian Tubes",
+        "shortLabel": "Fallopian Tubes",
+        "what": "Two slender tubes connecting each ovary to the uterus. Tiny hair-like cilia sweep the egg along toward the uterus. Fertilisation usually takes place here.",
+        "phases": {
+          "menstrual": "Quiet and at rest during this phase.",
+          "follicular": "The tube prepares to receive an egg — cilia activity increases.",
+          "ovulation": "The fringed end (fimbria) sweeps the released egg into the tube. The egg travels toward the uterus over 3–4 days.",
+          "luteal": "The tube continues to move the egg (or nothing, if unfertilised) toward the uterus."
+        }
+      },
+      "cervix": {
+        "name": "Cervix",
+        "shortLabel": "Cervix",
+        "what": "The lower narrow part of the uterus that connects to the vagina. It produces mucus that changes throughout the cycle. During childbirth it dilates to let the baby pass.",
+        "phases": {
+          "menstrual": "Slightly open to allow the lining to flow out. Mucus is minimal.",
+          "follicular": "Mucus becomes clearer and more fluid — like egg white — to help sperm travel if needed.",
+          "ovulation": "Mucus is at its clearest and most stretchy. The cervix is slightly softer and more open.",
+          "luteal": "Mucus thickens and becomes a barrier. The cervix firms up again."
+        }
+      },
+      "vagina": {
+        "name": "Vagina",
+        "shortLabel": "Vagina",
+        "what": "A muscular canal that connects the uterus to the outside of the body. Period blood, cervical mucus, and discharge exit through here. It also self-cleans through natural discharge.",
+        "phases": {
+          "menstrual": "The pathway for menstrual blood to leave the body. Some discharge mixing with blood is normal.",
+          "follicular": "Discharge may increase and become clear or white as oestrogen rises.",
+          "ovulation": "Discharge is often at its most noticeable — clear and slippery.",
+          "luteal": "Discharge may reduce or become thicker and creamier as progesterone rises."
+        }
+      }
+    }
+  },
   "tracker": {
     "howToRecord": "How to record:",
     "howToRecordDesc": "Tap the first day of your period to start recording. Then tap the last day to mark it complete. You can record more than one period per month.",

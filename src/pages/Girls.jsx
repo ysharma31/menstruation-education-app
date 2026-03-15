@@ -4,6 +4,7 @@ import { useSearch } from '../contexts/SearchContext';
 import { Heart, Calendar, Sparkles, Activity, ShoppingBag, ChevronRight, CircleCheck as CheckCircle, ArrowLeft, Circle as XCircle, Info, User, Droplet, Sun, Wind, Smile, ChevronDown, CircleAlert as AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PeriodTracker from '../components/tracker/PeriodTracker';
+import AnatomyExplorer from '../components/education/AnatomyExplorer';
 
 const Girls = () => {
   const { t } = useTranslation();
@@ -243,6 +244,8 @@ const Girls = () => {
                     </div>
                   </div>
                 </div>
+
+                <AnatomyExplorer />
               </div>
             )}
 
