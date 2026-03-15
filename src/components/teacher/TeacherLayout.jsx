@@ -22,7 +22,7 @@ const TeacherLayout = () => {
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="font-bold text-gray-900 text-sm leading-none block">{t('teacherPortal.title')}</span>
+              <span className="font-bold text-gray-900 text-sm leading-none block">Teacher's Portal</span>
               <span className="text-xs text-green-600 leading-none">{t('common.appName')}</span>
             </div>
           </Link>
