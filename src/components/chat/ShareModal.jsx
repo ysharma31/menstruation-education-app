@@ -1,12 +1,9 @@
 import { useState } from 'react';
-import { X, Mail, MessageSquare, Copy, Check, Share2 } from 'lucide-react';
+import { X, Mail, Copy, Check } from 'lucide-react';
 
 const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
   const [email, setEmail] = useState('');
   const [copied, setCopied] = useState(false);
-  const [smsCopied, setSmsCopied] = useState(false);
-
-  const canNativeShare = typeof navigator.share === 'function';
 
   const buildText = () =>
     messages
@@ -17,27 +14,6 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
     const subject = encodeURIComponent('Period Education – Chat Conversation');
     const body = encodeURIComponent(buildText());
     window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
-  };
-
-  const handleNativeShare = async () => {
-    try {
-      await navigator.share({
-        title: 'Period Education – Chat Conversation',
-        text: buildText(),
-      });
-    } catch {
-      /* user cancelled or not supported */
-    }
-  };
-
-  const handleSmsCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(buildText());
-      setSmsCopied(true);
-      setTimeout(() => setSmsCopied(false), 2500);
-    } catch {
-      /* silently fail */
-    }
   };
 
   const handleCopy = async () => {
@@ -89,47 +65,6 @@ const ShareModal = ({ messages, onClose, youLabel, assistantLabel }) => {
               </button>
             </div>
             <p className="text-xs text-gray-400 mt-1">Opens your default email app with the conversation pre-filled.</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              <MessageSquare size={14} className="inline mr-1.5 text-gray-500" />
-              Share via Text Message
-            </label>
-            {canNativeShare ? (
-              <>
-                <button
-                  type="button"
-                  onClick={handleNativeShare}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-400 text-white rounded-lg text-sm font-medium hover:bg-red-500 transition-colors"
-                >
-                  <Share2 size={15} />
-                  Open Share Sheet
-                </button>
-                <p className="text-xs text-gray-400 mt-1">Opens your device's share menu — choose Messages or any app.</p>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={handleSmsCopy}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-400 text-white rounded-lg text-sm font-medium hover:bg-red-500 transition-colors"
-                >
-                  {smsCopied ? (
-                    <>
-                      <Check size={15} className="text-white" />
-                      Copied! Paste into your Messages app
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={15} />
-                      Copy text to send via Messages
-                    </>
-                  )}
-                </button>
-                <p className="text-xs text-gray-400 mt-1">Copy the conversation, then open your Messages app and paste.</p>
-              </>
-            )}
           </div>
 
           <div className="border-t border-gray-100 pt-4">
