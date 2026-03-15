@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Minus, CircleAlert as AlertCircle, Info, Pill, Activity, ChartBar as BarChart2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, CircleAlert as AlertCircle, Info, Pill, Activity, ChartBar as BarChart2, BookOpen } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -20,7 +20,116 @@ const isMedActiveOnDate = (med, dateStr) => {
   return true;
 };
 
-const CycleAnalysis = ({ cycles }) => {
+const buildJournalPatterns = (cycles, journalEntries) => {
+  if (!journalEntries || journalEntries.length < 5) return [];
+
+  const patterns = [];
+  const completedCycles = cycles.filter(c => c.end_date && c.period_length && c.cycle_length);
+
+  const moodCounts = {};
+  journalEntries.forEach(e => {
+    if (e.mood) moodCounts[e.mood] = (moodCounts[e.mood] || 0) + 1;
+  });
+  const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0];
+
+  const prePeriodLowMood = { count: 0, total: 0 };
+  completedCycles.forEach(cycle => {
+    const startDate = new Date(cycle.start_date);
+    for (let d = 1; d <= 3; d++) {
+      const checkDate = new Date(startDate);
+      checkDate.setDate(checkDate.getDate() - d);
+      const dateStr = checkDate.toISOString().split('T')[0];
+      const entry = journalEntries.find(e => e.entry_date === dateStr);
+      if (entry) {
+        prePeriodLowMood.total++;
+        if (entry.mood === 'low' || entry.mood === 'rough') prePeriodLowMood.count++;
+      }
+    }
+  });
+
+  if (prePeriodLowMood.total >= 3 && prePeriodLowMood.count / prePeriodLowMood.total >= 0.5) {
+    patterns.push({
+      type: 'mood',
+      text: `You tend to log lower mood in the 1–3 days before your period starts. This is a common pattern related to hormonal shifts.`,
+      color: 'amber'
+    });
+  }
+
+  const midCycleEnergy = { high: 0, total: 0 };
+  completedCycles.forEach(cycle => {
+    const startDate = new Date(cycle.start_date);
+    const cycleLen = cycle.cycle_length || 28;
+    for (let d = 9; d <= 13; d++) {
+      if (d >= cycleLen) continue;
+      const checkDate = new Date(startDate);
+      checkDate.setDate(checkDate.getDate() + d);
+      const dateStr = checkDate.toISOString().split('T')[0];
+      const entry = journalEntries.find(e => e.entry_date === dateStr);
+      if (entry && entry.energy_level) {
+        midCycleEnergy.total++;
+        if (entry.energy_level >= 4) midCycleEnergy.high++;
+      }
+    }
+  });
+
+  if (midCycleEnergy.total >= 3 && midCycleEnergy.high / midCycleEnergy.total >= 0.5) {
+    patterns.push({
+      type: 'energy',
+      text: `Your energy tends to be highest around days 10–13 of your cycle. This aligns with the follicular phase when oestrogen levels rise.`,
+      color: 'teal'
+    });
+  }
+
+  const symptomCycleDay = {};
+  journalEntries.forEach(entry => {
+    if (!entry.symptoms || entry.symptoms.length === 0) return;
+    completedCycles.forEach(cycle => {
+      const startDate = new Date(cycle.start_date);
+      const entryDate = new Date(entry.entry_date);
+      const dayOfCycle = Math.floor((entryDate - startDate) / (1000 * 60 * 60 * 24));
+      if (dayOfCycle >= 0 && dayOfCycle <= (cycle.period_length || 7)) {
+        entry.symptoms.forEach(s => {
+          if (!symptomCycleDay[s]) symptomCycleDay[s] = 0;
+          symptomCycleDay[s]++;
+        });
+      }
+    });
+  });
+
+  const topPeriodSymptom = Object.entries(symptomCycleDay)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  if (topPeriodSymptom && topPeriodSymptom[1] >= 2) {
+    patterns.push({
+      type: 'symptom',
+      text: `"${topPeriodSymptom[0].charAt(0).toUpperCase() + topPeriodSymptom[0].slice(1)}" is your most frequently logged symptom during your period days. Tracking this over time can help you prepare and talk to your doctor if needed.`,
+      color: 'pink'
+    });
+  }
+
+  const sleepEntries = journalEntries.filter(e => e.sleep_quality > 0);
+  if (sleepEntries.length >= 5) {
+    const avgSleep = sleepEntries.reduce((s, e) => s + e.sleep_quality, 0) / sleepEntries.length;
+    if (avgSleep < 3) {
+      patterns.push({
+        type: 'sleep',
+        text: `Your average sleep quality rating is below 3 out of 5. Poor sleep can affect hormonal balance and cycle regularity. Consider speaking to a doctor if this is ongoing.`,
+        color: 'blue'
+      });
+    }
+  }
+
+  return patterns;
+};
+
+const PATTERN_STYLES = {
+  amber: { card: 'bg-amber-50 border-amber-200', icon: 'bg-amber-100', text: 'text-amber-800', sub: 'text-amber-700' },
+  teal: { card: 'bg-teal-50 border-teal-200', icon: 'bg-teal-100', text: 'text-teal-800', sub: 'text-teal-700' },
+  pink: { card: 'bg-pink-50 border-pink-200', icon: 'bg-pink-100', text: 'text-pink-800', sub: 'text-pink-700' },
+  blue: { card: 'bg-blue-50 border-blue-200', icon: 'bg-blue-100', text: 'text-blue-800', sub: 'text-blue-700' },
+};
+
+const CycleAnalysis = ({ cycles, journalEntries = [] }) => {
   const { user } = useAuth();
   const [medications, setMedications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -112,6 +221,7 @@ const CycleAnalysis = ({ cycles }) => {
   };
 
   const analysis = buildAnalysis();
+  const journalPatterns = buildJournalPatterns(cycles, journalEntries);
 
   if (!user) {
     return (
@@ -212,6 +322,32 @@ const CycleAnalysis = ({ cycles }) => {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {journalPatterns.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+            <BookOpen size={16} className="text-pink-500" />
+            Journal Patterns
+          </h4>
+          {journalPatterns.map((pattern, i) => {
+            const style = PATTERN_STYLES[pattern.color] || PATTERN_STYLES.pink;
+            return (
+              <div key={i} className={`rounded-xl p-4 border ${style.card}`}>
+                <p className={`text-sm leading-relaxed ${style.sub}`}>{pattern.text}</p>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {journalEntries.length < 5 && (
+        <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 flex items-start gap-3">
+          <BookOpen size={15} className="text-gray-400 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-gray-500">
+            Add at least 5 journal entries to unlock mood, energy, and symptom pattern insights.
+          </p>
         </div>
       )}
 

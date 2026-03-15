@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import MedicationTracker from './MedicationTracker';
 import CycleAnalysis from './CycleAnalysis';
-
-const TABS = [
-  { id: 'calendar', label: 'Calendar', icon: Calendar },
-  { id: 'history', label: 'History', icon: History },
-  { id: 'medications', label: 'Medications', icon: Pill },
-  { id: 'analysis', label: 'Analysis', icon: BarChart2 }
-];
+import JournalEntryModal from './JournalEntryModal';
+import JournalTab from './JournalTab';
 
 const PeriodTracker = () => {
   const { user } = useAuth();
@@ -22,9 +17,22 @@ const PeriodTracker = () => {
   const [selectingEndDate, setSelectingEndDate] = useState(false);
   const [activeTab, setActiveTab] = useState('calendar');
 
+  const [journalEntries, setJournalEntries] = useState([]);
+  const [journalModal, setJournalModal] = useState(null);
+  const [journalSaving, setJournalSaving] = useState(false);
+
+  const TABS = [
+    { id: 'calendar', label: 'Calendar', icon: Calendar },
+    { id: 'history', label: 'History', icon: History },
+    { id: 'medications', label: 'Medications', icon: Pill },
+    { id: 'analysis', label: 'Analysis', icon: BarChart2 },
+    ...(user ? [{ id: 'journal', label: 'Journal', icon: BookOpen }] : []),
+  ];
+
   useEffect(() => {
     if (user) {
       loadCyclesFromDatabase();
+      loadJournalEntries();
     } else {
       loadCyclesFromLocalStorage();
       setLoading(false);
@@ -54,6 +62,20 @@ const PeriodTracker = () => {
     }
   };
 
+  const loadJournalEntries = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('cycle_journal')
+        .select('*')
+        .order('entry_date', { ascending: false });
+
+      if (error) throw error;
+      setJournalEntries(data || []);
+    } catch (error) {
+      console.error('Error loading journal entries:', error);
+    }
+  };
+
   const loadCyclesFromLocalStorage = () => {
     const stored = localStorage.getItem('periodCycles');
     if (stored) {
@@ -74,12 +96,73 @@ const PeriodTracker = () => {
   const handleDateClick = async (date) => {
     const dateStr = date.toISOString().split('T')[0];
 
+    if (user) {
+      const existing = journalEntries.find(e => e.entry_date === dateStr);
+      setJournalModal({ date: dateStr, existing: existing || null });
+      return;
+    }
+
     if (currentCycle && !currentCycle.end_date) {
       if (selectingEndDate) {
         await handleSetEndDate(dateStr);
       }
     } else if (!currentCycle) {
       await handleStartNewCycle(dateStr);
+    }
+  };
+
+  const handleCalendarDateClick = async (date) => {
+    const dateStr = date.toISOString().split('T')[0];
+
+    if (currentCycle && !currentCycle.end_date) {
+      if (selectingEndDate) {
+        await handleSetEndDate(dateStr);
+        return;
+      }
+    } else if (!currentCycle) {
+      await handleStartNewCycle(dateStr);
+      return;
+    }
+
+    if (user) {
+      const existing = journalEntries.find(e => e.entry_date === dateStr);
+      setJournalModal({ date: dateStr, existing: existing || null });
+    }
+  };
+
+  const handleSaveJournalEntry = async (entryData) => {
+    if (!user) return;
+    setJournalSaving(true);
+
+    try {
+      const existing = journalEntries.find(e => e.entry_date === entryData.entry_date);
+
+      if (existing) {
+        const { data, error } = await supabase
+          .from('cycle_journal')
+          .update(entryData)
+          .eq('id', existing.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        setJournalEntries(prev => prev.map(e => e.id === data.id ? data : e));
+      } else {
+        const { data, error } = await supabase
+          .from('cycle_journal')
+          .insert([{ ...entryData, user_id: user.id }])
+          .select()
+          .single();
+
+        if (error) throw error;
+        setJournalEntries(prev => [data, ...prev].sort((a, b) => b.entry_date.localeCompare(a.entry_date)));
+      }
+
+      setJournalModal(null);
+    } catch (error) {
+      console.error('Error saving journal entry:', error);
+    } finally {
+      setJournalSaving(false);
     }
   };
 
@@ -242,6 +325,12 @@ const PeriodTracker = () => {
     return null;
   };
 
+  const hasJournalEntry = (date) => {
+    if (!user) return false;
+    const dateStr = date.toISOString().split('T')[0];
+    return journalEntries.some(e => e.entry_date === dateStr);
+  };
+
   const metrics = calculateMetrics();
 
   if (loading) {
@@ -305,6 +394,7 @@ const PeriodTracker = () => {
             <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
               <p className="text-sm text-pink-700">
                 <span className="font-semibold">How to record:</span> Click the first day of your period to mark the start, then click the last day to mark the end.
+                {user && <span> You can also click any day to add a journal entry.</span>}
               </p>
             </div>
           )}
@@ -351,20 +441,19 @@ const PeriodTracker = () => {
 
                   const isToday = date.toDateString() === new Date().toDateString();
                   const status = getDateStatus(date);
+                  const hasEntry = hasJournalEntry(date);
                   const isClickable = !currentCycle || selectingEndDate;
 
                   return (
                     <button
                       key={date.toDateString()}
-                      onClick={() => isClickable && handleDateClick(date)}
-                      disabled={!isClickable}
+                      onClick={() => handleCalendarDateClick(date)}
                       className={`aspect-square rounded-xl text-sm font-medium transition-all duration-200 relative
                         ${status === 'start' ? 'bg-pink-600 text-white shadow-md ring-2 ring-pink-300' : ''}
                         ${status === 'end' ? 'bg-rose-500 text-white shadow-md' : ''}
                         ${status === 'period' ? 'bg-pink-200 text-pink-900' : ''}
                         ${!status && isToday ? 'bg-pink-100 text-pink-700 border-2 border-pink-400' : ''}
-                        ${!status && !isToday && isClickable ? 'bg-gray-50 text-gray-700 hover:bg-pink-50 hover:text-pink-700' : ''}
-                        ${!status && !isToday && !isClickable ? 'bg-gray-50 text-gray-400 cursor-default' : ''}
+                        ${!status && !isToday ? 'bg-gray-50 text-gray-700 hover:bg-pink-50 hover:text-pink-700' : ''}
                       `}
                     >
                       {date.getDate()}
@@ -378,13 +467,19 @@ const PeriodTracker = () => {
                           <span className="text-[6px] text-white font-bold leading-none">E</span>
                         </div>
                       )}
+                      {hasEntry && !status && (
+                        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-pink-400 rounded-full" />
+                      )}
+                      {hasEntry && status && (
+                        <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white/80 rounded-full" />
+                      )}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="px-4 pb-4 flex items-center gap-4 text-xs">
+            <div className="px-4 pb-4 flex flex-wrap items-center gap-4 text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-5 h-5 rounded bg-pink-600" />
                 <span className="text-gray-500">Start</span>
@@ -397,6 +492,12 @@ const PeriodTracker = () => {
                 <div className="w-5 h-5 rounded bg-rose-500" />
                 <span className="text-gray-500">End</span>
               </div>
+              {user && (
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-pink-400" />
+                  <span className="text-gray-500">Journal entry</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -521,7 +622,29 @@ const PeriodTracker = () => {
 
       {activeTab === 'medications' && <MedicationTracker />}
 
-      {activeTab === 'analysis' && <CycleAnalysis cycles={cycles} />}
+      {activeTab === 'analysis' && <CycleAnalysis cycles={cycles} journalEntries={journalEntries} />}
+
+      {activeTab === 'journal' && user && (
+        <JournalTab
+          entries={journalEntries}
+          onEditEntry={(entry) => setJournalModal({ date: entry.entry_date, existing: entry })}
+        />
+      )}
+
+      {activeTab === 'journal' && !user && (
+        <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-6 text-center">
+          <BookOpen size={28} className="text-gray-300 mx-auto mb-3" />
+          <p className="text-sm text-gray-600 font-medium mb-1">Sign in to start your personal journal</p>
+          <p className="text-xs text-gray-400 mb-4">Track your mood, symptoms, and notes every day.</p>
+          <Link
+            to="/auth"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            <LogIn size={15} />
+            Sign In or Create Account
+          </Link>
+        </div>
+      )}
 
       <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
         <div className="flex items-start gap-2.5">
@@ -531,6 +654,16 @@ const PeriodTracker = () => {
           </p>
         </div>
       </div>
+
+      {journalModal && (
+        <JournalEntryModal
+          date={journalModal.date}
+          existingEntry={journalModal.existing}
+          onSave={handleSaveJournalEntry}
+          onClose={() => setJournalModal(null)}
+          saving={journalSaving}
+        />
+      )}
     </div>
   );
 };
