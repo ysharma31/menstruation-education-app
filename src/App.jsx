@@ -11,7 +11,6 @@ import {
   ParentsGuide,
   AskQuestion,
   Chat,
-  UploadVideo,
   Auth
 } from './pages';
 import TeacherAuth from './pages/teacher/TeacherAuth';
@@ -19,6 +18,8 @@ import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import StudentLayout from './components/student/StudentLayout';
 import StudentAuth from './pages/student/StudentAuth';
 import StudentDashboard from './pages/student/StudentDashboard';
+import AdminAuth from './pages/admin/AdminAuth';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import { SearchProvider } from './contexts/SearchContext';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -42,7 +43,6 @@ function App() {
               <Route path="parents" element={<ParentsGuide />} />
               <Route path="ask" element={<AskQuestion />} />
               <Route path="chat" element={<Chat />} />
-              <Route path="upload-video" element={<UploadVideo />} />
             </Route>
             <Route path="/teacher" element={<TeacherLayout />}>
               <Route index element={<TeacherAuth />} />
@@ -52,6 +52,8 @@ function App() {
               <Route index element={<StudentAuth />} />
               <Route path="dashboard" element={<StudentDashboard />} />
             </Route>
+            <Route path="/admin" element={<AdminAuth />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </Router>
       </SearchProvider>

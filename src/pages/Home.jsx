@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
-import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight, School } from 'lucide-react';
+import { User, Users, CirclePlay as PlayCircle, Circle as HelpCircle, BookOpen, MessageCircle, Heart, Sparkles, ArrowRight, School, Mail } from 'lucide-react';
 import { useSearch } from '../contexts/SearchContext';
 import SearchResults from '../components/search/SearchResults';
 import { searchGlobalContent } from '../utils/contentIndex';
@@ -96,6 +96,19 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <footer className="mt-4 mb-8 pt-6 border-t border-gray-100">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
+          <p>&copy; {new Date().getFullYear()} Yoshita Sharma. All rights reserved.</p>
+          <a
+            href="mailto:yoshita.as.sharma@gmail.com"
+            className="inline-flex items-center gap-1.5 text-gray-400 hover:text-pink-500 transition-colors"
+          >
+            <Mail className="w-4 h-4" />
+            yoshita.as.sharma@gmail.com
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };
