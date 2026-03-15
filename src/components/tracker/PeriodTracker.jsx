@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History, BookOpen } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, TrendingUp, Activity, Clock, Info, X, LogIn, Pill, ChartBar as BarChart2, History, BookOpen, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -232,13 +232,18 @@ const PeriodTracker = () => {
 
     if (end < startDate) return;
 
-    const periodLength = Math.floor((end - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    const maxEnd = new Date(startDate);
+    maxEnd.setDate(maxEnd.getDate() + 6);
+    const clampedEnd = end > maxEnd ? maxEnd : end;
+    const clampedEndStr = clampedEnd.toISOString().split('T')[0];
+
+    const periodLength = Math.floor((clampedEnd - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
     if (user) {
       try {
         const { data, error } = await supabase
           .from('period_cycles')
-          .update({ end_date: endDate, period_length: periodLength })
+          .update({ end_date: clampedEndStr, period_length: periodLength })
           .eq('id', currentCycle.id)
           .select()
           .single();
@@ -250,7 +255,7 @@ const PeriodTracker = () => {
         console.error('Error updating cycle:', error);
       }
     } else {
-      const updatedCycle = { ...currentCycle, end_date: endDate, period_length: periodLength };
+      const updatedCycle = { ...currentCycle, end_date: clampedEndStr, period_length: periodLength };
       const updatedCycles = cycles.map(c => c.id === updatedCycle.id ? updatedCycle : c);
       setCycles(updatedCycles);
       saveCyclesToLocalStorage(updatedCycles);
@@ -278,6 +283,29 @@ const PeriodTracker = () => {
 
     setCurrentCycle(null);
     setSelectingEndDate(false);
+  };
+
+  const clearMonthCycle = async () => {
+    const cycle = getMonthCycle(currentMonth);
+    if (!cycle) return;
+
+    if (currentCycle?.id === cycle.id) {
+      await cancelCurrentCycle();
+      return;
+    }
+
+    if (user) {
+      try {
+        await supabase.from('period_cycles').delete().eq('id', cycle.id);
+        setCycles(prev => prev.filter(c => c.id !== cycle.id));
+      } catch (error) {
+        console.error('Error clearing cycle:', error);
+      }
+    } else {
+      const updatedCycles = cycles.filter(c => c.id !== cycle.id);
+      setCycles(updatedCycles);
+      saveCyclesToLocalStorage(updatedCycles);
+    }
   };
 
   const calculateMetrics = () => {
@@ -423,9 +451,20 @@ const PeriodTracker = () => {
               >
                 <ChevronLeft size={18} className="text-gray-600" />
               </button>
-              <span className="font-semibold text-gray-800 text-sm">
-                {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-gray-800 text-sm">
+                  {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                </span>
+                {getMonthCycle(currentMonth) && !currentCycle && (
+                  <button
+                    onClick={clearMonthCycle}
+                    title="Clear this month's period"
+                    className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <Trash2 size={14} className="text-red-400 hover:text-red-600" />
+                  </button>
+                )}
+              </div>
               <button
                 onClick={() => {
                   const d = new Date(currentMonth);
